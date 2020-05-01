@@ -1,0 +1,27 @@
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+th,
+td {
+	padding: 10px 15px;
+}
+
+thead {
+	background: #395870;
+	color: #fff;
+}
+
+tbody tr:nth-child(even) {
+	background: #f0f0f2;
+}
+
+td {
+	border-bottom: 1px solid #cecfd5;
+	border-right: 1px solid #cecfd5;
+}
+
+	td:first-child {
+		border-left: 1px solid #cecfd5;
+	}
