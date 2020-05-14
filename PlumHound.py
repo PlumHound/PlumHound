@@ -1,5 +1,11 @@
 #!/usr/bin/env python
+# -*- coding: utf8 -*-
 
+import sys
+
+if sys.version_info < (3,0,0):
+    print(__file__ + ' requires Python 3, while Python ' + str(sys.version[0] + ' was detected. Terminating. '))
+    sys.exit(1)
 
 # PlumHound https://github.com/DefensiveOrigins/PlumHound | https://plumhound.defensiveorigins.com/
 # BloodHound Wrapper for Purple Teams
@@ -27,7 +33,6 @@
 #imports
 from neo4j import GraphDatabase
 import argparse
-import sys
 import ast
 from tabulate import tabulate
 import csv

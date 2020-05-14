@@ -1,15 +1,15 @@
-
+﻿
 ![PlumHound](https://raw.githubusercontent.com/DefensiveOrigins/PlumHound/master/docs/images/Plum3.jpg)
 
 # PlumHound - BloodHoundAD Report Engine for Security Teams
-BloodhoundAD Reporting Engine for Blue and Purple Teams.
-
 Released as Proof of Concept for Blue and Purple teams to more effectively use BloodHoundAD in continual security life-cycles by utilizing the BloodHoundAD pathfinding engine to identify Active Directory security vulnerabilities resulting from business operations, procedures, policies and legacy service operations.
 
-PlumHound operates by wrapping BloodHoundAD's powerhouse graphical Neo4JS backend cypher queries into operations consumable reports.  Analyzing the output of PlumHound can steer security teams in identifying and hardening common Active Directory configuration vulnerabilities and oversights.
+PlumHound operates by wrapping BloodHoundAD's powerhouse graphical Neo4J backend cypher queries into operations-consumable reports.  Analyzing the output of PlumHound can steer security teams in identifying and hardening common Active Directory configuration vulnerabilities and oversights.
 
 ## Release and call to Action
-The initial PlumHound code was released on May 14th, 2020 during a Black Hills Information Security webcast, A Blue Teams Perspective on Red Team Tools.  The webcast was recorded and is available on YouTuve here[Link TBA]. 
+The initial PlumHound code was released on May 14th, 2020 during a Black Hills Information Security webcast, A Blue Teams Perspective on Red Team Tools.  The webcast was recorded and is available on YouTuve here[Link TBA].
+
+The PlumHound Framework yields itself to community involvement in the creation and proliferation of "TaskLists" (work) that can be shared and used across different organizations.  TaskLists contain jobs for PlumHound to do (queries to run, reports to write).  A second PlumHound community repo will be opened to allow for the open sharing of TaskLists.
 
 ## Background
 A client of ours working on hardening their Active Directory infrastructure asked us about vulnerabilities that can be found by using BloodHound.  They had heard of the effectiveness of BloodHoundAD in Red-Team's hands and was told that BloodHound would identify all types of security mis-alignments and mis-configurations in their Active Directory environment.  We helped them through analysis of their BloodHound dataset and it became quickly evident that BloodHoundAD's pathfinding graphical database was not designed for the fast-passed analytical security team accustom to reading reports and action items.  
@@ -23,7 +23,47 @@ The sample reports are from a BadBlood created AD environment that does not incl
 ![PlumHound](https://raw.githubusercontent.com/DefensiveOrigins/PlumHound/master/docs/images/Workstations_UnrestrainedDelegation.png)
 
 
-## PlumHound Syntax
+## PlumHound Examples
+Use the default username, password, server, and execute the "Easy" task, to test connectivity.  This will output all Active Directory user objects from the Neo4J database.
+
+```plaintext
+python3 PlumHound.py --easy
+```
+
+Execute PlumHound with the Default TaskList using Default Credentials and Database.
+```plaintext
+python3 PlumHound.py -x tasks/default.tasks
+
+[*]Building Task List
+[*]Beginning Output HTML:reports\DomainUsers.html
+[*]Beginning Output HTML:reports\Keroastable_Users.html
+[*]Beginning Output HTML:reports\Workstations_RDP.html
+[*]Beginning Output HTML:reports\Workstations_UnconstrainedDelegation.html
+[*]Beginning Output HTML:reports\GPOs.html
+[*]Beginning Output HTML:reports\AdminGroups.html
+[*]Beginning Output HTML:reports\ShortestPathDA.html
+[*]Beginning Output HTML:reports\RDPableGroups.html
+[*]Beginning Output HTML:reports\Groups_CanResetPasswords.html
+[*]Beginning Output HTML:reports\LocalAdmin_Groups.html
+[*]Beginning Output HTML:reports\LocalAdmin_Users.html
+[*]Beginning Output HTML:reports\DA_Sessions.html
+[*]Beginning Output HTML:reports\Keroastable_Users_MostPriv.html
+[*]Beginning Output HTML:reports\OUs_Count.html
+[*]Beginning Output HTML:reports\Permissions_Everyone.html
+[*]Beginning Output HTML:reports\Groups_MostAdminPriviledged.html
+[*]Beginning Output HTML:reports\Computers_WithDescriptions.html
+[*]Beginning Output HTML:reports\Users_NoKerbReq.html
+[*]Beginning Output HTML:reports\Users_Count_DirectAdminComputers.html
+[*]Beginning Output HTML:reports\Users_Count_InDirectAdminComputers.html
+[*]Beginning Output HTML:reports\Users_NeverActive_Enabled.html
+```
+The same, but quiet the output (-v 0), specify the Neo4J server, useranme, and password instead of using defaults.
+```plaintext
+python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4j1 -v 0"
+```
+
+
+## Detailed PlumHound Syntax
 ```plaintext
 usage: PlumHound.py [-h] [-s, --server S, __SERVER] [-u, --Username U, __USERNAME] [-p, --Password P, __PASSWORD] [--easy EASY]
                     [-x --TaskFile X __TASKFILE] [-c, --QuerySingle C, __QUERYSINGLE] [-t, --title T, __TITLE] [--of, --OutFile OF, __OUTFILE]
@@ -84,7 +124,7 @@ VERBOSESet verbosity:
 
 
 ## Installation Requirements (python 3.7/3.8)
-* apt-get install python3.8
+* apt-get install python3
 * pip3 install -r requirements.txt
 
 
@@ -94,8 +134,16 @@ VERBOSESet verbosity:
 * Import AD dataset into BloodhoundAD to be parsed
 * Use PlumHound to Report 
 
+### Server
+* The server is defaulted as bolt://localhost:7687.
+* This can be modified with the -s argument.
+
+### Useranme and Password
+* The username is defaulted to "neo4j" and password "neo4j1"
+* The -u and -p arguments can be used to change these.
+
 ## TaskList Files Syntax
-The PlumHound Repo includes a sample TaskList that exports some basic BloodHoundAD Cypher queries to an HTML Report.  The included tasks\Default.tasks sample shows the basic syntax of the TaskList files.  The TaskList Files allow PlumHound to be fully scripted with batch jobs after the SharpHound dataset has been imported not BloodHoundAD on Neo4js.
+The PlumHound Repo includes a sample TaskList that exports some basic BloodHoundAD Cypher queries to an HTML Report.  The included tasks\Default.tasks sample shows the basic syntax of the TaskList files.  The TaskList Files allow PlumHound to be fully scripted with batch jobs after the SharpHound dataset has been imported not BloodHoundAD on Neo4j.
 
 ### TaskList File Syntax
 
