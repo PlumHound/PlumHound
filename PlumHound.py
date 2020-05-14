@@ -42,7 +42,7 @@ pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
 pgroupt.add_argument("--easy", help="Use a sample Cypher Query Exported to STDOUT",action='store_true')
 pgroupt.add_argument("-x", "--TaskFile", type=str, help="PlumHound Plan of Cypher Queries")
-pgroupt.add_argument("-c," "--QuerySingle", dest="querysingle" default="neo4j", type=str, help="Specify a Single cypher Query")
+pgroupt.add_argument("-c," "--QuerySingle", dest="querysingle", default="neo4j", type=str, help="Specify a Single cypher Query")
 
 pgroupt = parser.add_argument_group('SINGLE QUERY', "Extended Options for Single Cypher Query Wrapping")
 pgroupt.add_argument("-t", "--title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
