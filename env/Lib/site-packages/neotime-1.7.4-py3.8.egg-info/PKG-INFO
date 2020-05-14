@@ -1,0 +1,64 @@
+Metadata-Version: 1.1
+Name: neotime
+Version: 1.7.4
+Summary: Nanosecond resolution temporal types
+Home-page: https://neotime.readthedocs.io
+Author: Neo4j Drivers Team
+Author-email: drivers@neo4j.com
+License: Apache License, Version 2.0
+Description: =======
+        Neotime
+        =======
+        
+        The ``neotime`` module defines classes for working with temporal data to nanosecond precision.
+        These classes comprise a similar set to that provided by the standard library ``datetime`` module.
+        Inspiration has also been drawn from `ISO-8601 <https://xkcd.com/1179/>`_.
+        
+        
+        Overview
+        ========
+        
+        The classes are listed below:
+        
+        * `Duration <https://neotime.readthedocs.io/en/latest/duration.html>`_
+        * `Date <https://neotime.readthedocs.io/en/latest/date.html>`_
+        * `Time <https://neotime.readthedocs.io/en/latest/time.html>`_
+        * `DateTime <https://neotime.readthedocs.io/en/latest/datetime.html>`_
+        * TODO
+        
+        
+        Installation
+        ============
+        
+        To install the latest stable version of neotime, simply use pip:
+        
+        .. code-block::
+        
+            $ pip install --pre neotime
+        
+        
+        Or to install the latest bleeding edge code directly from GitHub, use:
+        
+        .. code-block::
+        
+            $ pip install git+https://github.com/technige/neotime.git#egg=neotime
+        
+        Note that code installed directly from GitHub is likely to be unstable.
+        Your mileage may vary.
+        
+        
+        More Information
+        ================
+        
+        For more information, read the `docs <https://neotime.readthedocs.io/>`_.
+        
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7

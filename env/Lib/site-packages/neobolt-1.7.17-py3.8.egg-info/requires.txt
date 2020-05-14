@@ -1,0 +1,3 @@
+
+[:python_version < "3.3"]
+backports.time_perf_counter

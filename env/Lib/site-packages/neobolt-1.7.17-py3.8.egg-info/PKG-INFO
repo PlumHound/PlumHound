@@ -1,0 +1,27 @@
+Metadata-Version: 1.1
+Name: neobolt
+Version: 1.7.17
+Summary: Neo4j Bolt connector for Python
+Home-page: https://github.com/neo4j-drivers/neobolt
+Author: Neo4j Sweden AB
+Author-email: drivers@neo4j.com
+License: Apache License, Version 2.0
+Description: ========================================
+        Neobolt: Neo4j Bolt connector for Python
+        ========================================
+        
+        Neobolt is a Bolt connector library for Python.
+        It is generally intended for use by a higher level `driver <https://github.com/neo4j/neo4j-python-driver/>`_.
+        
+Keywords: neo4j graph database
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7

@@ -1,0 +1,91 @@
+Metadata-Version: 1.1
+Name: neo4j
+Version: 1.7.6
+Summary: Neo4j Bolt driver for Python
+Home-page: https://github.com/neo4j/neo4j-python-driver
+Author: Neo Technology
+Author-email: drivers@neo4j.com
+License: Apache License, Version 2.0
+Description: ****************************
+        Neo4j Bolt Driver for Python
+        ****************************
+        
+        The official Neo4j driver for Python supports Neo4j 3.0 and above and Python versions 2.7, 3.4, 3.5, 3.6, and 3.7.
+        
+        .. note::
+        
+            Python 2 support is deprecated and will be discontinued in the 2.x series driver releases.
+        
+        
+        Quick Example
+        =============
+        
+        .. code-block:: python
+        
+            from neo4j import GraphDatabase
+        
+            driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "password"))
+        
+            def add_friend(tx, name, friend_name):
+                tx.run("MERGE (a:Person {name: $name}) "
+                       "MERGE (a)-[:KNOWS]->(friend:Person {name: $friend_name})",
+                       name=name, friend_name=friend_name)
+        
+            def print_friends(tx, name):
+                for record in tx.run("MATCH (a:Person)-[:KNOWS]->(friend) WHERE a.name = $name "
+                                     "RETURN friend.name ORDER BY friend.name", name=name):
+                    print(record["friend.name"])
+        
+            with driver.session() as session:
+                session.write_transaction(add_friend, "Arthur", "Guinevere")
+                session.write_transaction(add_friend, "Arthur", "Lancelot")
+                session.write_transaction(add_friend, "Arthur", "Merlin")
+                session.read_transaction(print_friends, "Arthur")
+        
+        
+        Installation
+        ============
+        
+        To install the latest stable version, use:
+        
+        .. code:: bash
+        
+            pip install neo4j
+        
+        .. note::
+        
+            Installation from the ``neo4j-driver`` package on PyPI is now deprecated and will be discontinued in the 2.x series driver releases.
+            Please install from the ``neo4j`` package instead.
+        
+        For the most up-to-date version (generally unstable), use:
+        
+        .. code:: bash
+        
+            pip install git+https://github.com/neo4j/neo4j-python-driver.git#egg=neo4j
+        
+        
+        Other Information
+        =================
+        
+        * `Neo4j Manual`_
+        * `Neo4j Quick Reference Card`_
+        * `Example Project`_
+        * `Driver Wiki`_ (includes change logs)
+        
+        .. _`Neo4j Manual`: https://neo4j.com/docs/developer-manual/current/drivers/
+        .. _`Neo4j Quick Reference Card`: https://neo4j.com/docs/cypher-refcard/current/
+        .. _`Example Project`: https://github.com/neo4j-examples/movies-python-bolt
+        .. _`Driver Wiki`: https://github.com/neo4j/neo4j-python-driver/wiki
+        
+Keywords: neo4j graph database
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
