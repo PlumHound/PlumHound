@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-# PlumHound https://github.com/DefensiveOrigins/PlumHound
+# PlumHound https://github.com/DefensiveOrigins/PlumHound | https://plumhound.defensiveorigins.com/
 # BloodHound Wrapper for Purple Teams
 # ToolDropped May 13th 2020 as Proof of Concept Code - Black Hills Information Security #BHInfoSecurity #DefensiveOGs
 #  - Community involvement: Will routinely review pull requestd.  Contributers welcome.
@@ -14,7 +14,6 @@
 # - pathfinding queries are a headache.  until I can parse them properly I should just dump the ouput to raw so it could still be valuable.  currently the parsing will choke
 # - same as above if query returns an object without specifying object keys, the object itself is a node list that parsing chokes on, currently just avoiding those queries
 #  - finish arguments for CLI
-# - CSV output isn't done yet
 # - need to add title to HTML tables so the HTML report has context
 # - need a better way of grep output, throwing into parser is possibly redeundant and the entire recordset might be better just thrown into a file raw
 
@@ -36,22 +35,22 @@ import csv
 #ArgumentSetups
 parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams")
 pgroupc = parser.add_argument_group('DATABASE')
-pgroupc.add_argument("-s, --server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
-pgroupc.add_argument("-u, --Username", default="neo4j", type=str, help="Neo4J Database Useranme")
-pgroupc.add_argument("-p, --Password", default="neo4j", type=str, help="Neo4J Database Password")
+pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
+pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
+pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J Database Password")
 
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
 pgroupt.add_argument("--easy", help="[DEFAULT] Use a sample Cypher Query Exported to STDOUT")
-pgroupt.add_argument("-x --TaskFile", default="queries.txt", type=str, help="PlumHound Plan of Cypher Queries")
-pgroupt.add_argument("-c, --QuerySingle", default="neo4j", type=str, help="Specify a Single cypher Query")
+pgroupt.add_argument("-x", "--TaskFile", default="tasks\\default.tasks", type=str, help="PlumHound Plan of Cypher Queries")
+pgroupt.add_argument("-c," "--QuerySingle", default="neo4j", type=str, help="Specify a Single cypher Query")
 
 pgroupt = parser.add_argument_group('SINGLE QUERY', "Extended Options for Single Cypher Query Wrapping")
-pgroupt.add_argument("-t, --title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
+pgroupt.add_argument("-t", "--title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
 
 pgroupo = parser.add_argument_group('OUTPUT', "Output Options")
-pgroupo.add_argument("--of, --OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
-pgroupo.add_argument("--op, --OutPath", default="neo4j", type=str, help="Specify an Output Path for Reports")
-pgroupo.add_argument("--of, --OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout','grep', 'HTML', 'CSV'])
+pgroupo.add_argument("--of", "--OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
+pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports\\", type=str, help="Specify an Output Path for Reports")
+pgroupo.add_argument("--ox", "--OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout','grep', 'HTML', 'CSV'])
 
 pgrouph = parser.add_argument_group('HTML',"Options for HTML Output")
 pgrouph.add_argument("--HTMLHeader", type=str, help="HTML Header (file) of Report")
@@ -59,20 +58,23 @@ pgrouph.add_argument("--HTMLFooter", type=str, help="HTML Footer (file) of Repor
 pgrouph.add_argument("--HTMLCSS", type=str, help="Specify a CSS template for HTML Output")
 
 pgroupv = parser.add_argument_group('VERBOSE' "Set verbosity")
-pgroupv.add_argument("-v, --Verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet")
+pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet")
+
+#push args into namespace
 args = parser.parse_args()
+
 
 #Bypassing ArgParse in IDE for Testing 
 #server ="bolt://localhost:7687"
 #username = "neo4js"
 #password = 'neo4js'
 #Easy = False
-#TaskFile = "\\tasks\\Default.tasks"
+#TaskFile = "tasks\\Default.tasks"
 #TaskFile = False
 #QuerySingle = False
 #Title = ""
 #OutFile = "test.txt"
-#OutputPath = "\\reports\\"
+#OutputPath = "reports\\"
 #OutFormat = "HTML"
 #HTMLHeader= False
 #HTMLFooter = False
@@ -81,7 +83,7 @@ args = parser.parse_args()
 
 #Loggy Function for lazy debugging
 def Loggy(level,notice):
-    if level <= verbose: 
+    if level <= args.verbose: 
         if level<=100: print("[*]" + notice)
         elif level<500: print ("[!]" + notice)
         else: print ("[*]" + notice)
@@ -164,30 +166,30 @@ def updatefile(file,update):
     Loggy(500, "Consider it Jotted "+file)
       
 #Setup Driver
-newdriver = setup_database_conn(server,username,password)
+newdriver = setup_database_conn(args.server,args.username,args.password)
 
 #Build the tasklist
 def MakeTaskList():
     Loggy(100,"Building Task List")
 
     tasks = []
-    if TaskFile:
+    if args.TaskFile:
         Loggy(500,"Tasks file specified.  Reading")
-        with open(TaskFile) as f:
+        with open(args.TaskFile) as f:
             tasks = f.read().splitlines()
         Loggy(500,"TASKS: "+ str(tasks))
         return tasks
         
-    if QuerySingle:
+    if args.QuerySingle:
         Loggy(500,"Tasks Single Query Specified. Reading")
-        Loggy(500,"Tasks-Title:" + title)
-        Loggy(500,"Tasks-OutFormat:" + OutFormat)
-        Loggy(500,"Tasks-OutPath:" + OutPath)
-        Loggy(500,"Tasks-QuerySingle:" + QuerySingle)
-        tasks.append(title,OutFormat,OutPath,QuerySingle)
+        Loggy(500,"Tasks-Title:" + args.title)
+        Loggy(500,"Tasks-OutFormat:" + args.OutFormat)
+        Loggy(500,"Tasks-OutPath:" + args.OutPath)
+        Loggy(500,"Tasks-QuerySingle:" + args.QuerySingle)
+        tasks.append(args.title,args.OutFormat,args.OutPath,args.QuerySingle)
         return tasks
             
-    if Easy:
+    if args.easy:
         Loggy(500,"Tasks Easy Query Specified.")
         tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
         return tasks
@@ -207,38 +209,42 @@ def TaskExecution(tasks,Outpath,HTMLHeader,HTMLFooter,HTMLCSS):
      jobHTMLCSS = HTMLCSS
 
      for job in tasks:
-        Loggy(200,"Starting job")
-        Loggy(500,"Job: "+str(job))
-
-        job_List = ast.literal_eval(job) 
-        jobTitle = job_List[0]
-        jobOutFormat = job_List[1]
-        jobOutPathFile = Outpath + job_List[2]
-        jobQuery = job_List[3]
-
-        Loggy(500,"Job Title: "+jobTitle)
-        Loggy(500,"Job Format: "+jobOutFormat)
-        Loggy(500,"Job File: "+jobOutPathFile)
-        Loggy(500,"Job Query: "+jobQuery)
-
-        jobkeys = GetKeys(newdriver,jobQuery)
-        jobkeys_List = ast.literal_eval(str(jobkeys))
-        #Quick fix if keys returned no record sto properly rebuild the keys list as 0 records, instead of int(0)
-        if isinstance(jobkeys_List,int): jobKeys_List=[]
-       
-        jobresults = execute_query(newdriver,jobQuery)
-        jobresults_processed= "[" +processresults(jobresults) + "]"
-
         try:
-            jobresults_processed_list = ast.literal_eval(jobresults_processed)
-        except:
-            Loggy(200,"ERROR: Something Broke trying to deal with pathfinding.")
-            Loggy(500,jobresults_processed)
-            #jobresults_processed_list = ast.literal_eval("'"+jobresults_processed+"'")
-            jobresults_processed_list = jobresults_processed
+            Loggy(200,"Starting job")
+            Loggy(500,"Job: "+str(job))
 
-        Loggy(500,"Calling delievery service")
-        SenditOut(jobkeys_List,jobresults_processed_list,jobOutFormat,jobOutPathFile,"",jobTitle,jobHTMLHeader,jobHTMLFooter,jobHTMLCSS)
+            job_List = ast.literal_eval(job) 
+            jobTitle = job_List[0]
+            jobOutFormat = job_List[1]
+            jobOutPathFile = Outpath + job_List[2]
+            jobQuery = job_List[3]
+
+            Loggy(500,"Job Title: "+jobTitle)
+            Loggy(500,"Job Format: "+jobOutFormat)
+            Loggy(500,"Job File: "+jobOutPathFile)
+            Loggy(500,"Job Query: "+jobQuery)
+
+            jobkeys = GetKeys(newdriver,jobQuery)
+            jobkeys_List = ast.literal_eval(str(jobkeys))
+            #Quick fix if keys returned no record sto properly rebuild the keys list as 0 records, instead of int(0)
+            if isinstance(jobkeys_List,int): jobKeys_List=[]
+       
+            jobresults = execute_query(newdriver,jobQuery)
+            jobresults_processed= "[" +processresults(jobresults) + "]"
+
+            try:
+                jobresults_processed_list = ast.literal_eval(jobresults_processed)
+            except:
+                Loggy(200,"ERROR: Something Broke trying to deal with pathfinding.")
+                Loggy(500,jobresults_processed)
+                #jobresults_processed_list = ast.literal_eval("'"+jobresults_processed+"'")
+                jobresults_processed_list = jobresults_processed
+
+            Loggy(500,"Calling delievery service")
+            SenditOut(jobkeys_List,jobresults_processed_list,jobOutFormat,jobOutPathFile,"",jobTitle,jobHTMLHeader,jobHTMLFooter,jobHTMLCSS)
+        except:
+            Loggy(200,"ERROR: Soemthing broke trying to parse jobs (move along).")
+
 
 
 def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Title,HTMLHeader,HTMLFooter,HTMLCSS):
@@ -290,7 +296,7 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         return True
 
     if OutFormat == "GREP":
-        Loggy(100, "Beginning Output Grep:" + OutFile)
+        Loggy(100, "Beginning Output Grep:" + args.OutFile)
         fsys = open(OutPath+OutFile,"w")
         fsys.write(output)
         fsys.close
@@ -303,7 +309,7 @@ Loggy(500,"TASKS:/n"+str(TaskList))
 
 #Start Task List
 Loggy(500,"Start Task Execution")
-TaskExecution(TaskList,OutputPath,HTMLHeader,HTMLFooter,HTMLCSS)
+TaskExecution(TaskList,args.path,args.HTMLHeader,args.HTMLFooter,args.HTMLCSS)
 Loggy(500,"Tasks Completed")
 
 #Close out neo4j connection
