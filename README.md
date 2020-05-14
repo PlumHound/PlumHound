@@ -1,5 +1,5 @@
 ﻿
-![PlumHound](https://github.com/defensiveorigins/plumhound/blob/master/doc/images/plum3.jpg?raw=true)
+![PlumHound](https://github.com/defensiveorigins/plumhound/blob/master/docs/images/plum3.jpg?raw=true)
 
 # PlumHound - Reportable BloodhoundAD Wrapper
 BloodhoundAD Reporting Engine for Blue and Purple Teams.
