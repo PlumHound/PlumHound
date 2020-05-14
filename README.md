@@ -1,4 +1,4 @@
-﻿
+
 ![PlumHound](https://raw.githubusercontent.com/DefensiveOrigins/PlumHound/master/docs/images/Plum3.jpg)
 
 # PlumHound - BloodHoundAD Report Engine for Security Teams
@@ -17,7 +17,10 @@ A client of ours working on hardening their Active Directory infrastructure aske
 In fact, one of our cypher queries determined that 96% of their 3000 users had a path to Domain Admin with an average of just 4 steps.  However, that graphical query rendered over 10,000 paths to Domain Admin.  Finding the actual cause of the short-paths to DA wasn't as easy as just loading data into BloodHound or putting Cobalt Strike on Auto-Pilot with BloodHound Navigation.  
 Hence, PlumHound was created out of a need to retrieve consumable data from BloodHoundAD's pathfinding engine.  Data that could yield itself to inferring actionable work for security teams to harden their environments.
 
-## Same Reports
+## Sample Reports
+The sample reports are from a BadBlood created AD environment that does not include user sessions and massive ACLs that would be typical of a larger environment.  That is, the reports a bit bare, but you get the idea.  Sample reports are found in the /reports folder.  Note that by default, this is the output location for PlumHound and will over-write reports in this location if specified by the tasklist file.
+
+![PlumHound](https://raw.githubusercontent.com/DefensiveOrigins/PlumHound/master/docs/images/Workstations_UnrestrainedDelegation.png)
 
 
 ## PlumHound Syntax
@@ -127,11 +130,12 @@ The default.tasks file includes multiple tasks that instruct PlumHound to create
 
 ```
 
-## Hat-Tips
+## Hat-Tips & Acknowledgements
 * [Hausec's Cypher Query CheatSheet](https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/)  gave us a headstart on some decent pathfinding cypher queries.  | [Git](https://github.com/hausec)
 * [SadProcessor's Blue Hands on BloodHound](https://github.com/SadProcessor/WatchDog) gave us a detailed primer on BloodHoundAD's ability to lead a BlueTeam to water. | [Git](https://github.com/SadProcessor).
 * Additional work by SadProcessor with [Cypher Dog 3.0](https://github.com/SadProcessor/CypherDog) shows similar POC via utilizing BloodHoundAD's Cypher Queries with a RestAPI endpoint via PowerShell.  PlumHound operates similarly however written in python and designed for stringing multiple queries into consumable reports designed to infer actionable items. 
 * [BloodHoundAD](https://github.com/BloodHoundAD/BloodHound): We wouldn't be talking about this at all if it weren't for the original BloodHoundAD work.  BloodHound is developed by @_wald0, @CptJesus, and @harmj0y.
+* "Band-aids don't fix dank domains."  [BadBlood](https://github.com/davidprowe/BadBlood) saved us a ton of time building realistic-enough AD domains for testing. @davidprowe  
 
 
 
