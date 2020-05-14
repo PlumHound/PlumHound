@@ -65,10 +65,9 @@ python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j
 
 ## Detailed PlumHound Syntax
 ```plaintext
-usage: PlumHound.py [-h] [-s, --server S, __SERVER] [-u, --Username U, __USERNAME] [-p, --Password P, __PASSWORD] [--easy EASY]
-                    [-x --TaskFile X __TASKFILE] [-c, --QuerySingle C, __QUERYSINGLE] [-t, --title T, __TITLE] [--of, --OutFile OF, __OUTFILE]
-                    [--op, --OutPath OP, __OUTPATH] [--of, --OutFormat {stdout,grep,HTML,CSV}] [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER]
-                    [--HTMLCSS HTMLCSS] [-v, --Verbose V, __VERBOSE]
+usage: PlumHound.py [-h] [-s SERVER] [-u USERNAME] [-p PASSWORD] [--easy] [-x TASKFILE] [-c,--QuerySingle QUERYSINGLE] [-t TITLE]
+                    [--of OUTFILE] [--op PATH] [--ox {stdout,grep,HTML,CSV}] [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER]
+                    [--HTMLCSS HTMLCSS] [-v VERBOSE]
 
 BloodHound Wrapper for Purple Teams
 
@@ -76,36 +75,36 @@ optional arguments:
   -h, --help            show this help message and exit
 
 DATABASE:
-  -s, --server S, __SERVER
+  -s SERVER, --server SERVER
                         Neo4J Server
-  -u, --Username U, __USERNAME
+  -u USERNAME, --username USERNAME
                         Neo4J Database Useranme
-  -p, --Password P, __PASSWORD
+  -p PASSWORD, --password PASSWORD
                         Neo4J Database Password
 
 TASKS:
   Task Selection
 
-  --easy EASY           [DEFAULT] Use a sample Cypher Query Exported to STDOUT
-  -x --TaskFile X __TASKFILE
+  --easy                Use a sample Cypher Query Exported to STDOUT
+  -x TASKFILE, --TaskFile TASKFILE
                         PlumHound Plan of Cypher Queries
-  -c, --QuerySingle C, __QUERYSINGLE
+  -c,--QuerySingle QUERYSINGLE
                         Specify a Single cypher Query
 
 SINGLE QUERY:
   Extended Options for Single Cypher Query Wrapping
 
-  -t, --title T, __TITLE
+  -t TITLE, --title TITLE
                         Report Title for Single Query [HTML,CSV,Latex]
 
 OUTPUT:
   Output Options
 
-  --of, --OutFile OF, __OUTFILE
+  --of OUTFILE, --OutFile OUTFILE
                         Specify a Single Cypher Query
-  --op, --OutPath OP, __OUTPATH
+  --op PATH, --OutPath PATH
                         Specify an Output Path for Reports
-  --of, --OutFormat {stdout,grep,HTML,CSV}
+  --ox {stdout,grep,HTML,CSV}, --OutFormat {stdout,grep,HTML,CSV}
                         Specify the type of output
 
 HTML:
@@ -118,8 +117,9 @@ HTML:
   --HTMLCSS HTMLCSS     Specify a CSS template for HTML Output
 
 VERBOSESet verbosity:
-  -v, --Verbose V, __VERBOSE
+  -v VERBOSE, --verbose VERBOSE
                         Verbosity 0-1000, 0 = quiet
+
 ```
 
 
