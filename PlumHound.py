@@ -54,7 +54,7 @@ pgroupt.add_argument("-t", "--title", dest="title", default="Adhoc Query", type=
 
 pgroupo = parser.add_argument_group('OUTPUT', "Output Options")
 pgroupo.add_argument("--of", "--OutFile", dest="OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
-pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports\\", type=str, help="Specify an Output Path for Reports")
+pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports//", type=str, help="Specify an Output Path for Reports")
 pgroupo.add_argument("--ox", "--OutFormat", dest="OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout','grep', 'HTML', 'CSV'])
 
 pgrouph = parser.add_argument_group('HTML',"Options for HTML Output")
