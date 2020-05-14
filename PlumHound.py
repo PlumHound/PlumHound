@@ -42,7 +42,7 @@ pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
 pgroupt.add_argument("--easy", help="Use a sample Cypher Query Exported to STDOUT",action='store_true')
 pgroupt.add_argument("-x", "--TaskFile", type=str, help="PlumHound Plan of Cypher Queries")
-pgroupt.add_argument("-c," "--QuerySingle", default="neo4j", type=str, help="Specify a Single cypher Query")
+pgroupt.add_argument("-c," "--QuerySingle", dest="querysingle" default="neo4j", type=str, help="Specify a Single cypher Query")
 
 pgroupt = parser.add_argument_group('SINGLE QUERY', "Extended Options for Single Cypher Query Wrapping")
 pgroupt.add_argument("-t", "--title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
@@ -181,13 +181,13 @@ def MakeTaskList():
         Loggy(500,"TASKS: "+ str(tasks))
         return tasks
         
-    if args.QuerySingle:
+    if args.querysingle:
         Loggy(500,"Tasks Single Query Specified. Reading")
         Loggy(500,"Tasks-Title:" + args.title)
         Loggy(500,"Tasks-OutFormat:" + args.OutFormat)
         Loggy(500,"Tasks-OutPath:" + args.OutPath)
-        Loggy(500,"Tasks-QuerySingle:" + args.QuerySingle)
-        tasks.append(args.title,args.OutFormat,args.OutPath,args.QuerySingle)
+        Loggy(500,"Tasks-QuerySingle:" + args.querysingle)
+        tasks.append(args.title,args.OutFormat,args.OutPath,args.querysingle)
         return tasks
             
     if args.easy:
