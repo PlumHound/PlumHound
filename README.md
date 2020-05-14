@@ -1,8 +1,10 @@
 ﻿
-# PlumHound
-Bloodhound for Blue and Purple Teams
+![PlumHound](https://github.com/defensiveorigins/plumhound/blob/master/doc/images/plum3.jpg?raw=true)
 
-Released as Proof of Concept for Blue and Purple teams to more effectively use BloodHoundAD in continual security lifecycles.
+# PlumHound - Reportable BloodhoundAD Wrapper
+BloodhoundAD Reporting Engine for Blue and Purple Teams.
+
+Released as Proof of Concept for Blue and Purple teams to more effectively use BloodHoundAD in continual security life-cycles by utilizing the BloodHoundAD pathfinding engine to identify Active Directory security vulnerabilities resulting from business operations, procedures, policies and legacy service operations.
 
 ## Syntax
 See PlumHound Wiki
