@@ -41,21 +41,21 @@ pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J
 
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
 pgroupt.add_argument("--easy", help="Use a sample Cypher Query Exported to STDOUT",action='store_true')
-pgroupt.add_argument("-x", "--TaskFile", type=str, help="PlumHound Plan of Cypher Queries")
+pgroupt.add_argument("-x", "--TaskFile", dest="TaskFile", type=str, help="PlumHound Plan of Cypher Queries")
 pgroupt.add_argument("-c," "--QuerySingle", dest="querysingle", default="neo4j", type=str, help="Specify a Single cypher Query")
 
 pgroupt = parser.add_argument_group('SINGLE QUERY', "Extended Options for Single Cypher Query Wrapping")
-pgroupt.add_argument("-t", "--title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
+pgroupt.add_argument("-t", "--title", dest="title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
 
 pgroupo = parser.add_argument_group('OUTPUT', "Output Options")
-pgroupo.add_argument("--of", "--OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
+pgroupo.add_argument("--of", "--OutFile", dest="OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
 pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports\\", type=str, help="Specify an Output Path for Reports")
-pgroupo.add_argument("--ox", "--OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout','grep', 'HTML', 'CSV'])
+pgroupo.add_argument("--ox", "--OutFormat", dest="OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout','grep', 'HTML', 'CSV'])
 
 pgrouph = parser.add_argument_group('HTML',"Options for HTML Output")
-pgrouph.add_argument("--HTMLHeader", type=str, help="HTML Header (file) of Report")
-pgrouph.add_argument("--HTMLFooter", type=str, help="HTML Footer (file) of Report")
-pgrouph.add_argument("--HTMLCSS", type=str, help="Specify a CSS template for HTML Output")
+pgrouph.add_argument("--HTMLHeader", dest="HTMLHeader", type=str, help="HTML Header (file) of Report")
+pgrouph.add_argument("--HTMLFooter", dest="HTMLFooter", type=str, help="HTML Footer (file) of Report")
+pgrouph.add_argument("--HTMLCSS", dest="HTMLCSS", type=str, help="Specify a CSS template for HTML Output")
 
 pgroupv = parser.add_argument_group('VERBOSE' "Set verbosity")
 pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet")
