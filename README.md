@@ -59,7 +59,7 @@ python3 PlumHound.py -x tasks/default.tasks
 ```
 The same, but quiet the output (-v 0), specify the Neo4J server, useranme, and password instead of using defaults.
 ```plaintext
-python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4j1 -v 0"
+python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4j1" -v 0
 ```
 
 
