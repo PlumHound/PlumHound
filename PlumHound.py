@@ -185,9 +185,9 @@ def MakeTaskList():
         Loggy(500,"Tasks Single Query Specified. Reading")
         Loggy(500,"Tasks-Title:" + args.title)
         Loggy(500,"Tasks-OutFormat:" + args.OutFormat)
-        Loggy(500,"Tasks-OutPath:" + args.OutPath)
+        Loggy(500,"Tasks-OutPath:" + args.path)
         Loggy(500,"Tasks-QuerySingle:" + args.querysingle)
-        tasks.append(args.title,args.OutFormat,args.OutPath,args.querysingle)
+        tasks.append(args.title,args.OutFormat,args.path,args.querysingle)
         return tasks
             
     if args.easy:
