@@ -33,15 +33,15 @@ from tabulate import tabulate
 import csv
 
 #ArgumentSetups
-parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams")
+parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams",add_help=True)
 pgroupc = parser.add_argument_group('DATABASE')
 pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
 pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
 pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J Database Password")
 
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
-pgroupt.add_argument("--easy", help="[DEFAULT] Use a sample Cypher Query Exported to STDOUT")
-pgroupt.add_argument("-x", "--TaskFile", default="tasks\\default.tasks", type=str, help="PlumHound Plan of Cypher Queries")
+pgroupt.add_argument("--easy", help="Use a sample Cypher Query Exported to STDOUT",action='store_true')
+pgroupt.add_argument("-x", "--TaskFile", default="tasks//default.tasks", type=str, help="PlumHound Plan of Cypher Queries")
 pgroupt.add_argument("-c," "--QuerySingle", default="neo4j", type=str, help="Specify a Single cypher Query")
 
 pgroupt = parser.add_argument_group('SINGLE QUERY', "Extended Options for Single Cypher Query Wrapping")
@@ -173,6 +173,7 @@ def MakeTaskList():
     Loggy(100,"Building Task List")
 
     tasks = []
+
     if args.TaskFile:
         Loggy(500,"Tasks file specified.  Reading")
         with open(args.TaskFile) as f:
