@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+# PlumHound v01.04a
+
 import sys
 
 if sys.version_info < (3,0,0):
@@ -14,21 +16,6 @@ if sys.version_info < (3,0,0):
 #  - Written in VS, haters :)  Python 3.8, see requirements.txt (pip3 install -r requirements.txt)
 # GNU GPL 3.0
 
-# PROOF OF CONCEPT CODE - ALPHA 
-#Still needs work:
-# the job tasklist and recordset lists should be moved into a single job task instead of mulitple variables passed in list dependent on list order
-# - pathfinding queries are a headache.  until I can parse them properly I should just dump the ouput to raw so it could still be valuable.  currently the parsing will choke
-# - same as above if query returns an object without specifying object keys, the object itself is a node list that parsing chokes on, currently just avoiding those queries
-#  - finish arguments for CLI
-# - need to add title to HTML tables so the HTML report has context
-# - need a better way of grep output, throwing into parser is possibly redeundant and the entire recordset might be better just thrown into a file raw
-
-# App Flow
-# Read Task List (Or cypher query)
-# Connect to Neo4JS database
-# Execute tasks from tasklist
-#   -> Execute Cypher Queries, export to report type (HTLM, etc)
-# Close Database query
 
 #imports
 from neo4j import GraphDatabase
@@ -38,11 +25,12 @@ from tabulate import tabulate
 import csv
 
 #ArgumentSetups
-parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams",add_help=True)
+parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.04a",add_help=True)
 pgroupc = parser.add_argument_group('DATABASE')
 pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
 pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
 pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J Database Password")
+pgroupc.add_argument("--UseEnc", type=bool, default=False, dest="UseEnc", help="Do not use encryption.")
 
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
 pgroupt.add_argument("--easy", help="Use a sample Cypher Query Exported to STDOUT",action='store_true')
@@ -69,7 +57,7 @@ pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity
 args = parser.parse_args()
 
 
-#Bypassing ArgParse in IDE for Testing 
+#Bypassing ArgParse in IDE for Testing
 #server ="bolt://localhost:7687"
 #username = "neo4js"
 #password = 'neo4js'
@@ -88,18 +76,21 @@ args = parser.parse_args()
 
 #Loggy Function for lazy debugging
 def Loggy(level,notice):
-    if level <= args.verbose: 
+    if level <= args.verbose:
         if level<=100: print("[*]" + notice)
         elif level<500: print ("[!]" + notice)
         else: print ("[*]" + notice)
 
-   
+
 #Setup Database Connection
 def setup_database_conn(server,username,password):
     Loggy(500,"Setting up database driver")
     try:
-        Loggy(200,"[!] Attempting to connect to your Neo4j project using {}:{} @ {}.".format(username, password, server))
-        driver_connection = GraphDatabase.driver(server, auth=(username, password))
+        Loggy(200,"[!] Attempting to connect to your Neo4j project using {}:{} @ {}.".format(username, password, server, args.UseEnc))
+        if args.UseEnc:
+            driver_connection = GraphDatabase.driver(server, auth=(username, password), encrypted=True)
+        else:
+            driver_connection = GraphDatabase.driver(server, auth=(username, password), encrypted=False)
         Loggy(200,"[+] Success!")
         return driver_connection
     except:
@@ -108,11 +99,11 @@ def setup_database_conn(server,username,password):
         Loggy(100,"[X] Database connection failed!")
         exit()
 
-#Setup Query 
+#Setup Query
 def execute_query(driver, query, enabled=True):
     Loggy(500,"Fire Ze Misiles")
     Loggy(500,"Executing things")
-    
+
     with driver.session() as session:
         Loggy(500,"Running Query")
         results = session.run(query)
@@ -160,7 +151,7 @@ def processresults(results):
             #Loggy(100,str(record.values()))
             BigTable = BigTable + str(record.values()) +","
         except:
-            Loggy(200,"Washing records failed.  Error on record") 
+            Loggy(200,"Washing records failed.  Error on record")
     return BigTable
 
 #File Update
@@ -169,7 +160,7 @@ def updatefile(file,update):
     fsys = open(file,"a")
     fsys.write(update + "\n")
     Loggy(500, "Consider it Jotted "+file)
-      
+
 #Setup Driver
 newdriver = setup_database_conn(args.server,args.username,args.password)
 
@@ -185,7 +176,7 @@ def MakeTaskList():
             tasks = f.read().splitlines()
         Loggy(500,"TASKS: "+ str(tasks))
         return tasks
-        
+
     if args.querysingle:
         Loggy(500,"Tasks Single Query Specified. Reading")
         Loggy(500,"Tasks-Title:" + args.title)
@@ -194,12 +185,12 @@ def MakeTaskList():
         Loggy(500,"Tasks-QuerySingle:" + args.querysingle)
         tasks.append(args.title,args.OutFormat,args.path,args.querysingle)
         return tasks
-            
+
     if args.easy:
         Loggy(500,"Tasks Easy Query Specified.")
         tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
         return tasks
-        
+
     Loggy(100,"Tasks Generation Completed\nTasks: " + str(tasks))
 
     return tasks
@@ -219,7 +210,7 @@ def TaskExecution(tasks,Outpath,HTMLHeader,HTMLFooter,HTMLCSS):
             Loggy(200,"Starting job")
             Loggy(500,"Job: "+str(job))
 
-            job_List = ast.literal_eval(job) 
+            job_List = ast.literal_eval(job)
             jobTitle = job_List[0]
             jobOutFormat = job_List[1]
             jobOutPathFile = Outpath + job_List[2]
@@ -234,7 +225,7 @@ def TaskExecution(tasks,Outpath,HTMLHeader,HTMLFooter,HTMLCSS):
             jobkeys_List = ast.literal_eval(str(jobkeys))
             #Quick fix if keys returned no record sto properly rebuild the keys list as 0 records, instead of int(0)
             if isinstance(jobkeys_List,int): jobKeys_List=[]
-       
+
             jobresults = execute_query(newdriver,jobQuery)
             jobresults_processed= "[" +processresults(jobresults) + "]"
 
@@ -265,7 +256,7 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         with open("OutPath+OutFile", "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerows(list_KeysList)
-            writer.writerows(Processed_Results_List)    
+            writer.writerows(Processed_Results_List)
         return True
 
     if OutFormat == "STDOUT":
@@ -277,7 +268,7 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
 
     if OutFormat == "HTML":
         Loggy(100, "Beginning Output HTML:" + OutFile)
- 
+
         output=tabulate(Processed_Results_List,list_KeysList,tablefmt="html")
         HTMLCSS_str = ""
         HTMLHeader_str = ""
@@ -285,10 +276,10 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         HTMLPre_str="<HTML><head>"
         HTMLMId_str="</head><Body>"
         HTMLEnd_str="</body></html>"
-        if HTMLHeader: 
+        if HTMLHeader:
             with open(HTMLHeader, 'r') as header: HTMLHeader_str = header.read()
 
-        if HTMLFooter: 
+        if HTMLFooter:
             with open(HTMLFooter, 'r') as footer: HTMLFooter_str = footer.read()
 
         if HTMLCSS:
