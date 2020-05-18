@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# PlumHound v01.04a
+# PlumHound v01.05a
 
 import sys
 
@@ -25,12 +25,12 @@ from tabulate import tabulate
 import csv
 
 #ArgumentSetups
-parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.04a",add_help=True)
+parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.05a",add_help=True)
 pgroupc = parser.add_argument_group('DATABASE')
 pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
 pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
 pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J Database Password")
-pgroupc.add_argument("--UseEnc", type=bool, default=False, dest="UseEnc", help="Do not use encryption.")
+pgroupc.add_argument("--UseEnc", default=False, dest="UseEnc", help="Use encryption when connecting.",action='store_true')
 
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
 pgroupt.add_argument("--easy", help="Use a sample Cypher Query Exported to STDOUT",action='store_true')
@@ -85,11 +85,14 @@ def Loggy(level,notice):
 #Setup Database Connection
 def setup_database_conn(server,username,password):
     Loggy(500,"Setting up database driver")
+    Loggy(200,"[!] Attempting to connect to your Neo4j project using {}:{} @ {}.".format(username, password, server, args.UseEnc))
     try:
-        Loggy(200,"[!] Attempting to connect to your Neo4j project using {}:{} @ {}.".format(username, password, server, args.UseEnc))
+
         if args.UseEnc:
+            Loggy(200," Using Neo4j encryption")
             driver_connection = GraphDatabase.driver(server, auth=(username, password), encrypted=True)
         else:
+            Loggy(200," Not using Neo4j encryption")
             driver_connection = GraphDatabase.driver(server, auth=(username, password), encrypted=False)
         Loggy(200,"[+] Success!")
         return driver_connection
