@@ -1,4 +1,4 @@
-﻿
+
 ![PlumHound](https://raw.githubusercontent.com/DefensiveOrigins/PlumHound/master/docs/images/Plum3.jpg)
 
 # PlumHound - BloodHoundAD Report Engine for Security Teams
@@ -9,7 +9,9 @@ PlumHound operates by wrapping BloodHoundAD's powerhouse graphical Neo4J backend
 ## Release and call to Action
 The initial PlumHound code was released on May 14th, 2020 during a Black Hills Information Security webcast, A Blue Teams Perspective on Red Team Tools.  The webcast was recorded and is available on YouTuve here[Link TBA].
 
-The PlumHound Framework yields itself to community involvement in the creation and proliferation of "TaskLists" (work) that can be shared and used across different organizations.  TaskLists contain jobs for PlumHound to do (queries to run, reports to write).  A second PlumHound community repo will be opened to allow for the open sharing of TaskLists.
+The PlumHound Framework yields itself to community involvement in the creation and proliferation of "TaskLists" (work) that can be shared and used across different organizations.  TaskLists contain jobs for PlumHound to do (queries to run, reports to write).  A second PlumHound community repo has been created to allow for the open sharing of TaskLists (see [Plumhound-Tasks](https://github.com/DefensiveOrigins/PlumHound-Tasks))
+
+Looking for more tasks and templates? Checkout [PlumHound-Tasks ](https://github.com/DefensiveOrigins/PlumHound-Tasks)for the community driven marketplace of PlumHound reporting taskslists and report designs
 
 ## Background
 A client of ours working on hardening their Active Directory infrastructure asked us about vulnerabilities that can be found by using BloodHound.  They had heard of the effectiveness of BloodHoundAD in Red-Team's hands and was told that BloodHound would identify all types of security mis-alignments and mis-configurations in their Active Directory environment.  We helped them through analysis of their BloodHound dataset and it became quickly evident that BloodHoundAD's pathfinding graphical database was not designed for the fast-passed analytical security team accustom to reading reports and action items.  
@@ -143,7 +145,9 @@ VERBOSESet verbosity:
 * The -u and -p arguments can be used to change these.
 
 ## TaskList Files Syntax
-The PlumHound Repo includes a sample TaskList that exports some basic BloodHoundAD Cypher queries to an HTML Report.  The included tasks\Default.tasks sample shows the basic syntax of the TaskList files.  The TaskList Files allow PlumHound to be fully scripted with batch jobs after the SharpHound dataset has been imported not BloodHoundAD on Neo4j.
+The PlumHound Repo includes a sample TaskList that exports some basic BloodHoundAD Cypher queries to an HTML Report.  The included tasks\Default.tasks sample shows the basic syntax of the TaskList files.  The TaskList Files allow PlumHound to be fully scripted with batch jobs after the SharpHound dataset has been imported not BloodHoundAD on Neo4j. 
+
+Looking for more tasks and templates? Checkout [PlumHound-Tasks ](https://github.com/DefensiveOrigins/PlumHound-Tasks)for the community driven marketplace of PlumHound reporting taskslists and report designs.
 
 ### TaskList File Syntax
 
