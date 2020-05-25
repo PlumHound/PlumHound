@@ -179,14 +179,19 @@ def MakeTaskList():
             tasks = f.read().splitlines()
         Loggy(500,"TASKS: "+ str(tasks))
         return tasks
+    use_querysingle = args.querysingle
 
-    if args.querysingle:
+    if use_querysingle:
         Loggy(500,"Tasks Single Query Specified. Reading")
         Loggy(500,"Tasks-Title:" + args.title)
         Loggy(500,"Tasks-OutFormat:" + args.OutFormat)
         Loggy(500,"Tasks-OutPath:" + args.path)
         Loggy(500,"Tasks-QuerySingle:" + args.querysingle)
-        tasks.append(args.title,args.OutFormat,args.path,args.querysingle)
+
+        task_str =  "[\"" + args.title + "\",\"" + args.OutFormat + "\",\"" + args.OutFile + "\",\"" +args.querysingle + "\"]"
+        Loggy(500,"Task_str:  " + task_str)
+        tasks = [task_str]
+#        tasks.append(args.title,args.OutFormat,args.path,args.querysingle)
         return tasks
 
     if args.easy:
@@ -255,8 +260,8 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
     output = ""
 
     if OutFormat == "CSV":
-        Loggy(100, "Beginning Output CSV:" + OutFile)
-        with open("OutPath+OutFile", "w", newline="") as f:
+        Loggy(100, "Beginning Output CSV:" + OutPath+OutFile)
+        with open(OutPath+OutFile, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerows(list_KeysList)
             writer.writerows(Processed_Results_List)
