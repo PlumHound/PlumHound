@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# PlumHound v01.05a
+# PlumHound v01.06a
 
 import sys
 
@@ -25,7 +25,7 @@ from tabulate import tabulate
 import csv
 
 #ArgumentSetups
-parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.05a",add_help=True)
+parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.06a",add_help=True)
 pgroupc = parser.add_argument_group('DATABASE')
 pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
 pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")

@@ -67,11 +67,10 @@ python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j
 
 ## Detailed PlumHound Syntax
 ```plaintext
-usage: PlumHound.py [-h] [-s SERVER] [-u USERNAME] [-p PASSWORD] [--easy] [-x TASKFILE] [-c,--QuerySingle QUERYSINGLE] [-t TITLE]
-                    [--of OUTFILE] [--op PATH] [--ox {stdout,grep,HTML,CSV}] [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER]
-                    [--HTMLCSS HTMLCSS] [-v VERBOSE]
+usage: PlumHound.py [-h] [-s SERVER] [-u USERNAME] [-p PASSWORD] [--UseEnc] [--easy] [-x TASKFILE] [-c,--QuerySingle QUERYSINGLE] [-t TITLE] [--of OUTFILE]
+                    [--op PATH] [--ox {stdout,grep,HTML,CSV}] [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER] [--HTMLCSS HTMLCSS] [-v VERBOSE]
 
-BloodHound Wrapper for Purple Teams
+BloodHound Wrapper for Purple Teams; v01.06a
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -83,6 +82,7 @@ DATABASE:
                         Neo4J Database Useranme
   -p PASSWORD, --password PASSWORD
                         Neo4J Database Password
+  --UseEnc              Use encryption when connecting.
 
 TASKS:
   Task Selection
