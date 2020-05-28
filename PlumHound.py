@@ -239,8 +239,8 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         Loggy(100, "Beginning Output CSV:" + OutPath+OutFile)
         with open(OutPath+OutFile, "w", newline="") as f:
             writer = csv.writer(f)
-            Loggy(100,type(list_KeysList))
-            Loggy(100,list_KeysList)
+            Loggy(100,"KeyType:" + type(list_KeysList))
+            Loggy(100,"KeyTypeList:" list_KeysList)
             writer.writerows(list_KeysList)
             writer.writerows(Processed_Results_List)
         return True
