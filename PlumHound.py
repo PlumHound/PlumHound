@@ -14,7 +14,7 @@ if sys.version_info < (3,0,0):
 #  - Written in VS, haters :)  Python 3.8, see requirements.txt (pip3 install -r requirements.txt)
 # GNU GPL 3.0
 
-# PROOF OF CONCEPT CODE - ALPHA 
+# PROOF OF CONCEPT CODE - ALPHA
 #Still needs work:
 # the job tasklist and recordset lists should be moved into a single job task instead of mulitple variables passed in list dependent on list order
 # - pathfinding queries are a headache.  until I can parse them properly I should just dump the ouput to raw so it could still be valuable.  currently the parsing will choke
@@ -65,35 +65,17 @@ pgrouph.add_argument("--HTMLCSS", dest="HTMLCSS", type=str, help="Specify a CSS 
 pgroupv = parser.add_argument_group('VERBOSE' "Set verbosity")
 pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet")
 
-#push args into namespace
 args = parser.parse_args()
 
 
-#Bypassing ArgParse in IDE for Testing 
-#server ="bolt://localhost:7687"
-#username = "neo4js"
-#password = 'neo4js'
-#Easy = False
-#TaskFile = "tasks\\Default.tasks"
-#TaskFile = False
-#QuerySingle = False
-#Title = ""
-#OutFile = "test.txt"
-#OutputPath = "reports\\"
-#OutFormat = "HTML"
-#HTMLHeader= False
-#HTMLFooter = False
-#HTMLCSS = "\\template\\html.css"
-#verbose = 100
-
 #Loggy Function for lazy debugging
 def Loggy(level,notice):
-    if level <= args.verbose: 
+    if level <= args.verbose:
         if level<=100: print("[*]" + notice)
         elif level<500: print ("[!]" + notice)
         else: print ("[*]" + notice)
 
-   
+
 #Setup Database Connection
 def setup_database_conn(server,username,password):
     Loggy(500,"Setting up database driver")
@@ -108,11 +90,11 @@ def setup_database_conn(server,username,password):
         Loggy(100,"[X] Database connection failed!")
         exit()
 
-#Setup Query 
+#Setup Query
 def execute_query(driver, query, enabled=True):
     Loggy(500,"Fire Ze Misiles")
     Loggy(500,"Executing things")
-    
+
     with driver.session() as session:
         Loggy(500,"Running Query")
         results = session.run(query)
@@ -135,7 +117,7 @@ def GetKeys(driver, query, enabled=True):
             keys=results.keys()
             Loggy(500,"Identified Keys:"+ str(keys))
         else:
-            Loggy(200,"No Keys found, this won't go well")
+            Loggy(200,"No Keys found, this won't go well.  Likely 0 records were returned.")
             keys=0
     Loggy(500,"Key enumeartion complete")
     return keys
@@ -143,11 +125,12 @@ def GetKeys(driver, query, enabled=True):
 # Was anything found?
 def check_records(results):
     """Checks if the Cypher results are empty or not."""
+    Loggy(500,"Peeking at things")
     if results.peek():
-        Loggy(500,"Peeking at things")
+        Loggy(500,"Records were found")
         return True
     else:
-        Loggy(200,"Nothing found to peek at")
+        Loggy(200,"No records were found.")
         return False
 
 #Move data from recordset to list
@@ -156,20 +139,12 @@ def processresults(results):
     BigTable = ""
     for record in results:
         try:
-            #Loggy(500, "[+]"+record["n.name"])
-            #Loggy(100,str(record.values()))
             BigTable = BigTable + str(record.values()) +","
+            Loggy(500,"Results parsed.")
         except:
-            Loggy(200,"Washing records failed.  Error on record") 
+            Loggy(200,"Washing records failed.  Error on record")
     return BigTable
 
-#File Update
-def updatefile(file,update):
-    Loggy(500, "Writing to disk -- File Update " + file +" " + update)
-    fsys = open(file,"a")
-    fsys.write(update + "\n")
-    Loggy(500, "Consider it Jotted "+file)
-      
 #Setup Driver
 newdriver = setup_database_conn(args.server,args.username,args.password)
 
@@ -185,7 +160,7 @@ def MakeTaskList():
             tasks = f.read().splitlines()
         Loggy(500,"TASKS: "+ str(tasks))
         return tasks
-        
+
     if args.querysingle:
         Loggy(500,"Tasks Single Query Specified. Reading")
         Loggy(500,"Tasks-Title:" + args.title)
@@ -194,12 +169,12 @@ def MakeTaskList():
         Loggy(500,"Tasks-QuerySingle:" + args.querysingle)
         tasks.append(args.title,args.OutFormat,args.path,args.querysingle)
         return tasks
-            
+
     if args.easy:
         Loggy(500,"Tasks Easy Query Specified.")
         tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
         return tasks
-        
+
     Loggy(100,"Tasks Generation Completed\nTasks: " + str(tasks))
 
     return tasks
@@ -219,7 +194,7 @@ def TaskExecution(tasks,Outpath,HTMLHeader,HTMLFooter,HTMLCSS):
             Loggy(200,"Starting job")
             Loggy(500,"Job: "+str(job))
 
-            job_List = ast.literal_eval(job) 
+            job_List = ast.literal_eval(job)
             jobTitle = job_List[0]
             jobOutFormat = job_List[1]
             jobOutPathFile = Outpath + job_List[2]
@@ -232,31 +207,28 @@ def TaskExecution(tasks,Outpath,HTMLHeader,HTMLFooter,HTMLCSS):
 
             jobkeys = GetKeys(newdriver,jobQuery)
             jobkeys_List = ast.literal_eval(str(jobkeys))
-            #Quick fix if keys returned no record sto properly rebuild the keys list as 0 records, instead of int(0)
+            #Quick fix if keys returned no records - properly rebuild the keys as list null, instead of int(0)
             if isinstance(jobkeys_List,int): jobKeys_List=[]
-       
+
             jobresults = execute_query(newdriver,jobQuery)
             jobresults_processed= "[" +processresults(jobresults) + "]"
 
             try:
                 jobresults_processed_list = ast.literal_eval(jobresults_processed)
             except:
-                Loggy(200,"ERROR: Something Broke trying to deal with pathfinding.")
+                Loggy(200,"ERROR: Unable to retrieve and parse record.  Returning record unparsed, expect report oddity.")
                 Loggy(500,jobresults_processed)
-                #jobresults_processed_list = ast.literal_eval("'"+jobresults_processed+"'")
                 jobresults_processed_list = jobresults_processed
 
-            Loggy(500,"Calling delievery service")
+            Loggy(500,"Calling Report Output ")
             SenditOut(jobkeys_List,jobresults_processed_list,jobOutFormat,jobOutPathFile,"",jobTitle,jobHTMLHeader,jobHTMLFooter,jobHTMLCSS)
         except:
-            Loggy(200,"ERROR: Soemthing broke trying to parse jobs (move along).")
+            Loggy(200,"ERROR: Something failed parsing this job.  Skipping.")
 
 
 
 def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Title,HTMLHeader,HTMLFooter,HTMLCSS):
-    #Send the output as specified.
-    #Quick fix if keys returned no records to properly rebuild the keys list as 0 records, instead of int(0)
-
+    #Quick fix if keys returned no records to properly rebuild the keys as list of null instead of int(0)
     if isinstance(list_KeysList,int): list_KeysList=[]
     output = ""
 
@@ -264,8 +236,10 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         Loggy(100, "Beginning Output CSV:" + OutFile)
         with open("OutPath+OutFile", "w", newline="") as f:
             writer = csv.writer(f)
+            Loggy(100,type(list_KeysList))
+            Loggy(100,list_KeysList)
             writer.writerows(list_KeysList)
-            writer.writerows(Processed_Results_List)    
+            writer.writerows(Processed_Results_List)
         return True
 
     if OutFormat == "STDOUT":
@@ -277,7 +251,7 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
 
     if OutFormat == "HTML":
         Loggy(100, "Beginning Output HTML:" + OutFile)
- 
+
         output=tabulate(Processed_Results_List,list_KeysList,tablefmt="html")
         HTMLCSS_str = ""
         HTMLHeader_str = ""
@@ -285,10 +259,10 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         HTMLPre_str="<HTML><head>"
         HTMLMId_str="</head><Body>"
         HTMLEnd_str="</body></html>"
-        if HTMLHeader: 
+        if HTMLHeader:
             with open(HTMLHeader, 'r') as header: HTMLHeader_str = header.read()
 
-        if HTMLFooter: 
+        if HTMLFooter:
             with open(HTMLFooter, 'r') as footer: HTMLFooter_str = footer.read()
 
         if HTMLCSS:
