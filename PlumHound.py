@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+# PlumHound v01.065a
+
 import sys
 
 if sys.version_info < (3,0,0):
@@ -14,22 +16,6 @@ if sys.version_info < (3,0,0):
 #  - Written in VS, haters :)  Python 3.8, see requirements.txt (pip3 install -r requirements.txt)
 # GNU GPL 3.0
 
-# PROOF OF CONCEPT CODE - ALPHA
-#Still needs work:
-# the job tasklist and recordset lists should be moved into a single job task instead of mulitple variables passed in list dependent on list order
-# - pathfinding queries are a headache.  until I can parse them properly I should just dump the ouput to raw so it could still be valuable.  currently the parsing will choke
-# - same as above if query returns an object without specifying object keys, the object itself is a node list that parsing chokes on, currently just avoiding those queries
-#  - finish arguments for CLI
-# - need to add title to HTML tables so the HTML report has context
-# - need a better way of grep output, throwing into parser is possibly redeundant and the entire recordset might be better just thrown into a file raw
-
-# App Flow
-# Read Task List (Or cypher query)
-# Connect to Neo4JS database
-# Execute tasks from tasklist
-#   -> Execute Cypher Queries, export to report type (HTLM, etc)
-# Close Database query
-
 #imports
 from neo4j import GraphDatabase
 import argparse
@@ -38,11 +24,12 @@ from tabulate import tabulate
 import csv
 
 #ArgumentSetups
-parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams",add_help=True)
+parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.065a",add_help=True)
 pgroupc = parser.add_argument_group('DATABASE')
 pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
 pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
 pgroupc.add_argument("-p", "--password", default="neo4j1", type=str, help="Neo4J Database Password")
+pgroupc.add_argument("--UseEnc", default=False, dest="UseEnc", help="Use encryption when connecting.",action='store_true')
 
 pgroupt = parser.add_argument_group('TASKS', "Task Selection")
 pgroupt.add_argument("--easy", help="Use a sample Cypher Query Exported to STDOUT",action='store_true')
@@ -68,6 +55,7 @@ pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity
 args = parser.parse_args()
 
 
+
 #Loggy Function for lazy debugging
 def Loggy(level,notice):
     if level <= args.verbose:
@@ -79,9 +67,15 @@ def Loggy(level,notice):
 #Setup Database Connection
 def setup_database_conn(server,username,password):
     Loggy(500,"Setting up database driver")
+    Loggy(200,"[!] Attempting to connect to your Neo4j project using {}:{} @ {}.".format(username, password, server, args.UseEnc))
     try:
-        Loggy(200,"[!] Attempting to connect to your Neo4j project using {}:{} @ {}.".format(username, password, server))
-        driver_connection = GraphDatabase.driver(server, auth=(username, password))
+
+        if args.UseEnc:
+            Loggy(200," Using Neo4j encryption")
+            driver_connection = GraphDatabase.driver(server, auth=(username, password), encrypted=True)
+        else:
+            Loggy(200," Not using Neo4j encryption")
+            driver_connection = GraphDatabase.driver(server, auth=(username, password), encrypted=False)
         Loggy(200,"[+] Success!")
         return driver_connection
     except:
@@ -145,6 +139,7 @@ def processresults(results):
             Loggy(200,"Washing records failed.  Error on record")
     return BigTable
 
+
 #Setup Driver
 newdriver = setup_database_conn(args.server,args.username,args.password)
 
@@ -161,13 +156,21 @@ def MakeTaskList():
         Loggy(500,"TASKS: "+ str(tasks))
         return tasks
 
-    if args.querysingle:
+    use_querysingle = args.querysingle
+
+    if use_querysingle:
+
+
         Loggy(500,"Tasks Single Query Specified. Reading")
         Loggy(500,"Tasks-Title:" + args.title)
         Loggy(500,"Tasks-OutFormat:" + args.OutFormat)
         Loggy(500,"Tasks-OutPath:" + args.path)
         Loggy(500,"Tasks-QuerySingle:" + args.querysingle)
-        tasks.append(args.title,args.OutFormat,args.path,args.querysingle)
+
+        task_str =  "[\"" + args.title + "\",\"" + args.OutFormat + "\",\"" + args.OutFile + "\",\"" +args.querysingle + "\"]"
+        Loggy(500,"Task_str:  " + task_str)
+        tasks = [task_str]
+#        tasks.append(args.title,args.OutFormat,args.path,args.querysingle)
         return tasks
 
     if args.easy:
@@ -233,8 +236,8 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
     output = ""
 
     if OutFormat == "CSV":
-        Loggy(100, "Beginning Output CSV:" + OutFile)
-        with open("OutPath+OutFile", "w", newline="") as f:
+        Loggy(100, "Beginning Output CSV:" + OutPath+OutFile)
+        with open(OutPath+OutFile, "w", newline="") as f:
             writer = csv.writer(f)
             Loggy(100,type(list_KeysList))
             Loggy(100,list_KeysList)
