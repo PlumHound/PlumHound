@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# PlumHound v01.065a
+# PlumHound v01.066a
 
 import sys
 
@@ -25,7 +25,7 @@ from tabulate import tabulate
 import csv
 
 #ArgumentSetups
-parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.065a",add_help=True)
+parser = argparse.ArgumentParser(description="BloodHound Wrapper for Purple Teams; v01.066a",add_help=True)
 pgroupc = parser.add_argument_group('DATABASE')
 pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
 pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
@@ -53,26 +53,10 @@ pgrouph.add_argument("--HTMLCSS", dest="HTMLCSS", type=str, help="Specify a CSS 
 pgroupv = parser.add_argument_group('VERBOSE' "Set verbosity")
 pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet")
 
-#push args into namespace
 args = parser.parse_args()
 
 
-#Bypassing ArgParse in IDE for Testing
-#server ="bolt://localhost:7687"
-#username = "neo4js"
-#password = 'neo4js'
-#Easy = False
-#TaskFile = "tasks\\Default.tasks"
-#TaskFile = False
-#QuerySingle = False
-#Title = ""
-#OutFile = "test.txt"
-#OutputPath = "reports\\"
-#OutFormat = "HTML"
-#HTMLHeader= False
-#HTMLFooter = False
-#HTMLCSS = "\\template\\html.css"
-#verbose = 100
+
 
 #Loggy Function for lazy debugging
 def Loggy(level,notice):
@@ -254,7 +238,7 @@ def TaskExecution(tasks,Outpath,HTMLHeader,HTMLFooter,HTMLCSS):
 
 def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Title,HTMLHeader,HTMLFooter,HTMLCSS):
     #Send the output as specified.
-    #Quick fix if keys returned no records to properly rebuild the keys list as 0 records, instead of int(0)
+    #Quick fix if keys returned no records to properly rebuild the keys list of 0, instead of int(0)
 
     if isinstance(list_KeysList,int): list_KeysList=[]
     output = ""
@@ -262,8 +246,15 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
     if OutFormat == "CSV":
         Loggy(100, "Beginning Output CSV:" + OutPath+OutFile)
         with open(OutPath+OutFile, "w", newline="") as f:
+            Loggy(500,"KeyType: "+ str(type(list_KeysList)))
+            Loggy(500,"KeyList: "+ str((list_KeysList)))
             writer = csv.writer(f)
-            writer.writerows(list_KeysList)
+            ModKeyList=ast.literal_eval("["+str(list_KeysList)+"]")
+            Loggy(500,"KeyTypeMod: " + str(type(ModKeyList)))
+            Loggy(500,"KeyListMod: " + str(ModKeyList))
+            writer.writerows(ModKeyList)
+            Loggy(500,"ResultsType: " + str(type(Processed_Results_List)))
+            Loggy(999,"ResultsList: " + str(Processed_Results_List))
             writer.writerows(Processed_Results_List)
         return True
 
