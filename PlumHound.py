@@ -278,9 +278,11 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         HTMLEnd_str="</body></html>"
         if HTMLHeader:
             with open(HTMLHeader, 'r') as header: HTMLHeader_str = header.read()
+            HTMLHeader_str = ReplaceHTMLReportVsrs(HTMLHeader_str,Title)
 
         if HTMLFooter:
             with open(HTMLFooter, 'r') as footer: HTMLFooter_str = footer.read()
+            HTMLFooter_str = ReplaceHTMLReportVsrs(HTMLFooter_str,Title)
 
         if HTMLCSS:
             with open(HTMLCSS, 'r') as css: HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
@@ -293,7 +295,10 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         return True
     Loggy(900,"------EXIT: SENDITOUT-----")
 
-
+def ReplaceHTMLReportVars(InputStr,Title):
+    sOutPut= InputStr.replace("--------PH_TITLE-------",Title)
+    sOutPut= sOutPut.replace("--------PH_DATE-------",today.strftime("%b-%d-%Y"))
+    return sOutPut
 
 
 
