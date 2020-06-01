@@ -17,12 +17,10 @@ import ast
 from tabulate import tabulate
 import csv
 
-
 def CheckPython():
     if sys.version_info < (3,0,0):
         print(__file__ + ' requires Python 3, while Python ' + str(sys.version[0] + ' was detected. Terminating. '))
         sys.exit(1)
-
 
 
 #ArgumentSetups
@@ -56,8 +54,6 @@ args = parser.parse_args()
 
 
 
-
-
 #Loggy Function for lazy debugging
 def Loggy(level,notice):
     if level <= args.verbose:
@@ -86,9 +82,6 @@ def setup_database_conn(server,username,password):
         Loggy(100,"[X] Database connection failed!")
         exit()
     Loggy(900,"------EXIT: SETUP_DATABASE_CONN-----")
-
-
-
 
 
 def MakeTaskList():
@@ -209,8 +202,6 @@ def GetKeys(driver, query, enabled=True):
 
     return keys
 
-
-
 def check_records(results):
     Loggy(900,"------ENTER: CHECK_RECORDS-----")
     if results.peek():
@@ -220,7 +211,6 @@ def check_records(results):
         Loggy(200,"Nothing found to peek at")
         return False
     Loggy(900,"------EXIT: CHECK_RECORDS-----")
-
 
 def processresults(results):
     Loggy(900,"------ENTER: PROCESSRESULTS-----")
@@ -233,8 +223,6 @@ def processresults(results):
             Loggy(200,"Washing records failed.  Error on record")
     Loggy(900,"------EXIT: PROCESSRESULTS-----")
     return BigTable
-
-
 
 def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Title,HTMLHeader,HTMLFooter,HTMLCSS):
     Loggy(900,"------ENTER: SENDITOUT-----")
@@ -278,11 +266,13 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         HTMLEnd_str="</body></html>"
         if HTMLHeader:
             with open(HTMLHeader, 'r') as header: HTMLHeader_str = header.read()
-            HTMLHeader_str = ReplaceHTMLReportVsrs(HTMLHeader_str,Title)
+            Loggy(600, "HTMLHeader1: "+HTMLHeader_str)
+            HTMLHeader_str = ReplaceHTMLReportVars(HTMLHeader_str,Title)
+            Loggy(600, "HTMLHeader2: "+HTMLHeader_str)
 
         if HTMLFooter:
             with open(HTMLFooter, 'r') as footer: HTMLFooter_str = footer.read()
-            HTMLFooter_str = ReplaceHTMLReportVsrs(HTMLFooter_str,Title)
+            HTMLFooter_str = ReplaceHTMLReportVars(HTMLFooter_str,Title)
 
         if HTMLCSS:
             with open(HTMLCSS, 'r') as css: HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
@@ -299,8 +289,6 @@ def ReplaceHTMLReportVars(InputStr,Title):
     sOutPut= InputStr.replace("--------PH_TITLE-------",Title)
     sOutPut= sOutPut.replace("--------PH_DATE-------",today.strftime("%b-%d-%Y"))
     return sOutPut
-
-
 
 
 
