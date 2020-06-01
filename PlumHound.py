@@ -12,10 +12,11 @@
 #imports
 import argparse
 import sys
-from neo4j import GraphDatabase
 import ast
-from tabulate import tabulate
 import csv
+from neo4j import GraphDatabase
+from tabulate import tabulate
+from datetime import date
 
 def CheckPython():
     if sys.version_info < (3,0,0):
@@ -52,15 +53,12 @@ pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity
 args = parser.parse_args()
 
 
-
-
 #Loggy Function for lazy debugging
 def Loggy(level,notice):
     if level <= args.verbose:
         if level<=100: print("[*]" + notice)
         elif level<500: print ("[!]" + notice)
         else: print ("[*]" + notice)
-
 
 #Setup Database Connection
 def setup_database_conn(server,username,password):
@@ -226,9 +224,7 @@ def processresults(results):
 
 def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Title,HTMLHeader,HTMLFooter,HTMLCSS):
     Loggy(900,"------ENTER: SENDITOUT-----")
-    #Send the output as specified.
     #Quick fix if keys returned no records to properly rebuild the keys list of 0, instead of int(0)
-
     if isinstance(list_KeysList,int): list_KeysList=[]
     output = ""
 
@@ -248,7 +244,6 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         return True
 
     if OutFormat == "STDOUT":
-        #STDOUT
         print()
         output=tabulate(Processed_Results_List,list_KeysList,tablefmt="simple")
         print(output)
@@ -266,9 +261,7 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
         HTMLEnd_str="</body></html>"
         if HTMLHeader:
             with open(HTMLHeader, 'r') as header: HTMLHeader_str = header.read()
-            Loggy(600, "HTMLHeader1: "+HTMLHeader_str)
             HTMLHeader_str = ReplaceHTMLReportVars(HTMLHeader_str,Title)
-            Loggy(600, "HTMLHeader2: "+HTMLHeader_str)
 
         if HTMLFooter:
             with open(HTMLFooter, 'r') as footer: HTMLFooter_str = footer.read()
@@ -287,7 +280,7 @@ def SenditOut(list_KeysList,Processed_Results_List,OutFormat,OutFile,OutPath,Tit
 
 def ReplaceHTMLReportVars(InputStr,Title):
     sOutPut= InputStr.replace("--------PH_TITLE-------",Title)
-    sOutPut= sOutPut.replace("--------PH_DATE-------",today.strftime("%b-%d-%Y"))
+    sOutPut= sOutPut.replace("--------PH_DATE-------",date.today())
     return sOutPut
 
 
