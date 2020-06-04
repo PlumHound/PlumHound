@@ -7,7 +7,8 @@ Released as Proof of Concept for Blue and Purple teams to more effectively use B
 PlumHound operates by wrapping BloodHoundAD's powerhouse graphical Neo4J backend cypher queries into operations-consumable reports.  Analyzing the output of PlumHound can steer security teams in identifying and hardening common Active Directory configuration vulnerabilities and oversights.
 
 ## Release and call to Action
-The initial PlumHound code was released on May 14th, 2020 during a Black Hills Information Security webcast, A Blue Teams Perspective on Red Team Tools.  The webcast was recorded and is available on YouTuve here[Link TBA].
+The initial PlumHound code was released on May 14th, 2020 during a Black Hills Information Security webcast, A Blue Teams Perspective on Red Team Tools.  The webcast was recorded and is available on YouTube. [A Blue Team's Perspetive on Red Team Tools](https://youtu.be/0mIN2OU5hQEs).
+
 
 The PlumHound Framework yields itself to community involvement in the creation and proliferation of "TaskLists" (work) that can be shared and used across different organizations.  TaskLists contain jobs for PlumHound to do (queries to run, reports to write).  A second PlumHound community repo has been created to allow for the open sharing of TaskLists (see [Plumhound-Tasks](https://github.com/DefensiveOrigins/PlumHound-Tasks))
 
