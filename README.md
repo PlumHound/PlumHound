@@ -231,6 +231,7 @@ The default.tasks file includes multiple tasks that instruct PlumHound to create
 * Additional work by SadProcessor with [Cypher Dog 3.0](https://github.com/SadProcessor/CypherDog) shows similar POC via utilizing BloodHoundAD's Cypher Queries with a RestAPI endpoint via PowerShell.  PlumHound operates similarly however written in python and designed for stringing multiple queries into consumable reports designed to infer actionable items. 
 * [BloodHoundAD](https://github.com/BloodHoundAD/BloodHound): We wouldn't be talking about this at all if it weren't for the original BloodHoundAD work.  BloodHound is developed by @_wald0, @CptJesus, and @harmj0y.
 * "Band-aids don't fix dank domains."  [BadBlood](https://github.com/davidprowe/BadBlood) saved us a ton of time building realistic-enough AD domains for testing. @davidprowe  
+* [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier -- About a month after we released PlumHound POC we ran into Scoubi who was working in a similar project, BlueHound, but hadn't yet publicly released it. He's planning to Release at SecTor 2020. Despite we hadn't met, I found enough similarities between our goals that I felt it would be inappropriate not to credit Mathieu for driving the industry that ultimately lead us to build PlumHound.  Check out his DerbyCon talk and be on the lookout at SecTor.
 
 
 
