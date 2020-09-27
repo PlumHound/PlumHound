@@ -63,14 +63,29 @@ python3 PlumHound.py -x tasks/default.tasks
 ```
 The same, but quiet the output (-v 0), specify the Neo4J server, useranme, and password instead of using defaults.
 ```plaintext
-python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4j1" -v 0
+python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4jj" -v 0
 ```
+
+Execute the Path Analyzer external function.  
+
+Option #1 using label. The supported labels are `User`, `Group`, `Computer`, `OU` and `GPO`. This function will assume the target group is "DOMAIN ADMINS".
+```plaintest
+python3 PlumHound.py -ap user
+```
+**NOTE:** The above syntax implies you are using the default values for `sever`, `user` and `password` or that you have hardcoded them in the script.  
+
+Option #2 specify `start node` and `end node` 
+```plaintest
+python3 PlumHound.py -ap "domain users@example.com" "domain admins@example.com"
+```
+**NOTE:** To use BlueHound Path Analyzer logic you need to get a copy of the Python script from https://github.com/scoubi/BlueHound  
 
 
 ## Detailed PlumHound Syntax
 ```plaintext
-usage: PlumHound.py [-h] [-s SERVER] [-u USERNAME] [-p PASSWORD] [--UseEnc] (--easy | -x TASKFILE | -c,--QuerySingle QUERYSINGLE) [-t TITLE] [--of OUTFILE] [--op PATH] [--ox {stdout,HTML,CSV}]
-                    [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER] [--HTMLCSS HTMLCSS] [-v VERBOSE]
+usage: PlumHound.py [-h] [-s SERVER] [-u USERNAME] [-p PASSWORD] [--UseEnc]
+                    (--easy | -x TASKFILE | -c,--QuerySingle QUERYSINGLE | -ap,--AnalyzePath ANALYZEPATH [ANALYZEPATH ...]) [-t TITLE] [--of OUTFILE]
+                    [--op PATH] [--ox {stdout,HTML,CSV}] [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER] [--HTMLCSS HTMLCSS] [-v VERBOSE]
 
 BloodHound Wrapper for Blue/Purple Teams; v01.070a
 
@@ -81,6 +96,8 @@ optional arguments:
                         Specify a PlumHound TaskList File
   -c,--QuerySingle QUERYSINGLE
                         Specify a Single cypher Query
+  -ap,--AnalyzePath ANALYZEPATH [ANALYZEPATH ...]
+                        Analyze 'Attack Paths' between two nodes and find which path needs to be remediated to brake the path.
 
 DATABASE:
   -s SERVER, --server SERVER
@@ -117,7 +134,6 @@ VERBOSESet verbosity:
                         Verbosity 0-1000, 0 = quiet
 
 For more information see https://plumhound.DefensiveOrigins.com
-
 ```
 
 
@@ -140,7 +156,7 @@ PlumHound paramters are set by default.  You can override the default by includi
 |----------|----------|
 | SERVER | bolt://localhost:7687 |
 | USERNAME | neo4j |
-| PASSWORD | neo4j1 |
+| PASSWORD | neo4jj |
 
 
 
@@ -225,13 +241,59 @@ The default.tasks file includes multiple tasks that instruct PlumHound to create
 ["Add Use Delegation","HTML","User-AddToGroupDelegation.html","MATCH (n:User {admincount:False}) MATCH p=allShortestPaths((n)-[r:AddMember*1..]->(m:Group)) RETURN n.name as User, m.name as Group"]
 ```
 
+
+# Analyze Path
+The Analyze Path takes either a `label` or a `start node` and `end node` and loop through all the paths finding which relationship(s) need to be broken in order to break the whole path. This is useful when you want to provide your AD Admins with concrete actions they can take in order to improuve your overall AD Security Posture. 
+
+```plaintext
+python3 PlumHound.py -ap group
+[...]
+---------------------------------------------------------------------
+Analyzing paths between IT00738@BTV.ORG and DOMAIN ADMINS@BTV.ORG
+---------------------------------------------------------------------
+Removing the relationship CanRDP between IT00738@BTV.ORG and COMP00886.BTV.ORG breaks the path!
+Removing the relationship HasSession between COMP00886.BTV.ORG and EKRITIKOS00681@BTV.ORG breaks the path!
+---------------------------------------------------------------------
+Analyzing paths between IT00803@BTV.ORG and DOMAIN ADMINS@BTV.ORG
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+Analyzing paths between IT00854@BTV.ORG and DOMAIN ADMINS@BTV.ORG
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+Analyzing paths between IT00870@BTV.ORG and DOMAIN ADMINS@BTV.ORG
+---------------------------------------------------------------------
+Removing the relationship ExecuteDCOM between IT00870@BTV.ORG and COMP00629.BTV.ORG breaks the path!
+Removing the relationship HasSession between COMP00629.BTV.ORG and YWINES00123@BTV.ORG breaks the path!
+Removing the relationship MemberOf between YWINES00123@BTV.ORG and HR01256@BTV.ORG breaks the path!
+Removing the relationship MemberOf between HR01256@BTV.ORG and IT01085@BTV.ORG breaks the path!
+---------------------------------------------------------------------
+Analyzing paths between IT00874@BTV.ORG and DOMAIN ADMINS@BTV.ORG
+---------------------------------------------------------------------
+Removing the relationship AdminTo between IT00874@BTV.ORG and COMP01055.BTV.ORG breaks the path!
+Removing the relationship HasSession between COMP01055.BTV.ORG and LJARAD00311@BTV.ORG breaks the path!
+Removing the relationship MemberOf between LJARAD00311@BTV.ORG and HR00694@BTV.ORG breaks the path!
+Removing the relationship MemberOf between HR00694@BTV.ORG and IT01182@BTV.ORG breaks the path!
+Removing the relationship AdminTo between IT01182@BTV.ORG and COMP00658.BTV.ORG breaks the path!
+Removing the relationship AllowedToDelegate between COMP00658.BTV.ORG and COMP01387.BTV.ORG breaks the path!
+Removing the relationship AllowedToDelegate between COMP01387.BTV.ORG and COMP00275.BTV.ORG breaks the path!
+Removing the relationship HasSession between COMP00275.BTV.ORG and RHETZLER01120@BTV.ORG breaks the path!
+Removing the relationship MemberOf between RHETZLER01120@BTV.ORG and DOMAIN ADMINS@BTV.ORG breaks the path!
+---------------------------------------------------------------------
+Analyzing paths between IT00487@BTV.ORG and DOMAIN ADMINS@BTV.ORG
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+Analyzing paths between IT00547@BTV.ORG and DOMAIN ADMINS@BTV.ORG
+---------------------------------------------------------------------
+[...]
+```
+
 # Hat-Tips & Acknowledgements
 * [Hausec's Cypher Query CheatSheet](https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/)  gave us a headstart on some decent pathfinding cypher queries.  | [Git](https://github.com/hausec)
 * [SadProcessor's Blue Hands on BloodHound](https://github.com/SadProcessor/WatchDog) gave us a detailed primer on BloodHoundAD's ability to lead a BlueTeam to water. | [Git](https://github.com/SadProcessor).
 * Additional work by SadProcessor with [Cypher Dog 3.0](https://github.com/SadProcessor/CypherDog) shows similar POC via utilizing BloodHoundAD's Cypher Queries with a RestAPI endpoint via PowerShell.  PlumHound operates similarly however written in python and designed for stringing multiple queries into consumable reports designed to infer actionable items. 
 * [BloodHoundAD](https://github.com/BloodHoundAD/BloodHound): We wouldn't be talking about this at all if it weren't for the original BloodHoundAD work.  BloodHound is developed by @_wald0, @CptJesus, and @harmj0y.
 * "Band-aids don't fix dank domains."  [BadBlood](https://github.com/davidprowe/BadBlood) saved us a ton of time building realistic-enough AD domains for testing. @davidprowe  
-* [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier -- About a month after we released PlumHound POC we ran into Scoubi who was working in a similar project, BlueHound, but hadn't yet publicly released it. He's planning to Release at SecTor 2020. Despite we hadn't met, I found enough similarities between our goals that I felt it would be inappropriate not to credit Mathieu for driving the industry that ultimately lead us to build PlumHound.  Check out his DerbyCon talk and be on the lookout at SecTor.
+* [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier -- About a month after we released PlumHound POC we ran into Scoubi who was working on a similar project, BlueHound, but hadn't yet publicly released it. He's planning to Release at SecTor 2020. Despite we hadn't met, I found enough similarities between our goals that I felt it would be inappropriate not to credit Mathieu for driving the industry that ultimately lead us to build PlumHound.  Check out his DerbyCon talk and be on the lookout at SecTor.
 
 
 
