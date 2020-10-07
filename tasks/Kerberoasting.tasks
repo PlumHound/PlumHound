@@ -1,0 +1,6 @@
+["All Kerberoatable Users", "HTML", "Kerb_Users.html", "MATCH (n:User)WHERE n.hasspn=true RETURN n"]
+["Kerb Users with path to DA", "HTML", "Kerb_Path_to_DA.html", "match p=shortestPath((n:User {hasspn:true})-[*1..]->(m:Group)) where m.name contains 'DOMAIN ADMINS' return n.name as Users"]
+["Kerb Users member of High Value Groups(nested)", "HTML", "Kerb_Users_High_Value.html", "match p=shortestPath((n:User {hasspn:true})-[:MemberOf*1..]->(m:Group {highvalue:true})) return n.name as User, m.name as Group"]
+["Kerberoastable Users with most Admin Rights","HTML","Kerb_Users_Admin.html","MATCH (u:User {hasspn:true}) OPTIONAL MATCH (u)-[:AdminTo]->(c1:Computer) OPTIONAL MATCH (u)-[:MemberOf*1..]->(:Group)-[:AdminTo]->(c2:Computer) WITH u,COLLECT(c1) + COLLECT(c2) AS tempVar UNWIND tempVar AS comps RETURN u.name as User,COUNT(DISTINCT(comps)) as Nb_Computer ORDER BY COUNT(DISTINCT(comps)) DESC"]
+["Kerb Users with easy path to DA", "HTML", "Kerb_Users_Easy_Path_DA.html", "match p=shortestpath((u:User {hasspn:true})-[:AdminTo|MemberOf|Owns|Contains|GenericAll*1..]->(m {highvalue:true})) return u.name as User"]
+["Kerb Unconstrained to Computer", "HTML", "Kerb_Unconstrain.html", "MATCH p=shortestPath((u:User {hasspn:true})-[*1..]->(c:Computer {unconstraineddelegation: true})) RETURN u.name as User, c.name as Computer"]
