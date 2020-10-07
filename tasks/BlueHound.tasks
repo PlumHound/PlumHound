@@ -1,0 +1,1 @@
+["DA Sessions to NON-DC", "HTML", "DA_Sessions_NonDC.html", """MATCH (dc:Computer)-[:MemberOf*1..]->(g:Group) WHERE g.name CONTAINS "DOMAIN CONTROLLERS" WITH COLLECT(dc.name) as dcs MATCH (c:Computer) WHERE NOT c.name in dcs MATCH p=(c)-[:HasSession]->(n:User)-[:MemberOf]->(g:Group)  WHERE g.name STARTS WITH "DOMAIN ADMINS"  RETURN n.name as Username"""]
