@@ -17,6 +17,7 @@ import csv
 from neo4j import GraphDatabase
 from tabulate import tabulate
 from datetime import date
+import runpy
 from BlueHound import *
 
 
@@ -122,16 +123,11 @@ def MakeTaskList():
         elif args.AnalyzePath[0].upper() == "COMPUTER":
             snode="Computer"
             enode=""
-        elif args.AnalyzePath[0].upper() == "OU":
-            snode="OU"
-            enode=""
-        elif args.AnalyzePath[0].upper() == "GPO":
-            snode="GPO"
-            enode=""
         else:
             snode=(args.AnalyzePath[0]).upper()
             enode=(args.AnalyzePath[1]).upper()
-        bh_getpaths(snode,enode)
+        getpaths(args.server, args.username, args.password,snode,enode)
+
 
     if args.easy:
         Loggy(500, "Tasks Easy Query Specified.")
@@ -224,7 +220,6 @@ def GetKeys(driver, query, enabled=True):
             keys = 0
     Loggy(500, "Key enumeration complete")
     Loggy(900, "------EXIT: GETKEYS-----")
-
     return keys
 
 
