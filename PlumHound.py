@@ -17,7 +17,6 @@ import csv
 from neo4j import GraphDatabase
 from tabulate import tabulate
 from datetime import date
-import runpy
 from BlueHound import *
 
 
