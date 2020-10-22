@@ -99,7 +99,7 @@ optional arguments:
                         Specify a Single Cypher Query
   -bp,--BusiestPath BUSIESTPATH [BUSIESTPATH ...]
                         Find the X Shortest Paths that give the most users a path to Domain Admins. Need to specified [short|all] for shortestpath and the
-                        number of results. Ex: PlumHound -cu all 3
+                        number of results. Ex: PlumHound -bp all 3
   -ap,--AnalyzePath ANALYZEPATH [ANALYZEPATH ...]
                         Analyze 'Attack Paths' between two nodes and find which path needs to be remediated to brake the path.
 
