@@ -37,8 +37,10 @@ pgroupc.add_argument("--UseEnc", default=False, dest="UseEnc", help="Use encrypt
 pgroupx = parser.add_mutually_exclusive_group(required="True")
 pgroupx.add_argument("--easy", help="Test Database Connection, Returns Domain Users to stdout", action='store_true')
 pgroupx.add_argument("-x", "--TaskFile", dest="TaskFile", type=str, help="Specify a PlumHound TaskList File")
-pgroupx.add_argument("-c," "--QuerySingle", dest="querysingle", type=str, help="Specify a Single cypher Query")
-pgroupx.add_argument("-ap," "--AnalyzePath", dest="AnalyzePath", nargs='+', default="User", type=str, help="Analyze 'Attack Paths' between two nodes and find which path needs to be remediated to brake the path.")
+pgroupx.add_argument("-q," "--QuerySingle", dest="QuerySingle", type=str, help="Specify a Single Cypher Query")
+pgroupx.add_argument("-bp," "--BusiestPath", dest="BusiestPath", nargs='+', default=False, type=str, help="Find the X Shortest Paths that give the most users a path to Domain Admins. Need to specified [short|all] for shortestpath and the number of results. Ex: PlumHound -cu all 3")
+pgroupx.add_argument("-ap," "--AnalyzePath", dest="AnalyzePath", nargs='+', default=False, type=str, help="Analyze 'Attack Paths' between two nodes and find which path needs to be remediated to brake the path.")
+
 
 pgroupo = parser.add_argument_group('OUTPUT', "Output Options (For single cypher queries only. --These options are ignored when -x or --easy is specified.")
 pgroupo.add_argument("-t", "--title", dest="title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
@@ -100,17 +102,21 @@ def MakeTaskList():
         Loggy(500, "TASKS: " + str(tasks))
         return tasks
 
-    if args.querysingle:
+    if args.QuerySingle:
         Loggy(500, "Tasks Single Query Specified. Reading")
         Loggy(500, "Tasks-Title:" + args.title)
         Loggy(500, "Tasks-OutFormat:" + args.OutFormat)
         Loggy(500, "Tasks-OutPath:" + args.path)
-        Loggy(500, "Tasks-QuerySingle:" + args.querysingle)
+        Loggy(500, "Tasks-QuerySingle:" + args.QuerySingle)
 
-        task_str = "[\"" + args.title + "\",\"" + args.OutFormat + "\",\"" + args.OutFile + "\",\"" + args.querysingle + "\"]"
+        task_str = "[\"" + args.title + "\",\"" + args.OutFormat + "\",\"" + args.OutFile + "\",\"" + args.QuerySingle + "\"]"
         Loggy(500, "Task_str:  " + task_str)
         tasks = [task_str]
         return tasks
+
+    if args.BusiestPath:
+        # Find and print on screen the X Attack Paths that give the most users a path to DA 
+        bp=find_busiest_path(args.server, args.username, args.password, args.BusiestPath[0], args.BusiestPath[1])
 
     if args.AnalyzePath:
         if args.AnalyzePath[0].upper() == "USER":
@@ -142,7 +148,7 @@ def MakeTaskList():
 def TaskExecution(tasks, Outpath, HTMLHeader, HTMLFooter, HTMLCSS):
     Loggy(900, "------ENTER: TASKEXECUTION-----")
     Loggy(500, "Begin Task Executions")
-    Loggy(500, "TASKS:/n" + str(tasks))
+    Loggy(500, "TASKS:" + str(tasks))
 
     jobHTMLHeader = HTMLHeader
     jobHTMLFooter = HTMLFooter
@@ -169,10 +175,10 @@ def TaskExecution(tasks, Outpath, HTMLHeader, HTMLFooter, HTMLCSS):
             # Quick fix if keys returned no record sto properly rebuild the keys list as 0 records, instead of int(0)
             if isinstance(jobkeys_List, int):
                 jobkeys_List = []
-
+            #
             jobresults = execute_query(newdriver, jobQuery)
             jobresults_processed = "[" + processresults(jobresults) + "]"
-
+            print("$$$$$$ jobresults $$$$$$")
             try:
                 jobresults_processed_list = ast.literal_eval(jobresults_processed)
             except Exception:
@@ -201,6 +207,7 @@ def execute_query(driver, query, enabled=True):
         else:
             Loggy(200, "Shoot, nothing interesting was found")
     Loggy(900, "------EXIT: EXECUTE_QUERY-----")
+    print("Do we get here???")
     return results
 
 
