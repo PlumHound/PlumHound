@@ -84,8 +84,9 @@ python3 PlumHound.py -ap "domain users@example.com" "domain admins@example.com"
 ## Detailed PlumHound Syntax
 ```plaintext
 usage: PlumHound.py [-h] [-s SERVER] [-u USERNAME] [-p PASSWORD] [--UseEnc]
-                    (--easy | -x TASKFILE | -c,--QuerySingle QUERYSINGLE | -ap,--AnalyzePath ANALYZEPATH [ANALYZEPATH ...]) [-t TITLE] [--of OUTFILE]
-                    [--op PATH] [--ox {stdout,HTML,CSV}] [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER] [--HTMLCSS HTMLCSS] [-v VERBOSE]
+                    (--easy | -x TASKFILE | -q,--QuerySingle QUERYSINGLE | -bp,--BusiestPath BUSIESTPATH [BUSIESTPATH ...] | -ap,--AnalyzePath ANALYZEPATH [ANALYZEPATH ...])
+                    [-t TITLE] [--of OUTFILE] [--op PATH] [--ox {stdout,HTML,CSV}] [--HTMLHeader HTMLHEADER] [--HTMLFooter HTMLFOOTER] [--HTMLCSS HTMLCSS]
+                    [-v VERBOSE]
 
 BloodHound Wrapper for Blue/Purple Teams; v01.070a
 
@@ -94,8 +95,11 @@ optional arguments:
   --easy                Test Database Connection, Returns Domain Users to stdout
   -x TASKFILE, --TaskFile TASKFILE
                         Specify a PlumHound TaskList File
-  -c,--QuerySingle QUERYSINGLE
-                        Specify a Single cypher Query
+  -q,--QuerySingle QUERYSINGLE
+                        Specify a Single Cypher Query
+  -bp,--BusiestPath BUSIESTPATH [BUSIESTPATH ...]
+                        Find the X Shortest Paths that give the most users a path to Domain Admins. Need to specified [short|all] for shortestpath and the
+                        number of results. Ex: PlumHound -cu all 3
   -ap,--AnalyzePath ANALYZEPATH [ANALYZEPATH ...]
                         Analyze 'Attack Paths' between two nodes and find which path needs to be remediated to brake the path.
 
@@ -241,6 +245,22 @@ The default.tasks file includes multiple tasks that instruct PlumHound to create
 ["Add Use Delegation","HTML","User-AddToGroupDelegation.html","MATCH (n:User {admincount:False}) MATCH p=allShortestPaths((n)-[r:AddMember*1..]->(m:Group)) RETURN n.name as User, m.name as Group"]
 ```
 
+# Busiest Path
+The Busiest Path(s) function takes two parameters 
+1- `all` or `short` either you want to use `shortestpath` or `allshorteshpaths` algorithym. 
+2- The number of results you want to return. ex: Top 5
+
+```plaintext
+python3 PlumHound.py -bp short 5
+[*]Building Task List
+[51, 'IT00385@BTV.ORG']
+[51, 'IT00346@BTV.ORG']
+[50, 'IT01186@BTV.ORG']
+[49, 'IT00435@BTV.ORG']
+[49, 'IT00333@BTV.ORG']
+[*]Tasks Generation Completed
+Tasks: []
+```
 
 # Analyze Path
 The Analyze Path takes either a `label` or a `start node` and `end node` and loop through all the paths finding which relationship(s) need to be broken in order to break the whole path. This is useful when you want to provide your AD Admins with concrete actions they can take in order to improuve your overall AD Security Posture. 
