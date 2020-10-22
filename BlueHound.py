@@ -29,6 +29,7 @@ def analyzepath(fneodb,fneouser,fneopass,startnode,endnode):
 	else:
 		print("There is no path between startnode and endnode")
 
+
 def getpaths(fneodb,fneouser,fneopass,startnode,endnode):
 	# This function will get the shortest paths from StarNode and EndNode
 	# First we initiate our graph
@@ -38,7 +39,6 @@ def getpaths(fneodb,fneouser,fneopass,startnode,endnode):
 		nodetype=startnode
 		query='MATCH p=ShortestPath((n:%s)-[*1..]->(m:Group)) WHERE m.name STARTS WITH "DOMAIN ADMINS@" AND n <> m RETURN p' % (nodetype)
 	else:
-
 		query='MATCH p=ShortestPath((n {name: "%s"})-[*1..]->(m {name: "%s"})) WHERE n <> m RETURN p' % (startnode,endnode)
 	paths=graph.run(query)
 	# Extract the starting & ending node of each paths and send them to be analyzed
@@ -58,22 +58,51 @@ def getpaths(fneodb,fneouser,fneopass,startnode,endnode):
 		pass
 
 
+def find_busiest_path(fneodb,fneouser,fneopass,param,number):
+	# This function counts how many principals have the same path
+	# The goal is to find the path(s) which give the most users a path and focus on it to remediate
+	graph = Graph(fneodb,user=fneouser,password=fneopass)
+	#ucount[0] = "a"
+	if param.lower() == "all":
+		query_shortpath="""MATCH p=allShortestPaths((n)-[*1..]->(m:Group)) where m.name starts with "DOMAIN ADMINS" and n<>m RETURN p"""
+	else: 
+		query_shortpath="""MATCH p=ShortestPath((n)-[*1..]->(m:Group)) where m.name starts with "DOMAIN ADMINS" and n<>m RETURN p"""
+	paths=graph.run(query_shortpath)
+	path=paths.evaluate()
+	if path == None:
+		print ("---------------------------------------------------------------------")
+		print("There is no ShortestPath")
+		print ("---------------------------------------------------------------------")
+	x=0
+	ucount=[]
+	while path != None:
+		snode=path.start_node["name"]
+		query_count_user="""match p=shortestpath((s)-[*1..]->(d:Group))
+where s.name = "%s" and d.name starts with "DOMAIN ADMINS" and s<>d
+unwind (NODES(p)) as pathNodes
+match (pathNodes) where labels(pathNodes) = ["Base", "Group"]
+with pathNodes as grp
+match (grp)<-[:MemberOf*1..]-(u:User)
+return count(distinct(u))
+		""" % snode
+		usercount=graph.run(query_count_user)
+		nb_user=usercount.evaluate()
+		result=[nb_user, snode]
+		ucount.append(result)
+		x=x+1
+		path=paths.evaluate()
+	ucount.sort(reverse=True)
+	i=0
+	nb_paths=int(number)
+	while i<nb_paths:
+		print(ucount[i])
+		i=i+1
+	return (ucount)
+
+
 def main():
-	snode=input("Enter Starting Node Name ex: <\"BOB SMITH@EXAMPLE.COM\"> : ").upper() 	
-	enode=input("Enter Starting Node Name ex: <\"DOMAIN ADMINS@EXAMPLE.com\"> : ").upper()
-	if snode == "USER":
-		snode="User"
-		endnode=""
-	elif snode == "GROUP":
-		snode="Group"
-		enode=""
-	elif snode == "COMPUTER":
-		snode="Computer"
-		enode=""
-	else:
-		snode=snode.upper()
-		enode=snode.upper()
-	getpaths(neodb,neouser,neopass,snode,enode)
+	# Nothing here as this code should be used with Plumhound : https://github.com/PlumHound/PlumHound
+	x=0
 
 if __name__ == "__main__":
 	main()
