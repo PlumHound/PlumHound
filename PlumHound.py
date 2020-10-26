@@ -178,7 +178,6 @@ def TaskExecution(tasks, Outpath, HTMLHeader, HTMLFooter, HTMLCSS):
             #
             jobresults = execute_query(newdriver, jobQuery)
             jobresults_processed = "[" + processresults(jobresults) + "]"
-            print("$$$$$$ jobresults $$$$$$")
             try:
                 jobresults_processed_list = ast.literal_eval(jobresults_processed)
             except Exception:
@@ -207,7 +206,6 @@ def execute_query(driver, query, enabled=True):
         else:
             Loggy(200, "Shoot, nothing interesting was found")
     Loggy(900, "------EXIT: EXECUTE_QUERY-----")
-    print("Do we get here???")
     return results
 
 
