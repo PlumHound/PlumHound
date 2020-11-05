@@ -313,8 +313,11 @@ Analyzing paths between IT00547@BTV.ORG and DOMAIN ADMINS@BTV.ORG
 * Additional work by SadProcessor with [Cypher Dog 3.0](https://github.com/SadProcessor/CypherDog) shows similar POC via utilizing BloodHoundAD's Cypher Queries with a RestAPI endpoint via PowerShell.  PlumHound operates similarly however written in python and designed for stringing multiple queries into consumable reports designed to infer actionable items. 
 * [BloodHoundAD](https://github.com/BloodHoundAD/BloodHound): We wouldn't be talking about this at all if it weren't for the original BloodHoundAD work.  BloodHound is developed by @_wald0, @CptJesus, and @harmj0y.
 * "Band-aids don't fix dank domains."  [BadBlood](https://github.com/davidprowe/BadBlood) saved us a ton of time building realistic-enough AD domains for testing. @davidprowe  
-* [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier -- About a month after we released PlumHound POC we ran into Scoubi who was working on a similar project, BlueHound, but hadn't yet publicly released it. He's planning to Release at SecTor 2020. Despite we hadn't met, I found enough similarities between our goals that I felt it would be inappropriate not to credit Mathieu for driving the industry that ultimately lead us to build PlumHound.  Check out his DerbyCon talk and be on the lookout at SecTor.
+* [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier Mathieu merged his BlueHound project with PlumHound in 2020 as a extension of features.  Mathieu is an active collaborator of Plumhound and the BlueHound path-finding extension.
 
+# Presentations 
+* BHIS: A Blue Team's Perspective on Red Team Hack Tools: https://www.youtube.com/watch?v=0mIN2OU5hQE
+* BlueHound Module (Sector): https://sector.ca/sessions/bhpd-bluehound-path-destroyer/
 
 
 # Installation Requirements (python 3.7/3.8)
@@ -329,12 +332,13 @@ Analyzing paths between IT00547@BTV.ORG and DOMAIN ADMINS@BTV.ORG
 * Use PlumHound to Report 
 
 
-# Advisory and Initial Code Contribution
+# Collaboration
 Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've created the initial proof of concept and are committed to continuing the maturity of PlumHound to leverage the power of BloodHoundAD into continual security improvement processes.  Community involvement is what makes this industry great!  
 * [Black Hills Information Security](https://www.blackhillsinfosec.com) | @[BHInfoSecurity](https://twitter.com/BHinfoSecurity) | [Discord](https://discord.gg/J4UJPgG)
 * [Defensive Origins](https://www.defensiveorigins.com)   |  [@DefensiveOGs](https://twitter.com/DefensiveOGs) | [Git](https://github.com/DefensiveOrigins) 
 * Kent Ickler  |  @[Krelkci](https://twitter.com/Krelkci) | [Git](https://github.com/Relkci)
 * Jordan Drysdale |  [@Rev10D](https://twitter.com/Rev10D) | [Git](https://github.com/rev10d)
+* Mathieu Saulnier | Scoubi
 
 
 ## License
