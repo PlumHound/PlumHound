@@ -115,7 +115,7 @@ def MakeTaskList():
         return tasks
 
     if args.BusiestPath:
-        # Find and print on screen the X Attack Paths that give the most users a path to DA 
+        # Find and print on screen the X Attack Paths that give the most users a path to DA
         bp=find_busiest_path(args.server, args.username, args.password, args.BusiestPath[0], args.BusiestPath[1])
 
     if args.AnalyzePath:
@@ -154,6 +154,8 @@ def TaskExecution(tasks, Outpath, HTMLHeader, HTMLFooter, HTMLCSS):
     jobHTMLFooter = HTMLFooter
     jobHTMLCSS = HTMLCSS
 
+    task_output_list = []
+
     for job in tasks:
         try:
             Loggy(200, "Starting job")
@@ -185,12 +187,17 @@ def TaskExecution(tasks, Outpath, HTMLHeader, HTMLFooter, HTMLCSS):
                 Loggy(500, jobresults_processed)
                 jobresults_processed_list = jobresults_processed
 
+            if jobOutFormat == "HTML":
+                task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
+
             Loggy(500, "Calling delivery service")
             SenditOut(jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
         except Exception:
             Loggy(200, "ERROR While trying to parse jobs (move along).")
     Loggy(900, "------EXIT: TASKEXECUTION-----")
 
+    if len(task_output_list) != 0:
+        FullSenditOut(task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
 
 # Setup Query
 def execute_query(driver, query, enabled=True):
@@ -310,6 +317,54 @@ def SenditOut(list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath
         fsys.close
         return True
     Loggy(900, "------EXIT: SENDITOUT-----")
+
+
+def FullSenditOut(Processed_Results_List, OutPath, HTMLHeader, HTMLFooter, HTMLCSS):
+    Loggy(900, "------ENTER: FULLSENDITOUT-----")
+
+    list_KeysList = ["Title", "Count", "Further Details"]
+    OutFile = "Report.html"
+    Title = "Full Report Details"
+
+    Loggy(100, "Beginning Output HTML:" + OutFile)
+
+    for entry in Processed_Results_List:
+        filename = entry[2]
+        entry[2] = "<a href=\"" + filename + "\">Details</a>"
+
+    output = str(tabulate(Processed_Results_List, list_KeysList, tablefmt="html"))
+    output = output.replace("&lt;","<")
+    output = output.replace("&gt;",">")
+    output = output.replace("&quot;",'"')
+
+    HTMLCSS_str = ""
+    HTMLHeader_str = ""
+    HTMLFooter_str = ""
+    HTMLPre_str = "<HTML><head>"
+    HTMLMId_str = "</head><Body>"
+    HTMLEnd_str = "</body></html>"
+    if HTMLHeader:
+        with open(HTMLHeader, 'r') as header:
+            HTMLHeader_str = header.read()
+        HTMLHeader_str = ReplaceHTMLReportVars(HTMLHeader_str, Title)
+
+    if HTMLFooter:
+        with open(HTMLFooter, 'r') as footer:
+            HTMLFooter_str = footer.read()
+        HTMLFooter_str = ReplaceHTMLReportVars(HTMLFooter_str, Title)
+
+    if HTMLCSS:
+        with open(HTMLCSS, 'r') as css:
+            HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
+
+    Loggy(500, "File Writing " + OutPath + OutFile)
+    output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + HTMLFooter_str + HTMLEnd_str
+    fsys = open(OutPath + OutFile, "w")
+    fsys.write(output)
+    fsys.close
+    Loggy(100, "Full report written to Report.html")
+    return True
+    Loggy(900, "------EXIT: FULLSENDITOUT-----")
 
 
 def ReplaceHTMLReportVars(InputStr, Title):
