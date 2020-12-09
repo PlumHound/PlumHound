@@ -1,4 +1,4 @@
-neo4j
+neo4j==1.7
 py2neo
 neobolt
 neotime==1.7.4
