@@ -98,7 +98,7 @@ def TaskExecution(tasks, phDriver, phArgs):
             jobOutPathFile = Outpath + job_List[2]
             jobQuery = job_List[3]
 
-            Loggy(phArgs.verbose,200, "Starting job: " + JobTitle)
+            Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
 
             Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
             Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)

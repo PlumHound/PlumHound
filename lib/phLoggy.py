@@ -10,4 +10,4 @@ def Loggy(hurdle, level, notice):
         if level <= 100:
             print("INFO" + "\t" + notice)
         else:
-            print(level + "\t" + notice)
+            print(str(level) + "\t" + notice)

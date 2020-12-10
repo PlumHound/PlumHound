@@ -1,2 +1,1 @@
 ["PasswordResetter Groups", "HTML", "Groups_CanResetPasswords.html", "MATCH p=(m:Group)-[r:ForceChangePassword]->(n:User) RETURN m.name as Group, n.name ORDER BY m.name as User" ]
-["PasswordResetter Groups Count", "HTML", "Groups_CanResetPasswordsCount.html", "MATCH p=(m:Group)-[r:ForceChangePassword]->(n:User) RETURN m.name as Group, count(*) as Users ORDER BY Users DESC" ]
