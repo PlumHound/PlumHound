@@ -6,13 +6,14 @@
 
 #Python Libraries
 import sys
+import ast
 from tabulate import tabulate
 from datetime import date
 from neo4j import GraphDatabase
 
 #Plumhound modules
 from lib.phLoggy import Loggy as Loggy
-from lib.phDeliver import *
+import lib.phDeliver
 
 #Plumhound Extensions
 from modules.BlueHound import *
@@ -122,15 +123,15 @@ def TaskExecution(tasks, phDriver, phArgs):
                 task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
 
             Loggy(phArgs.verbose,500, "Calling delivery service")
-            SenditOut(jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+            lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
         except Exception:
             Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
 
     if len(task_output_list) != 0:
-        Loggy(phArgs.verbose,200, "Found :" + str(len(tasktask_output_list)) +" records to export"
-        FullSenditOut(task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+        Loggy(phArgs.verbose,200, "Found :" + str(len(tasktask_output_list)) +" records to export")
+        lib.phDeliver.FullSenditOut(phArgs.verbose,task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
     else:
         Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
 
@@ -160,12 +161,12 @@ def GetKeys(verbose,phDriver, query, enabled=True):
         results = session.run(query)
         if check_records(verbose,results):
             keys = results.keys()
-            Loggy(args.verbose,500, "Keys Found")
+            Loggy(verbose,500, "Keys Found")
         else:
-            Loggy(args.verbose,200, "No Keys found")
+            Loggy(verbose,200, "No Keys found")
             keys = 0
-    Loggy(args.verbose,500, "Key enumeration complete")
-    Loggy(args.verbose,900, "------EXIT: GETKEYS-----")
+    Loggy(verbose,500, "Key enumeration complete")
+    Loggy(verbose,900, "------EXIT: GETKEYS-----")
     return keys
 
 

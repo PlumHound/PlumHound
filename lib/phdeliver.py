@@ -15,25 +15,25 @@ from datetime import date
 from lib.phLoggy import Loggy as Loggy
 
 
-def SenditOut(list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS):
-    Loggy(900, "------ENTER: SENDITOUT-----")
+def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS):
+    Loggy(verbose,900, "------ENTER: SENDITOUT-----")
     # Quick fix if keys returned no records to properly rebuild the keys list of 0, instead of int(0)
     if isinstance(list_KeysList, int):
         list_KeysList = []
     output = ""
 
     if OutFormat == "CSV":
-        Loggy(100, "Beginning Output CSV:" + OutPath + OutFile)
+        Loggy(verbose,100, "Beginning Output CSV:" + OutPath + OutFile)
         with open(OutPath + OutFile, "w", newline="") as f:
-            Loggy(500, "KeyType: " + str(type(list_KeysList)))
-            Loggy(500, "KeyList: " + str((list_KeysList)))
+            Loggy(verbose,500, "KeyType: " + str(type(list_KeysList)))
+            Loggy(verbose,500, "KeyList: " + str((list_KeysList)))
             writer = csv.writer(f)
             ModKeyList = ast.literal_eval("[" + str(list_KeysList) + "]")
-            Loggy(500, "KeyTypeMod: " + str(type(ModKeyList)))
-            Loggy(500, "KeyListMod: " + str(ModKeyList))
+            Loggy(verbose,500, "KeyTypeMod: " + str(type(ModKeyList)))
+            Loggy(verbose,500, "KeyListMod: " + str(ModKeyList))
             writer.writerows(ModKeyList)
-            Loggy(500, "ResultsType: " + str(type(Processed_Results_List)))
-            Loggy(999, "ResultsList: " + str(Processed_Results_List))
+            Loggy(verbose,500, "ResultsType: " + str(type(Processed_Results_List)))
+            Loggy(verbose,999, "ResultsList: " + str(Processed_Results_List))
             writer.writerows(Processed_Results_List)
         return True
 
@@ -44,7 +44,7 @@ def SenditOut(list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath
         return True
 
     if OutFormat == "HTML":
-        Loggy(100, "Beginning Output HTML:" + OutFile)
+        Loggy(verbose,100, "Beginning Output HTML:" + OutFile)
 
         output = tabulate(Processed_Results_List, list_KeysList, tablefmt="html")
         HTMLCSS_str = ""
@@ -67,23 +67,23 @@ def SenditOut(list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath
             with open(HTMLCSS, 'r') as css:
                 HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
 
-        Loggy(500, "File Writing " + OutPath + OutFile)
+        Loggy(verbose,500, "File Writing " + OutPath + OutFile)
         output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + HTMLFooter_str + HTMLEnd_str
         fsys = open(OutPath + OutFile, "w")
         fsys.write(output)
         fsys.close
         return True
-    Loggy(900, "------EXIT: SENDITOUT-----")
+    Loggy(verbose,900, "------EXIT: SENDITOUT-----")
 
 
-def FullSenditOut(Processed_Results_List, OutPath, HTMLHeader, HTMLFooter, HTMLCSS):
-    Loggy(900, "------ENTER: FULLSENDITOUT-----")
+def FullSenditOut(verbose,Processed_Results_List, OutPath, HTMLHeader, HTMLFooter, HTMLCSS):
+    Loggy(verbose,900, "------ENTER: FULLSENDITOUT-----")
 
     list_KeysList = ["Title", "Count", "Further Details"]
     OutFile = "Report.html"
     Title = "Full Report Details"
 
-    Loggy(100, "Beginning Output HTML:" + OutFile)
+    Loggy(verbose,100, "Beginning Output HTML:" + OutFile)
 
     for entry in Processed_Results_List:
         filename = entry[2]
@@ -114,14 +114,14 @@ def FullSenditOut(Processed_Results_List, OutPath, HTMLHeader, HTMLFooter, HTMLC
         with open(HTMLCSS, 'r') as css:
             HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
 
-    Loggy(500, "File Writing " + OutPath + OutFile)
+    Loggy(verbose,500, "File Writing " + OutPath + OutFile)
     output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + HTMLFooter_str + HTMLEnd_str
     fsys = open(OutPath + OutFile, "w")
     fsys.write(output)
     fsys.close
-    Loggy(100, "Full report written to Report.html")
+    Loggy(verbose,100, "Full report written to Report.html")
     return True
-    Loggy(900, "------EXIT: FULLSENDITOUT-----")
+    Loggy(verbose,900, "------EXIT: FULLSENDITOUT-----")
 
 
 def ReplaceHTMLReportVars(InputStr, Title):
