@@ -12,7 +12,7 @@ def setup_database_conn(phArgs):
     Loggy(phArgs.verbose,900, "------ENTER: SETUP_DATABASE_CONN-----")
     Loggy(phArgs.verbose,200, "[!] Attempting to connect to your Neo4j project using {}:{} @ {} {}.".format(phArgs.username, phArgs.password, phArgs.server, "[ENCRYPTED]" if args.UseEnc else "[UNECNCRYPTED]"))
     try:
-        if args.UseEnc:
+        if phArgs.UseEnc:
             Loggy(phArgs.verbose,200, " Using Neo4j encryption")
             driver_connection = GraphDatabase.driver(phArgs.server, auth=(phArgs.username, phArgs.password), encrypted=True)
         else:
