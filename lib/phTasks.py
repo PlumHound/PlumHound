@@ -17,6 +17,7 @@ import lib.phDeliver
 
 #Plumhound Extensions
 from modules.BlueHound import *
+import modules.ph_ReportIndexer
 
 
 def MakeTaskList(phArgs):
@@ -107,7 +108,11 @@ def TaskExecution(tasks, phDriver, phArgs):
 
             jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
             jobkeys_List = ast.literal_eval(str(jobkeys))
-            
+
+            if jobQuery == "REPORT-INDEX":
+                modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+                continue
+
             # If keys returned 0, make an empty list
             if isinstance(jobkeys_List, int):
                 jobkeys_List = []
@@ -124,7 +129,7 @@ def TaskExecution(tasks, phDriver, phArgs):
             if jobOutFormat == "HTML":
                 task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
 
-            Loggy(phArgs.verbose,500, "Calling delivery service")
+            Loggy(phArgs.verbose,500, "Exporting Job Resultes")
             lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
         except Exception:
             Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
@@ -132,8 +137,8 @@ def TaskExecution(tasks, phDriver, phArgs):
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
 
     if len(task_output_list) != 0:
-        Loggy(phArgs.verbose,200, "Found:" + str(len(task_output_list)) +" jobs to export")
-        lib.phDeliver.FullSenditOut(phArgs.verbose,task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+        Loggy(phArgs.verbose,200, "Jobs:" + str(len(task_output_list)) +" jobs completed")
+        #lib.phDeliver.FullSenditOut(phArgs.verbose,task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
     else:
         Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
 

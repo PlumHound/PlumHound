@@ -34,3 +34,4 @@
 ["HighValue Group Members","HTML","Groups-HighValue-members.html","MATCH p=(n:User)-[r:MemberOf*1..]->(m:Group {highvalue:true}) RETURN n.name as User, m.name as Group"]
 [ "Add Use Delegation", "HTML", "User-AddToGroupDelegation.html", "MATCH (n:User {admincount:False}) MATCH p=allShortestPaths((n)-[r:AddMember*1..]->(m:Group)) RETURN n.name as User, m.name as Group" ]
 [ "PasswordResetter Groups Count", "HTML", "Groups_CanResetPasswordsCount.html", "MATCH p=(m:Group)-[r:ForceChangePassword]->(n:User) RETURN m.name as Group, count(*) as Users ORDER BY Users DESC"]
+["Report Index","HTML","Reports.html","REPORT-INDEX"]
