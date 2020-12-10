@@ -106,12 +106,14 @@ def TaskExecution(tasks, phDriver, phArgs):
             Loggy(phArgs.verbose,500, "Job File: " + jobOutPathFile)
             Loggy(phArgs.verbose,500, "Job Query: " + jobQuery)
 
-            jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
-            jobkeys_List = ast.literal_eval(str(jobkeys))
-
             if jobQuery == "REPORT-INDEX":
                 modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
                 continue
+
+            jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
+            jobkeys_List = ast.literal_eval(str(jobkeys))
+
+
 
             # If keys returned 0, make an empty list
             if isinstance(jobkeys_List, int):

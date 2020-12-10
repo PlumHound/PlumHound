@@ -75,3 +75,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         return True
     Loggy(verbose,900, "------EXIT: SENDITOUT-----")
 
+def ReplaceHTMLReportVars(InputStr, Title):
+    sOutPut = InputStr.replace("--------PH_TITLE-------", str(Title))
+    sOutPut = sOutPut.replace("--------PH_DATE-------", str(date.today()))
+    return sOutPut
