@@ -43,7 +43,7 @@ def MakeTaskList(phArgs):
         tasks = [task_str]
         return tasks
 
-    if args.BusiestPath:
+    if phArgs.BusiestPath:
         # Find and print on screen the X Attack Paths that give the most users a path to DA
         bp=find_busiest_path(phArgs.server, phArgs.username, phArgs.password, phArgs.BusiestPath[0], phArgs.BusiestPath[1])
 
