@@ -8,8 +8,6 @@
 def Loggy(hurdle, level, notice):
     if level <= hurdle:
         if level <= 100:
-            print("[*]" + notice)
-        elif level < 500:
-            print("[!]" + notice)
+            print("INFO" + "\t" + notice)
         else:
-            print("[*]" + notice)
+            print(level + "\t" + notice)

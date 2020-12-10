@@ -89,7 +89,7 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     for job in tasks:
         try:
-            Loggy(phArgs.verbose,200, "Starting job")
+
             Loggy(phArgs.verbose,500, "Job: " + str(job))
 
             job_List = ast.literal_eval(job)
@@ -97,6 +97,8 @@ def TaskExecution(tasks, phDriver, phArgs):
             jobOutFormat = job_List[1]
             jobOutPathFile = Outpath + job_List[2]
             jobQuery = job_List[3]
+
+            Loggy(phArgs.verbose,200, "Starting job: " + JobTitle)
 
             Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
             Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)
@@ -130,7 +132,7 @@ def TaskExecution(tasks, phDriver, phArgs):
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
 
     if len(task_output_list) != 0:
-        Loggy(phArgs.verbose,200, "Found :" + str(len(tasktask_output_list)) +" records to export")
+        Loggy(phArgs.verbose,200, "Found:" + str(len(task_output_list)) +" jobs to export")
         lib.phDeliver.FullSenditOut(phArgs.verbose,task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
     else:
         Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
@@ -147,7 +149,7 @@ def execute_query(verbose,phDriver, query, enabled=True):
             count = results.detach()
             Loggy(verbose,500, "Identified " + str(count) + " Results")
         else:
-            Loggy(verbose,200, "Shoot, nothing interesting was found")
+            Loggy(verbose,200, "Job result: No records found")
     Loggy(verbose,900, "------EXIT: EXECUTE_QUERY-----")
     return results
 
