@@ -104,10 +104,11 @@ def TaskExecution(tasks, phDriver, phArgs):
 
             jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
             jobkeys_List = ast.literal_eval(str(jobkeys))
-            # Quick fix if keys returned no records to properly rebuild the keys list as 0 records, instead of int(0)
+            
+            # If keys returned 0, make an empty list
             if isinstance(jobkeys_List, int):
                 jobkeys_List = []
-            #
+            
             jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
             jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
             try:
@@ -123,11 +124,15 @@ def TaskExecution(tasks, phDriver, phArgs):
             Loggy(phArgs.verbose,500, "Calling delivery service")
             SenditOut(jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
         except Exception:
-            Loggy(phArgs.verbose,200, "ERROR While trying to parse jobs (move along).")
+            Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
+
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
 
     if len(task_output_list) != 0:
+        Loggy(phArgs.verbose,200, "Found :" + str(len(tasktask_output_list)) +" records to export"
         FullSenditOut(task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+    else:
+        Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
 
 # Setup Query
 def execute_query(verbose,phDriver, query, enabled=True):
@@ -155,9 +160,9 @@ def GetKeys(verbose,phDriver, query, enabled=True):
         results = session.run(query)
         if check_records(verbose,results):
             keys = results.keys()
-            Loggy(args.verbose,500, "Identified Keys: " + str(keys))
+            Loggy(args.verbose,500, "Keys Found")
         else:
-            Loggy(args.verbose,200, "No Keys found, this won't go well")
+            Loggy(args.verbose,200, "No Keys found")
             keys = 0
     Loggy(args.verbose,500, "Key enumeration complete")
     Loggy(args.verbose,900, "------EXIT: GETKEYS-----")
@@ -167,12 +172,11 @@ def GetKeys(verbose,phDriver, query, enabled=True):
 def check_records(verbose,results):
     Loggy(verbose,900, "------ENTER: CHECK_RECORDS-----")
     if results.peek():
-        Loggy(verbose,500, "Peeking at things")
-        return True
+        Loggy(verbose,500, "Found Records")
     else:
-        Loggy(verbose,200, "Nothing found to peek at")
-        return False
+        Loggy(verbose,200, "No Records Found")
     Loggy(verbose,900, "------EXIT: CHECK_RECORDS-----")
+    return results.peek()
 
 
 def processresults(verbose,results):
