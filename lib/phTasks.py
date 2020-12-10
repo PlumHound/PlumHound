@@ -73,7 +73,7 @@ def MakeTaskList(phArgs):
 
 
 # Execute Tasks
-def TaskExecution(verbose,tasks, phDriver, phArgs):
+def TaskExecution(tasks, phDriver, phArgs):
 
     Loggy(phArgs.verbose,900, "------ENTER: TASKEXECUTION-----")
     Loggy(phArgs.verbose,500, "Begin Task Executions")
