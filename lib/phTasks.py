@@ -140,7 +140,6 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     if len(task_output_list) != 0:
         Loggy(phArgs.verbose,200, "Jobs:" + str(len(task_output_list)) +" jobs completed")
-        #lib.phDeliver.FullSenditOut(phArgs.verbose,task_output_list, Outpath, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
     else:
         Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
 
