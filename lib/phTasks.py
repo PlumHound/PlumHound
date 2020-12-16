@@ -47,7 +47,7 @@ def MakeTaskList(phArgs):
 
     if phArgs.BusiestPath:
         # Find and print on screen the X Attack Paths that give the most users a path to DA
-        bp=find_busiest_path(phArgs.server, phArgs.username, phArgs.password, phArgs.BusiestPath[0], phArgs.BusiestPath[1])
+        bp=modules.BlueHound.find_busiest_path(phArgs.server, phArgs.username, phArgs.password, phArgs.BusiestPath[0], phArgs.BusiestPath[1])
 
     if phArgs.AnalyzePath:
         if phArgs.AnalyzePath[0].upper() == "USER":
