@@ -62,7 +62,7 @@ def MakeTaskList(phArgs):
         else:
             snode=(phArgs.AnalyzePath[0]).upper()
             enode=(phArgs.AnalyzePath[1]).upper()
-        BueHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+        BlueHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
 
     if phArgs.easy:
         Loggy(phArgs.verbose,500, "Tasks Easy Query Specified.")
