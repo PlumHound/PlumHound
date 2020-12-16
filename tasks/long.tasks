@@ -1,0 +1,1 @@
+["Users GPOs Access Weirdness","HTML","Users_GPO_CheckACL.html","MATCH p=(u:User)-[r:AllExtendedRights|GenericAll|GenericWrite|Owns|WriteDacl|WriteOwner|GpLink*1..]->(g:GPO) RETURN p LIMIT 25"]
