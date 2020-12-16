@@ -16,7 +16,7 @@ from lib.phLoggy import Loggy as Loggy
 import lib.phDeliver
 
 #Plumhound Extensions
-from modules.BlueHound import *
+import modules.BlueHound
 import modules.ph_ReportIndexer
 
 
@@ -62,7 +62,7 @@ def MakeTaskList(phArgs):
         else:
             snode=(phArgs.AnalyzePath[0]).upper()
             enode=(phArgs.AnalyzePath[1]).upper()
-        BlueHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+        modules.BlueHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
 
     if phArgs.easy:
         Loggy(phArgs.verbose,500, "Tasks Easy Query Specified.")
