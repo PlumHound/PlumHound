@@ -5,7 +5,6 @@
 # License GNU GPL3
 
 #Python Libraries
-import sys
 import ast
 import csv
 from tabulate import tabulate
@@ -15,25 +14,25 @@ from datetime import date
 from lib.phLoggy import Loggy as Loggy
 
 
-def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS):
-    Loggy(verbose,900, "------ENTER: SENDITOUT-----")
+def SenditOut(verbose, list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS):
+    Loggy(verbose, 900, "------ENTER: SENDITOUT-----")
     # Quick fix if keys returned no records to properly rebuild the keys list of 0, instead of int(0)
     if isinstance(list_KeysList, int):
         list_KeysList = []
     output = ""
 
     if OutFormat == "CSV":
-        Loggy(verbose,100, "Beginning Output CSV:" + OutPath + OutFile)
+        Loggy(verbose, 100, "Beginning Output CSV:" + OutPath + OutFile)
         with open(OutPath + OutFile, "w", newline="") as f:
-            Loggy(verbose,500, "KeyType: " + str(type(list_KeysList)))
-            Loggy(verbose,500, "KeyList: " + str((list_KeysList)))
+            Loggy(verbose, 500, "KeyType: " + str(type(list_KeysList)))
+            Loggy(verbose, 500, "KeyList: " + str((list_KeysList)))
             writer = csv.writer(f)
             ModKeyList = ast.literal_eval("[" + str(list_KeysList) + "]")
-            Loggy(verbose,500, "KeyTypeMod: " + str(type(ModKeyList)))
-            Loggy(verbose,500, "KeyListMod: " + str(ModKeyList))
+            Loggy(verbose, 500, "KeyTypeMod: " + str(type(ModKeyList)))
+            Loggy(verbose, 500, "KeyListMod: " + str(ModKeyList))
             writer.writerows(ModKeyList)
-            Loggy(verbose,500, "ResultsType: " + str(type(Processed_Results_List)))
-            Loggy(verbose,999, "ResultsList: " + str(Processed_Results_List))
+            Loggy(verbose, 500, "ResultsType: " + str(type(Processed_Results_List)))
+            Loggy(verbose, 999, "ResultsList: " + str(Processed_Results_List))
             writer.writerows(Processed_Results_List)
         return True
 
@@ -44,7 +43,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         return True
 
     if OutFormat == "HTML":
-        Loggy(verbose,100, "Beginning Output HTML:" + OutFile)
+        Loggy(verbose, 100, "Beginning Output HTML:" + OutFile)
 
         output = tabulate(Processed_Results_List, list_KeysList, tablefmt="html")
         HTMLCSS_str = ""
@@ -67,13 +66,13 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
             with open(HTMLCSS, 'r') as css:
                 HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
 
-        Loggy(verbose,500, "File Writing " + OutPath + OutFile)
+        Loggy(verbose, 500, "File Writing " + OutPath + OutFile)
         output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + HTMLFooter_str + HTMLEnd_str
         fsys = open(OutPath + OutFile, "w")
         fsys.write(output)
         fsys.close
         return True
-    Loggy(verbose,900, "------EXIT: SENDITOUT-----")
+    Loggy(verbose, 900, "------EXIT: SENDITOUT-----")
 
 def ReplaceHTMLReportVars(InputStr, Title):
     sOutPut = InputStr.replace("--------PH_TITLE-------", str(Title))
