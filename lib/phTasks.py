@@ -4,80 +4,80 @@
 # https://github.com/PlumHound/PlumHound 
 # License GNU GPL3
 
-#Python Libraries
+# Python Libraries
 import ast
 
-#Plumhound modules
-from lib.phLoggy import Loggy as Loggy
+# Plumhound modules
+from lib.phLoggy import loggy, set_log_hurdle, log_calls
 import lib.phDeliver
 
-#Plumhound Extensions
+# Plumhound Extensions
 import modules.BlueHound
 import modules.ph_ReportIndexer
 
 
+@log_calls
 def MakeTaskList(phArgs):
-    Loggy(phArgs.verbose, 900, "------ENTER: MAKETASKLIST-----")
-    Loggy(phArgs.verbose, 100, "Building Task List")
+    set_log_hurdle(phArgs.verbose)
+
+    loggy(100, "Building Task List")
 
     tasks = []
 
     if phArgs.TaskFile:
-        Loggy(phArgs.verbose, 500, "Tasks file specified.  Reading")
+        loggy(500, "Tasks file specified.  Reading")
         with open(phArgs.TaskFile) as f:
             tasks = f.read().splitlines()
-        Loggy(phArgs.verbose, 500, "TASKS: " + str(tasks))
+        loggy(500, "TASKS: " + str(tasks))
         return tasks
 
     if phArgs.QuerySingle:
-        Loggy(phArgs.verbose, 500, "Tasks Single Query Specified. Reading")
-        Loggy(phArgs.verbose, 500, "Tasks-Title:" + phArgs.title)
-        Loggy(phArgs.verbose, 500, "Tasks-OutFormat:" + phArgs.OutFormat)
-        Loggy(phArgs.verbose, 500, "Tasks-OutPath:" + phArgs.path)
-        Loggy(phArgs.verbose, 500, "Tasks-QuerySingle:" + phArgs.QuerySingle)
+        loggy(500, "Tasks Single Query Specified. Reading")
+        loggy(500, "Tasks-Title:" + phArgs.title)
+        loggy(500, "Tasks-OutFormat:" + phArgs.OutFormat)
+        loggy(500, "Tasks-OutPath:" + phArgs.path)
+        loggy(500, "Tasks-QuerySingle:" + phArgs.QuerySingle)
 
         task_str = "[\"" + phArgs.title + "\",\"" + phArgs.OutFormat + "\",\"" + phArgs.OutFile + "\",\"" + phArgs.QuerySingle + "\"]"
-        Loggy(phArgs.verbose, 500, "Task_str:  " + task_str)
+        loggy(500, "Task_str:  " + task_str)
         tasks = [task_str]
         return tasks
 
     if phArgs.BusiestPath:
         # Find and print on screen the X Attack Paths that give the most users a path to DA
-        bp=modules.BlueHound.find_busiest_path(phArgs.server, phArgs.username, phArgs.password, phArgs.BusiestPath[0], phArgs.BusiestPath[1])
+        modules.BlueHound.find_busiest_path(phArgs.server, phArgs.username, phArgs.password, phArgs.BusiestPath[0], phArgs.BusiestPath[1])
 
     if phArgs.AnalyzePath:
         if phArgs.AnalyzePath[0].upper() == "USER":
-            snode="User"
-            enode=""
+            snode = "User"
+            enode = ""
         elif phArgs.AnalyzePath[0].upper() == "GROUP":
-            snode="Group"
-            enode=""
+            snode = "Group"
+            enode = ""
         elif phArgs.AnalyzePath[0].upper() == "COMPUTER":
-            snode="Computer"
-            enode=""
+            snode = "Computer"
+            enode = ""
         else:
-            snode=(phArgs.AnalyzePath[0]).upper()
-            enode=(phArgs.AnalyzePath[1]).upper()
+            snode = (phArgs.AnalyzePath[0]).upper()
+            enode = (phArgs.AnalyzePath[1]).upper()
         modules.BlueHound.getpaths(phArgs.server, phArgs.username, phArgs.password, snode, enode)
 
     if phArgs.easy:
-        Loggy(phArgs.verbose, 500, "Tasks Easy Query Specified.")
+        loggy(500, "Tasks Easy Query Specified.")
         tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
         return tasks
 
-    Loggy(phArgs.verbose, 100, "Tasks Generation Completed\nTasks: " + str(tasks))
-    Loggy(phArgs.verbose, 900, "------EXIT: MAKETASKLIST-----")
+    loggy(100, "Tasks Generation Completed\nTasks: " + str(tasks))
     return tasks
 
 
 # Execute Tasks
+@log_calls
 def TaskExecution(tasks, phDriver, phArgs):
+    loggy(500, "Begin Task Executions")
+    loggy(500, "TASKS:" + str(tasks))
 
-    Loggy(phArgs.verbose, 900, "------ENTER: TASKEXECUTION-----")
-    Loggy(phArgs.verbose, 500, "Begin Task Executions")
-    Loggy(phArgs.verbose, 500, "TASKS:" + str(tasks))
-
-    Outpath=phArgs.path
+    Outpath = phArgs.path
     jobHTMLHeader = phArgs.HTMLHeader
     jobHTMLFooter = phArgs.HTMLFooter
     jobHTMLCSS = phArgs.HTMLCSS
@@ -87,7 +87,7 @@ def TaskExecution(tasks, phDriver, phArgs):
     for job in tasks:
         try:
 
-            Loggy(phArgs.verbose, 500, "Job: " + str(job))
+            loggy(500, "Job: " + str(job))
 
             job_List = ast.literal_eval(job)
             jobTitle = job_List[0]
@@ -95,103 +95,54 @@ def TaskExecution(tasks, phDriver, phArgs):
             jobOutPathFile = Outpath + job_List[2]
             jobQuery = job_List[3]
 
-            Loggy(phArgs.verbose, 200, "Starting job: " + jobTitle)
+            loggy(200, "Starting job: " + jobTitle)
 
-            Loggy(phArgs.verbose, 500, "Job Title: " + jobTitle)
-            Loggy(phArgs.verbose, 500, "Job Format: " + jobOutFormat)
-            Loggy(phArgs.verbose, 500, "Job File: " + jobOutPathFile)
-            Loggy(phArgs.verbose, 500, "Job Query: " + jobQuery)
+            loggy(500, "Job Title: " + jobTitle)
+            loggy(500, "Job Format: " + jobOutFormat)
+            loggy(500, "Job File: " + jobOutPathFile)
+            loggy(500, "Job Query: " + jobQuery)
 
             if jobQuery == "REPORT-INDEX":
-                modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+                modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose, task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
                 continue
-
-            jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
-            jobkeys_List = ast.literal_eval(str(jobkeys))
-
-
-
-            # If keys returned 0, make an empty list
-            if isinstance(jobkeys_List, int):
-                jobkeys_List = []
             
-            jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
-            jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
-            try:
-                jobresults_processed_list = ast.literal_eval(jobresults_processed)
-            except Exception:
-                Loggy(phArgs.verbose, 200, "ERROR While parsing results (non-fatal but errors may exist in output.")
-                Loggy(phArgs.verbose, 500, jobresults_processed)
-                jobresults_processed_list = jobresults_processed
+            jobresults, jobkeys = execute_query(phArgs.verbose, phDriver, jobQuery)
+            # jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
+            # print('a',jobresults_processed)
+            # try:
+            #     jobresults_processed_list = ast.literal_eval(jobresults_processed)
+            # except Exception:
+            #     loggy(200, "ERROR While parsing results (non-fatal but errors may exist in output.")
+            #     loggy(500, jobresults_processed)
+            #     jobresults_processed_list = jobresults_processed
 
             if jobOutFormat == "HTML":
-                task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
+                task_output_list.append([jobTitle, len(jobresults), job_List[2]])
 
-            Loggy(phArgs.verbose, 500, "Exporting Job Resultes")
-            lib.phDeliver.SenditOut(phArgs.verbose, jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
-        except Exception:
-            Loggy(phArgs.verbose, 200, "ERROR While running job (trying next job in list).")
-
-    Loggy(phArgs.verbose, 900, "------EXIT: TASKEXECUTION-----")
+            loggy(500, "Exporting Job Resultes")
+            lib.phDeliver.send_it_out(phArgs.verbose, jobkeys, jobresults, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+        except Exception as e:
+            raise e
+            loggy(200, "ERROR While running job (trying next job in list).")
 
     if len(task_output_list) != 0:
-        Loggy(phArgs.verbose, 200, "Jobs:" + str(len(task_output_list)) +" jobs completed")
+        loggy(200, "Jobs:" + str(len(task_output_list)) + " jobs completed")
     else:
-        Loggy(phArgs.verbose, 200, "ERROR - No reports found to export.")
+        loggy(200, "ERROR - No reports found to export.")
+
 
 # Setup Query
-def execute_query(verbose,phDriver, query, enabled=True):
-    Loggy(verbose, 900, "------ENTER: EXECUTE_QUERY-----")
-    Loggy(verbose, 500, "Executing things")
+@log_calls
+def execute_query(verbose, phDriver, query, enabled=True) -> ([dict], [str]):
+    loggy(500, "Executing things")
 
     with phDriver.session() as session:
-        Loggy(verbose, 500, "Running Query")
+        loggy(500, "Running Query")
         results = session.run(query)
-        if check_records(verbose,results):
-            count = results.detach()
-            Loggy(verbose, 500, "Identified " + str(count) + " Results")
+        data = results.data()
+        keys = results.data()
+        if count := len(data) > 0:
+            loggy(500, "Identified " + str(count) + " Results")
         else:
-            Loggy(verbose, 200, "Job result: No records found")
-    Loggy(verbose, 900, "------EXIT: EXECUTE_QUERY-----")
-    return results
-
-
-# Grab Keys for Cypher Query
-def GetKeys(verbose,phDriver, query, enabled=True):
-    Loggy(verbose, 900, "------ENTER: GETKEYS-----")
-    Loggy(verbose, 500, "Locating Keys")
-    Loggy(verbose, 500, "GetKeys Query:" + str(query))
-    with phDriver.session() as session:
-        results = session.run(query)
-        if check_records(verbose,results):
-            keys = results.keys()
-            Loggy(verbose, 500, "Keys Found")
-        else:
-            Loggy(verbose, 200, "No Keys found")
-            keys = 0
-    Loggy(verbose, 500, "Key enumeration complete")
-    Loggy(verbose, 900, "------EXIT: GETKEYS-----")
-    return keys
-
-
-def check_records(verbose,results):
-    Loggy(verbose, 900, "------ENTER: CHECK_RECORDS-----")
-    if results.peek():
-        Loggy(verbose, 500, "Found Records")
-    else:
-        Loggy(verbose, 200, "No Records Found")
-    Loggy(verbose, 900, "------EXIT: CHECK_RECORDS-----")
-    return results.peek()
-
-
-def processresults(verbose,results):
-    Loggy(verbose, 900, "------ENTER: PROCESSRESULTS-----")
-    Loggy(verbose, 500, "Results need washed")
-    BigTable = ""
-    for record in results:
-        try:
-            BigTable = BigTable + str(record.values()) + ","
-        except Exception:
-            Loggy(verbose, 200, "Washing records failed. Error on record")
-    Loggy(verbose, 900, "------EXIT: PROCESSRESULTS-----")
-    return BigTable
+            loggy(200, "Job result: No records found")
+    return (data, keys)

@@ -1,0 +1,1 @@
+["Easy", "JSON","easy.json","""MATCH (n:User) RETURN n.name, n.displayname"""]

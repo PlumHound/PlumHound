@@ -4,29 +4,29 @@
 # https://github.com/PlumHound/PlumHound 
 # License GNU GPL3
 
-#Python Libraries
+# Python Libraries
 from tabulate import tabulate
 from datetime import date
 
-#Plumhound Modules
-from lib.phLoggy import Loggy as Loggy
+# Plumhound Modules
+from lib.phLoggy import loggy, log_calls
 
-def ReportIndexer(verbose,Processed_Results_List, OutPathFile, HTMLHeader, HTMLFooter, HTMLCSS):
-    Loggy(verbose, 900, "------ENTER: REPORT INDEXER-----")
 
+@log_calls
+def ReportIndexer(verbose, Processed_Results_List, OutPathFile, HTMLHeader, HTMLFooter, HTMLCSS):
     list_KeysList = ["Title", "Count", "Further Details"]
     Title = "Full Report Details"
 
-    Loggy(verbose, 100, "Beginning Output HTML:" + OutPathFile)
+    loggy(100, "Beginning Output HTML:" + OutPathFile)
 
     for entry in Processed_Results_List:
         filename = entry[2]
         entry[2] = "<a href=\"" + filename + "\">Details</a>"
 
     output = str(tabulate(Processed_Results_List, list_KeysList, tablefmt="html"))
-    output = output.replace("&lt;","<")
-    output = output.replace("&gt;",">")
-    output = output.replace("&quot;",'"')
+    output = output.replace("&lt;", "<")
+    output = output.replace("&gt;", ">")
+    output = output.replace("&quot;", '"')
 
     HTMLCSS_str = ""
     HTMLHeader_str = ""
@@ -48,13 +48,12 @@ def ReportIndexer(verbose,Processed_Results_List, OutPathFile, HTMLHeader, HTMLF
         with open(HTMLCSS, 'r') as css:
             HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
 
-    Loggy(verbose, 500, "File Writing " + OutPathFile)
+    loggy(500, "File Writing " + OutPathFile)
     output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + HTMLFooter_str + HTMLEnd_str
     fsys = open(OutPathFile, "w")
     fsys.write(output)
     fsys.close
-    Loggy(verbose, 100, "Full index report written to " + OutPathFile)
-    Loggy(verbose, 900, "------EXIT: REPORT INDEXER-----")
+    loggy(100, "Full index report written to " + OutPathFile)
     return True
 
 

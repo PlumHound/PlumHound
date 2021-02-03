@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 # PlumHound (phCLIManagement.py) - Management of Command Line Arguments
-# https://github.com/PlumHound/PlumHound 
+# https://github.com/PlumHound/PlumHound
 # License GNU GPL3
 
 # Import Python Modules
 import argparse
+
 
 def SetupArguments():
     parser = argparse.ArgumentParser(description="BloodHound Wrapper for Blue/Purple Teams; v01.070a", add_help=True, epilog="For more information see https://plumhound.DefensiveOrigins.com")
@@ -39,4 +40,3 @@ def SetupArguments():
     args = parser.parse_args()
 
     return args
-
