@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 # PlumHound (phLoggy.py) - Logging Function
-# https://github.com/PlumHound/PlumHound 
+# https://github.com/PlumHound/PlumHound
 # License GNU GPL3
 
 # Loggy Function for lazy debugging

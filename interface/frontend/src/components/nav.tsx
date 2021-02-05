@@ -12,7 +12,7 @@ export const PlumHoundNav = () => {
       alignItems="center"
     >
       <Flex flexDirection="row" justifyContent="center" alignItems="center">
-        <Image src='logo.png' h={10} rounded='full' /> 
+        <Image src='static/logo.png' h={10} rounded='full' /> 
         <Text pl={4} color="white" fontSize='2xl'>PlumHound</Text>
       </Flex>
     </Flex>

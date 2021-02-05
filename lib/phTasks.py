@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 # PlumHound (phtasks.py) - Task Management and Execution
-# https://github.com/PlumHound/PlumHound 
+# https://github.com/PlumHound/PlumHound
 # License GNU GPL3
 
 # Python Libraries
-import ast
+import json
 
 # Plumhound modules
 from lib.phLoggy import loggy, set_log_hurdle, log_calls
@@ -13,22 +13,19 @@ import lib.phDeliver
 
 # Plumhound Extensions
 import modules.BlueHound
-import modules.ph_ReportIndexer
 
 
 @log_calls
-def MakeTaskList(phArgs):
+def make_task_list(phArgs):
     set_log_hurdle(phArgs.verbose)
 
     loggy(100, "Building Task List")
 
-    tasks = []
-
     if phArgs.TaskFile:
         loggy(500, "Tasks file specified.  Reading")
         with open(phArgs.TaskFile) as f:
-            tasks = f.read().splitlines()
-        loggy(500, "TASKS: " + str(tasks))
+            tasks = json.loads(''.join(f.readlines()))
+        loggy(500, f"FOUND {len(tasks['tasks'])} TASKS")
         return tasks
 
     if phArgs.QuerySingle:
@@ -38,9 +35,17 @@ def MakeTaskList(phArgs):
         loggy(500, "Tasks-OutPath:" + phArgs.path)
         loggy(500, "Tasks-QuerySingle:" + phArgs.QuerySingle)
 
-        task_str = "[\"" + phArgs.title + "\",\"" + phArgs.OutFormat + "\",\"" + phArgs.OutFile + "\",\"" + phArgs.QuerySingle + "\"]"
-        loggy(500, "Task_str:  " + task_str)
-        tasks = [task_str]
+        task = {
+            'name': 'Single Query',
+            'type': 'query',
+            'query': phArgs.QuerySingle,
+            'format': phArgs.OutFormat,
+            'path': phArgs.OutFile
+        }
+        tasks = {
+            'name': phArgs.title,
+            'tasks': [task]
+        }
         return tasks
 
     if phArgs.BusiestPath:
@@ -60,7 +65,7 @@ def MakeTaskList(phArgs):
         else:
             snode = (phArgs.AnalyzePath[0]).upper()
             enode = (phArgs.AnalyzePath[1]).upper()
-        modules.BlueHound.getpaths(phArgs.server, phArgs.username, phArgs.password, snode, enode)
+        modules.BlueHound.get_paths(phArgs.server, phArgs.username, phArgs.password, snode, enode)
 
     if phArgs.easy:
         loggy(500, "Tasks Easy Query Specified.")
@@ -73,62 +78,88 @@ def MakeTaskList(phArgs):
 
 # Execute Tasks
 @log_calls
-def TaskExecution(tasks, phDriver, phArgs):
+def execute_tasks(tasks, phDriver, phArgs):
     loggy(500, "Begin Task Executions")
-    loggy(500, "TASKS:" + str(tasks))
+    loggy(500, f"{len(tasks['tasks'])} TASKS")
 
-    Outpath = phArgs.path
-    jobHTMLHeader = phArgs.HTMLHeader
-    jobHTMLFooter = phArgs.HTMLFooter
-    jobHTMLCSS = phArgs.HTMLCSS
+    outpath = phArgs.path
 
-    task_output_list = []
-
-    for job in tasks:
-        try:
-
-            loggy(500, "Job: " + str(job))
-
-            job_List = ast.literal_eval(job)
-            jobTitle = job_List[0]
-            jobOutFormat = job_List[1]
-            jobOutPathFile = Outpath + job_List[2]
-            jobQuery = job_List[3]
-
-            loggy(200, "Starting job: " + jobTitle)
-
-            loggy(500, "Job Title: " + jobTitle)
-            loggy(500, "Job Format: " + jobOutFormat)
-            loggy(500, "Job File: " + jobOutPathFile)
-            loggy(500, "Job Query: " + jobQuery)
-
-            if jobQuery == "REPORT-INDEX":
-                modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose, task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
-                continue
-            
-            jobresults, jobkeys = execute_query(phArgs.verbose, phDriver, jobQuery)
-            # jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
-            # print('a',jobresults_processed)
-            # try:
-            #     jobresults_processed_list = ast.literal_eval(jobresults_processed)
-            # except Exception:
-            #     loggy(200, "ERROR While parsing results (non-fatal but errors may exist in output.")
-            #     loggy(500, jobresults_processed)
-            #     jobresults_processed_list = jobresults_processed
-
-            if jobOutFormat == "HTML":
-                task_output_list.append([jobTitle, len(jobresults), job_List[2]])
-
-            loggy(500, "Exporting Job Resultes")
-            lib.phDeliver.send_it_out(phArgs.verbose, jobkeys, jobresults, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
-        except Exception as e:
-            raise e
-            loggy(200, "ERROR While running job (trying next job in list).")
+    task_output_list = [execute_task(task, phDriver, phArgs) for task in tasks['tasks']]
 
     if len(task_output_list) != 0:
         loggy(200, "Jobs:" + str(len(task_output_list)) + " jobs completed")
     else:
-        loggy(200, "ERROR - No reports found to export.")
+        loggy(200, "Error: There were no tasks to complete?")
+        return
+
+    loggy(500, "Exporting Job Results")
+
+    for result in task_output_list:
+        lib.phDeliver.send_it_out(phArgs.verbose, result['keys'], result['results'], result['format'], result['path'], outpath, result['title'])
+
+    return task_output_list
+
+
+def execute_task(task: dict, driver, args):
+    try:
+        loggy(500, "Job: " + str(task))
+
+        job_title = task.get('title', 'Task')
+        job_out_format = task.get('format', 'stdout')
+        job_out_path_file = task.get('path', 'reports')
+        job_type = task.get('type')
+
+        loggy(200, "Starting job: " + job_title)
+
+        loggy(500, "Job Title: " + job_title)
+        loggy(500, "Job Format: " + job_out_format)
+        if job_out_format != 'stdout':
+            loggy(500, "Job Out File: " + job_out_path_file)
+        loggy(500, "Job Type: " + job_type)
+
+        if job_type == 'query':
+            job_query = task['query']
+            if job_query is None:
+                raise Exception('query tasks should have a query parameter')
+            loggy(500, "Job Query: " + job_query)
+            jobresults, jobkeys = execute_query(args.verbose, driver, job_query)
+        elif job_type == 'analyze_path':
+            start = task.get('start')
+            end = task.get('end', '')
+            if start is None:
+                raise Exception('analyze_path tasks should have a start parameter')
+            else:
+                start = start.upper()
+            if start == "USER":
+                snode = "User"
+                enode = ""
+            elif start == "GROUP":
+                snode = "Group"
+                enode = ""
+            elif start == "COMPUTER":
+                snode = "Computer"
+                enode = ""
+            else:
+                snode = start.upper()
+                enode = end.upper()
+            jobresults = modules.BlueHound.get_paths(args.server, args.username, args.password, snode, enode)
+            jobkeys = []  # temporary
+            print(jobresults)
+        elif job_type == 'busiest_path':
+            method = task.get('method', 'short')
+            jobresults = modules.BlueHound.find_busiest_path(args.server, args.username, args.password, method)
+            jobkeys = []  # temporary
+
+        return {
+            'title': job_title,
+            'results': jobresults,
+            'keys': jobkeys,
+            'format': job_out_format,
+            'path': job_out_path_file
+        }
+    except Exception as e:
+        raise e
+        loggy(200, "ERROR While running job (trying next job in list).")
 
 
 # Setup Query

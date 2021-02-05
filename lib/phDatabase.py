@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 # PlumHound (phDatabase.py) Database Connection Management
-# https://github.com/PlumHound/PlumHound 
+# https://github.com/PlumHound/PlumHound
 # License GNU GPL3
 
 from neo4j import GraphDatabase

@@ -1,0 +1,20 @@
+{
+    "title": "Test Tasks",
+    "tasks": [
+        {
+            "title":"task 1",
+            "type":"query",
+            "query":"MATCH (n:User) RETURN n.name, n.displayname"
+        },
+        {
+            "title":"task 2",
+            "type":"analyze_path",
+            "start":"User"
+        },
+        {
+            "title":"task 3",
+            "type":"busiest_path",
+            "method":"all"
+        }
+    ]
+}

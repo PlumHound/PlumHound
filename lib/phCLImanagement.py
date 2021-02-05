@@ -8,7 +8,7 @@
 import argparse
 
 
-def SetupArguments():
+def parse_arguments():
     parser = argparse.ArgumentParser(description="BloodHound Wrapper for Blue/Purple Teams; v01.070a", add_help=True, epilog="For more information see https://plumhound.DefensiveOrigins.com")
     pgroupc = parser.add_argument_group('DATABASE')
     pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
@@ -27,15 +27,14 @@ def SetupArguments():
     pgroupo.add_argument("-t", "--title", dest="title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
     pgroupo.add_argument("--of", "--OutFile", dest="OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
     pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports//", type=str, help="Specify an Output Path for Reports")
-    pgroupo.add_argument("--ox", "--OutFormat", dest="OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout', 'HTML', 'CSV'])
+    pgroupo.add_argument("--ox", "--OutFormat", dest="OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout', 'HTML', 'CSV', 'JSON'])
 
-    pgrouph = parser.add_argument_group('HTML', "Options for HTML Output (For single queries or TaskLists")
-    pgrouph.add_argument("--HTMLHeader", dest="HTMLHeader", type=str, default="template//head.html", help="HTML Header (file) of Report")
-    pgrouph.add_argument("--HTMLFooter", dest="HTMLFooter", type=str, default="template//tail.html", help="HTML Footer (file) of Report")
-    pgrouph.add_argument("--HTMLCSS", dest="HTMLCSS", type=str, default="template//html.css", help="Specify a CSS template for HTML Output")
-
-    pgroupv = parser.add_argument_group('VERBOSE' "Set verbosity")
+    pgroupv = parser.add_argument_group('VERBOSE', "Set verbosity")
     pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet")
+
+    pgroupe = parser.add_argument_group('EXPORE', "View results in GUI")
+    pgroupe.add_argument("-e", "--explore",  help="Launches the web GUI.", action='store_true')
+    pgroupe.add_argument("--port",  type=int, default='7475', help="Set the port for the web GUI.")
 
     args = parser.parse_args()
 
