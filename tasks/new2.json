@@ -1,0 +1,15 @@
+{
+    "title": "Test Tasks",
+    "tasks": [
+        {
+            "title":"Users",
+            "type":"query",
+            "query":"MATCH (n:User) RETURN n.name, n.displayname"
+        },
+        {
+            "title":"Analyze from User",
+            "type":"analyze_path",
+            "start":"User"
+        }
+    ]
+}

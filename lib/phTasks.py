@@ -6,6 +6,7 @@
 
 # Python Libraries
 import json
+from neo4j import Neo4jDriver
 
 # Plumhound modules
 from lib.phLoggy import loggy, set_log_hurdle, log_calls
@@ -25,34 +26,44 @@ def make_task_list(phArgs):
         loggy(500, "Tasks file specified.  Reading")
         with open(phArgs.TaskFile) as f:
             tasks = json.loads(''.join(f.readlines()))
+            if 'name' not in tasks:
+                tasks['name'] = phArgs.title
+            if 'format' not in tasks:
+                tasks['format'] = phArgs.OutFormat
+            if 'path' not in tasks:
+                tasks['path'] = phArgs.OutFile
         loggy(500, f"FOUND {len(tasks['tasks'])} TASKS")
-        return tasks
-
-    if phArgs.QuerySingle:
+    elif phArgs.QuerySingle:
         loggy(500, "Tasks Single Query Specified. Reading")
         loggy(500, "Tasks-Title:" + phArgs.title)
         loggy(500, "Tasks-OutFormat:" + phArgs.OutFormat)
         loggy(500, "Tasks-OutPath:" + phArgs.path)
         loggy(500, "Tasks-QuerySingle:" + phArgs.QuerySingle)
 
-        task = {
-            'name': 'Single Query',
-            'type': 'query',
-            'query': phArgs.QuerySingle,
-            'format': phArgs.OutFormat,
-            'path': phArgs.OutFile
-        }
         tasks = {
             'name': phArgs.title,
-            'tasks': [task]
+            'format': phArgs.OutFormat,
+            'path': phArgs.OutFile,
+            'tasks': [{
+                'name': 'Single Query',
+                'type': 'query',
+                'query': phArgs.QuerySingle,
+            }],
         }
-        return tasks
-
-    if phArgs.BusiestPath:
+    elif phArgs.BusiestPath:
         # Find and print on screen the X Attack Paths that give the most users a path to DA
-        modules.BlueHound.find_busiest_path(phArgs.server, phArgs.username, phArgs.password, phArgs.BusiestPath[0], phArgs.BusiestPath[1])
-
-    if phArgs.AnalyzePath:
+        # modules.BlueHound.find_busiest_path(phArgs.server, phArgs.username, phArgs.password, phArgs.BusiestPath[0], phArgs.BusiestPath[1])
+        tasks = {
+            'name': phArgs.title,
+            'format': phArgs.OutFormat,
+            'path': phArgs.OutFile,
+            'tasks': [{
+                'name': 'Busiest Path',
+                'type': 'busiest_path',
+                'method': phArgs.BusiestPath[0],
+            }],
+        }
+    elif phArgs.AnalyzePath:
         if phArgs.AnalyzePath[0].upper() == "USER":
             snode = "User"
             enode = ""
@@ -65,12 +76,30 @@ def make_task_list(phArgs):
         else:
             snode = (phArgs.AnalyzePath[0]).upper()
             enode = (phArgs.AnalyzePath[1]).upper()
-        modules.BlueHound.get_paths(phArgs.server, phArgs.username, phArgs.password, snode, enode)
-
-    if phArgs.easy:
+        tasks = {
+            'name': phArgs.title,
+            'format': phArgs.OutFormat,
+            'path': phArgs.OutFile,
+            'tasks': [{
+                'name': 'Analyze Path',
+                'type': 'analyze_path',
+                'start': snode,
+                'end': enode,
+            }]
+        }
+        # modules.BlueHound.get_paths(phArgs.server, phArgs.username, phArgs.password, snode, enode)
+    elif phArgs.easy:
         loggy(500, "Tasks Easy Query Specified.")
-        tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
-        return tasks
+        tasks = {
+            'name': phArgs.title,
+            'format': phArgs.OutFormat,
+            'path': phArgs.OutFile,
+            'tasks': [{
+                'name': 'Easy Query',
+                'type': 'query',
+                'query': "MATCH (n:User) RETURN n.name, n.displayname",
+            }],
+        }
 
     loggy(100, "Tasks Generation Completed\nTasks: " + str(tasks))
     return tasks
@@ -85,6 +114,12 @@ def execute_tasks(tasks, phDriver, phArgs):
     outpath = phArgs.path
 
     task_output_list = [execute_task(task, phDriver, phArgs) for task in tasks['tasks']]
+    report = {
+        'name': tasks['name'],
+        'format': tasks['format'],
+        'path': tasks['path'],
+        'tasks': task_output_list,
+    }
 
     if len(task_output_list) != 0:
         loggy(200, "Jobs:" + str(len(task_output_list)) + " jobs completed")
@@ -95,9 +130,9 @@ def execute_tasks(tasks, phDriver, phArgs):
     loggy(500, "Exporting Job Results")
 
     for result in task_output_list:
-        lib.phDeliver.send_it_out(phArgs.verbose, result['keys'], result['results'], result['format'], result['path'], outpath, result['title'])
+        lib.phDeliver.send_it_out(phArgs.verbose, result['results'], result['format'], result['path'], outpath, result['title'], result['type'])
 
-    return task_output_list
+    return report
 
 
 def execute_task(task: dict, driver, args):
@@ -122,7 +157,7 @@ def execute_task(task: dict, driver, args):
             if job_query is None:
                 raise Exception('query tasks should have a query parameter')
             loggy(500, "Job Query: " + job_query)
-            jobresults, jobkeys = execute_query(args.verbose, driver, job_query)
+            jobresults = execute_query(args.verbose, driver, job_query)
         elif job_type == 'analyze_path':
             start = task.get('start')
             end = task.get('end', '')
@@ -143,19 +178,17 @@ def execute_task(task: dict, driver, args):
                 snode = start.upper()
                 enode = end.upper()
             jobresults = modules.BlueHound.get_paths(args.server, args.username, args.password, snode, enode)
-            jobkeys = []  # temporary
             print(jobresults)
         elif job_type == 'busiest_path':
             method = task.get('method', 'short')
             jobresults = modules.BlueHound.find_busiest_path(args.server, args.username, args.password, method)
-            jobkeys = []  # temporary
 
         return {
             'title': job_title,
-            'results': jobresults,
-            'keys': jobkeys,
             'format': job_out_format,
-            'path': job_out_path_file
+            'path': job_out_path_file,
+            'type': job_type,
+            'results': jobresults
         }
     except Exception as e:
         raise e
@@ -164,16 +197,19 @@ def execute_task(task: dict, driver, args):
 
 # Setup Query
 @log_calls
-def execute_query(verbose, phDriver, query, enabled=True) -> ([dict], [str]):
+def execute_query(verbose, phDriver: Neo4jDriver, query, enabled=True) -> ([dict], [str]):
     loggy(500, "Executing things")
 
     with phDriver.session() as session:
         loggy(500, "Running Query")
         results = session.run(query)
         data = results.data()
-        keys = results.data()
+        keys = results.keys()
         if count := len(data) > 0:
             loggy(500, "Identified " + str(count) + " Results")
         else:
             loggy(200, "Job result: No records found")
-    return (data, keys)
+    return {
+        'result': data,
+        'keys': keys
+    }

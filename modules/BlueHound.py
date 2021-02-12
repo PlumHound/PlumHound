@@ -1,7 +1,9 @@
-from py2neo import Graph
+from py2neo import Graph, Path
 
 
-def analyze_path(fneodb, fneouser, fneopass, startnode, endnode):
+def analyze_path(fneodb, fneouser, fneopass, path: Path):
+    start_node = path.start_node['name']
+    end_node = path.end_node['name']
     # This fonction is used when a start node and a and node is specified.
     query = """MATCH p=shortestpath((n {name: $snode})-[*1..]->(m {name: $enode}))
         UNWIND relationships(p) as relToOmit
@@ -11,20 +13,26 @@ def analyze_path(fneodb, fneouser, fneopass, startnode, endnode):
         WHERE path IS NULL
         RETURN startNode(relToOmit).name as snode, endNode(relToOmit).name as enode, type(relToOmit) as rel, id(relToOmit) as relId"""
     graph = Graph(fneodb, user=fneouser, password=fneopass)
-    result = graph.run(query, snode=startnode, enode=endnode)
+    result = graph.run(query, snode=start_node, enode=end_node)
     if result:
-        results = []
+        actionables = []
         while result.forward():
-            results.append({
+            actionables.append({
                 'rel': result.current["rel"],
                 'a': result.current["snode"],
                 'b': result.current["enode"],
             })
             # print("Removing the relationship", result.current["rel"], "between", result.current["snode"], "and", result.current["enode"], "breaks the path!")
-        return results
+        nodes = [{'id': node['name']} for node in path.nodes]
+        links = [{'source': rel.start_node['name'], 'target': rel.end_node['name']} for rel in path.relationships]
+        return {
+            'actionables': actionables,
+            'nodes': nodes,
+            'links': links,
+        }
     else:
         # print("There is no path between startnode and endnode")
-        return []
+        return False
 
 
 def get_paths(fneodb, fneouser, fneopass, startnode, endnode):
@@ -38,40 +46,17 @@ def get_paths(fneodb, fneouser, fneopass, startnode, endnode):
     else:
         query = 'MATCH p=ShortestPath((n {name: "%s"})-[*1..]->(m {name: "%s"})) WHERE n <> m RETURN p' % (startnode, endnode)
     paths = graph.run(query)
-    # Extract the starting & ending node of each paths and send them to be analyzed
-    path = paths.evaluate()
-    if path is None:
-        # print("---------------------------------------------------------------------")
-        # print("There is no path between", startnode, "and", endnode)
-        # print("---------------------------------------------------------------------")
-        return {
-            'path': False
-        }
-    nodes = [path.start_node]
-    results = []
-    while path is not None:
-        snode = path.start_node["name"]
-        enode = path.end_node["name"]
-        nodes.append(path.end_node)
-        # print("---------------------------------------------------------------------")
-        # print("Analyzing paths between", snode, "and", enode)
-        # print("---------------------------------------------------------------------")
-        results.append(analyze_path(fneodb, fneouser, fneopass, snode, enode))
-        path = paths.evaluate()
 
-    results = [result for result in results if len(result) > 0]
+    results = [analyze_path(fneodb, fneouser, fneopass, d['p']) for d in paths.data()]
 
-    # turn nodes into simple dicts
-    simple_nodes = [{
-        'name': node['name'],
-    } for node in nodes]
-    return {
-        'path': True,
-        'actionables': results,
-        'nodes': simple_nodes,
-    }
+    filtered_results = [result for result in results if result and len(result['actionables']) > 0]
+
+    print('fr', filtered_results)
+
+    return filtered_results
 
 
+# TODO: Need a reasonable way to limit results
 def find_busiest_path(fneodb, fneouser, fneopass, param):
     # This function counts how many principals have the same path
     # The goal is to find the path(s) which give the most users a path and focus on it to remediate
@@ -103,4 +88,4 @@ return count(distinct(u))""" % snode
         path = paths.evaluate()
     ucount.sort(reverse=True)
     print(ucount)
-    return ucount
+    return [{'count': count, 'name': name} for count, name in ucount]

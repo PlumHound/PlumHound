@@ -4,13 +4,13 @@
 # https://github.com/PlumHound/PlumHound
 # License GNU GPL3
 
-from neo4j import GraphDatabase
+from neo4j import GraphDatabase, Neo4jDriver
 from lib.phLoggy import loggy, log_calls
 
 
 # Setup Database Connection
 @log_calls
-def setup_database_conn(phArgs):
+def setup_database_conn(phArgs) -> Neo4jDriver:
     loggy(200, "[!] Attempting to connect to your Neo4j project using {}:{} @ {} {}.".format(phArgs.username, phArgs.password, phArgs.server, "[ENCRYPTED]" if phArgs.UseEnc else "[UNECNCRYPTED]"))
     try:
         if phArgs.UseEnc:
