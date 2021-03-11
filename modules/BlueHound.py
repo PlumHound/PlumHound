@@ -1,38 +1,23 @@
 from py2neo import Graph, Path
+import re
+
+
+# honestly couldn't figure out how to get the name of a relationship.
+# I thought it should just be this:
+# https://neo4j.com/docs/api/python-driver/current/api.html#neo4j.graph.Relationship.type
+# but couldn't get it to work so here we are.
+def get_rel_name(rel):
+    match = re.search(r"\[:(\w+) \{.*}\]", rel.type(rel).__name__)
+    if not match:
+        raise Exception(f'Couldn\'t parse the relationship "{rel.type(rel).__name__}"')
+    return match.group(1)
 
 
 def analyze_path(fneodb, fneouser, fneopass, path: Path):
-    start_node = path.start_node['name']
-    end_node = path.end_node['name']
-    # This fonction is used when a start node and a and node is specified.
-    query = """MATCH p=shortestpath((n {name: $snode})-[*1..]->(m {name: $enode}))
-        UNWIND relationships(p) as relToOmit
-        OPTIONAL MATCH path = shortestPath((n)-[*1..]->(m))
-        WHERE none(rel in relationships(path) WHERE rel = relToOmit)
-        WITH path, relToOmit
-        WHERE path IS NULL
-        RETURN startNode(relToOmit).name as snode, endNode(relToOmit).name as enode, type(relToOmit) as rel, id(relToOmit) as relId"""
-    graph = Graph(fneodb, user=fneouser, password=fneopass)
-    result = graph.run(query, snode=start_node, enode=end_node)
-    if result:
-        actionables = []
-        while result.forward():
-            actionables.append({
-                'rel': result.current["rel"],
-                'a': result.current["snode"],
-                'b': result.current["enode"],
-            })
-            # print("Removing the relationship", result.current["rel"], "between", result.current["snode"], "and", result.current["enode"], "breaks the path!")
-        nodes = [{'id': node['name']} for node in path.nodes]
-        links = [{'source': rel.start_node['name'], 'target': rel.end_node['name']} for rel in path.relationships]
-        return {
-            'actionables': actionables,
-            'nodes': nodes,
-            'links': links,
-        }
-    else:
-        # print("There is no path between startnode and endnode")
-        return False
+    return {
+        "links": [{'source': rel.start_node['name'], 'target': rel.end_node['name'], 'relationship': get_rel_name(rel)} for rel in path.relationships],
+        "nodes": [{'id': node['name']} for node in path.nodes],
+    }
 
 
 def get_paths(fneodb, fneouser, fneopass, startnode, endnode):
@@ -49,11 +34,48 @@ def get_paths(fneodb, fneouser, fneopass, startnode, endnode):
 
     results = [analyze_path(fneodb, fneouser, fneopass, d['p']) for d in paths.data()]
 
-    filtered_results = [result for result in results if result and len(result['actionables']) > 0]
+    # sorts results by number of nodes
+    results.sort(key=lambda r: len(r['nodes']), reverse=True)
 
-    print('fr', filtered_results)
+    # Remove paths from results that are a subpath of another
+    # destination is the same so we can start with the longest path
+    # and only add paths that start at an unvisited node
+    filtered_results = []
 
-    return filtered_results
+    visited = set()
+    for result in results:
+        if result['nodes'][0]['id'] not in visited:
+            filtered_results.append(result)
+            for node in result['nodes']:
+                visited.add(node['id'])
+
+    results = filtered_results
+
+    # inefficient, but I doubt (hope) there are no domains big enough for this to be an issue
+    most_used = []
+    for result in results:
+        for link in result['links']:
+            found = None
+            for test in most_used:
+                if test['target'] == link['target'] and test['relationship'] == link['relationship']:
+                    found = test
+                    break
+            if found is None:
+                most_used.append({
+                    'target': link['target'],
+                    'relationship': link['relationship'],
+                    'count': 1,
+                })
+            else:
+                test['count'] += 1
+
+    # sorts stats by number of uses
+    most_used.sort(key=lambda d: d['count'], reverse=True)
+
+    return {
+        "graphs": results,
+        "mostUsedRelationships": most_used
+    }
 
 
 # TODO: Need a reasonable way to limit results
@@ -87,5 +109,5 @@ return count(distinct(u))""" % snode
         ucount.append(result)
         path = paths.evaluate()
     ucount.sort(reverse=True)
-    print(ucount)
+    # print(ucount)
     return [{'count': count, 'name': name} for count, name in ucount]

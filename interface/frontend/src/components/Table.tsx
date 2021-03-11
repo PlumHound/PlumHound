@@ -1,4 +1,4 @@
-import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react"
+import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 
 export const PlumHoundTable = <T extends string>({keys, values}: {keys: T[], values: Record<T, string | number>[]}) => {
   return (
@@ -13,14 +13,14 @@ export const PlumHoundTable = <T extends string>({keys, values}: {keys: T[], val
         </Tr>
       </Thead>
       <Tbody>
-      {values.map(row => (
-        <Tr>
+      {values.map((row, i) => (
+        <Tr key={i}>
           {keys.map(key => {
             const value = row[key];
             if(typeof value === 'string'){
-              return <Td>{value}</Td>;
+              return <Td key={key}>{value}</Td>;
             } else {
-              return <Td isNumeric={true}>{value}</Td>;
+              return <Td isNumeric={true} key={key}>{value}</Td>;
             }
           })}
         </Tr>

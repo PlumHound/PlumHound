@@ -31,7 +31,7 @@ def make_task_list(phArgs):
             if 'format' not in tasks:
                 tasks['format'] = phArgs.OutFormat
             if 'path' not in tasks:
-                tasks['path'] = phArgs.OutFile
+                tasks['path'] = phArgs.OutPath
         loggy(500, f"FOUND {len(tasks['tasks'])} TASKS")
     elif phArgs.QuerySingle:
         loggy(500, "Tasks Single Query Specified. Reading")
@@ -43,7 +43,7 @@ def make_task_list(phArgs):
         tasks = {
             'name': phArgs.title,
             'format': phArgs.OutFormat,
-            'path': phArgs.OutFile,
+            'path': phArgs.OutPath,
             'tasks': [{
                 'name': 'Single Query',
                 'type': 'query',
@@ -56,7 +56,7 @@ def make_task_list(phArgs):
         tasks = {
             'name': phArgs.title,
             'format': phArgs.OutFormat,
-            'path': phArgs.OutFile,
+            'path': phArgs.OutPath,
             'tasks': [{
                 'name': 'Busiest Path',
                 'type': 'busiest_path',
@@ -79,7 +79,7 @@ def make_task_list(phArgs):
         tasks = {
             'name': phArgs.title,
             'format': phArgs.OutFormat,
-            'path': phArgs.OutFile,
+            'path': phArgs.OutPath,
             'tasks': [{
                 'name': 'Analyze Path',
                 'type': 'analyze_path',
@@ -93,7 +93,7 @@ def make_task_list(phArgs):
         tasks = {
             'name': phArgs.title,
             'format': phArgs.OutFormat,
-            'path': phArgs.OutFile,
+            'path': phArgs.OutPath,
             'tasks': [{
                 'name': 'Easy Query',
                 'type': 'query',
@@ -111,8 +111,6 @@ def execute_tasks(tasks, phDriver, phArgs):
     loggy(500, "Begin Task Executions")
     loggy(500, f"{len(tasks['tasks'])} TASKS")
 
-    outpath = phArgs.path
-
     task_output_list = [execute_task(task, phDriver, phArgs) for task in tasks['tasks']]
     report = {
         'name': tasks['name'],
@@ -129,8 +127,7 @@ def execute_tasks(tasks, phDriver, phArgs):
 
     loggy(500, "Exporting Job Results")
 
-    for result in task_output_list:
-        lib.phDeliver.send_it_out(phArgs.verbose, result['results'], result['format'], result['path'], outpath, result['title'], result['type'])
+    lib.phDeliver.send_it_out(phArgs.verbose, report)
 
     return report
 
@@ -178,7 +175,6 @@ def execute_task(task: dict, driver, args):
                 snode = start.upper()
                 enode = end.upper()
             jobresults = modules.BlueHound.get_paths(args.server, args.username, args.password, snode, enode)
-            print(jobresults)
         elif job_type == 'busiest_path':
             method = task.get('method', 'short')
             jobresults = modules.BlueHound.find_busiest_path(args.server, args.username, args.password, method)

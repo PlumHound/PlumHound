@@ -15,8 +15,9 @@ function App() {
     reloadReports();
   }, []);
 
-  const reloadReports = async () => { // wrapped like this because effects have a poor type declaration
+  const reloadReports = async () => {
     const ress = await fetch('/api/tasks').then(r => r.json());
+    console.log(ress)
     setResults(ress);
     setChosenTaskIndex(0);
   }

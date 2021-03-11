@@ -11,5 +11,7 @@
             "type":"analyze_path",
             "start":"User"
         }
-    ]
+    ],
+    "path": "reports/new2.json",
+    "format": "JSON"
 }

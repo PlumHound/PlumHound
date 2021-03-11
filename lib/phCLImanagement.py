@@ -25,8 +25,7 @@ def parse_arguments():
 
     pgroupo = parser.add_argument_group('OUTPUT', "Output Options (For single cypher queries only. --These options are ignored when -x or --easy is specified.")
     pgroupo.add_argument("-t", "--title", dest="title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
-    pgroupo.add_argument("--of", "--OutFile", dest="OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
-    pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports//", type=str, help="Specify an Output Path for Reports")
+    pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports//PlumHoundReport", type=str, help="Specify an Output Path for Reports")
     pgroupo.add_argument("--ox", "--OutFormat", dest="OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout', 'HTML', 'CSV', 'JSON'])
 
     pgroupv = parser.add_argument_group('VERBOSE', "Set verbosity")

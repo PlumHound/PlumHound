@@ -14,7 +14,7 @@ export type Result<T extends ResultType> = {
     query: QueryResultData,
     analyze_path: AnalyzeResultData,
     busiest_path: BusiestResultData,
-  }[T]
+  }[T],
 }
 
 export type AnyResult = Result<ResultType>;
@@ -25,19 +25,26 @@ export type QueryResultData = {
 }
 
 export type AnalyzeResultData = {
-  actionables: {
-    a: string,
-    b: string,
-    rel: string,
-  }[],
+  graphs: AnalyzeResultDataGraph[],
+  mostUsedRelationships: AnalyzeResultDataCommonRelation[]
+}
+
+export type AnalyzeResultDataGraph = {
   nodes: {
     id: string,
   }[],
   links: {
     source: string,
     target: string,
+    relationship: string,
   }[]
-}[]
+}
+
+export type AnalyzeResultDataCommonRelation = {
+  count: number,
+  target: string,
+  relationship: string,
+}
 
 export type BusiestResultData = {
   count: number,
