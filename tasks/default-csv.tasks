@@ -11,7 +11,7 @@
 ["LocalAdminGroups", "CSV", "LocalAdmin_Groups.CSV", "MATCH p=(m:Group)-[r:AdminTo]->(n:Computer) RETURN m.name as Group, n.name as Computer ORDER BY m.name" ]
 ["LocalAdminGroupsCount", "CSV", "LocalAdmin_Groups_Count.CSV", "MATCH p=(m:Group)-[r:AdminTo]->(n:Computer) RETURN m.name as Group, count(*) as Computer ORDER BY Computer DESC"]
 ["LocalAdminUsers", "CSV","LocalAdmin_Users.CSV","MATCH p=(m:User)-[r:AdminTo]->(n:Computer) RETURN m.name as User, n.name as Computer ORDER BY m.name"]
-["LocalAdminUsers", "CSV", "LocalAdmin_Users.CSV", "MATCH p=(m:User)-[r:AdminTo]->(n:Computer) RETURN m.name as User, count(*) as Computer ORDER BY Computer DESC" ]
+["LocalAdminUsersCount", "CSV", "LocalAdmin_Users_Count.CSV", "MATCH p=(m:User)-[r:AdminTo]->(n:Computer) RETURN m.name as User, count(*) as Computer ORDER BY Computer DESC" ]
 ["Users Sessions", "CSV", "Users_Sessions.CSV", "MATCH p=(n:User)--(c:Computer)-[:HasSession]->(n) return n.name as User,  c.name as Computer ORDER BY n.name"]
 ["Cross Domain Relationships", "CSV", "CrossDomainRelationships.CSV", "MATCH (n)-[r]->(m) WHERE NOT n.domain = m.domain RETURN LABELS(n)[0] as Dom1Object ,n.name as Object1 ,TYPE(r) as Relationship ,LABELS(m)[0] as Dom2Object,m.name as Object2"]
 ["DA Sessions","CSV","DA_Sessions.CSV","MATCH (n:User)-[:MemberOf]->(g:Group) WHERE g.objectid ENDS WITH \'-512\' MATCH p = (c:Computer)-[:HasSession]->(n) return n.name as Username, c.name as Computer"]
