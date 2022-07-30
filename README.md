@@ -53,38 +53,42 @@ The sample reports are from a BadBlood created AD environment that does not incl
 ![PlumHound](https://raw.githubusercontent.com/DefensiveOrigins/PlumHound/master/docs/images/Workstations_UnrestrainedDelegation.png)
 * This is a screenshot of an earlier report version.  New versions include Title, Header etc.
 
+------
 
 ## PlumHound Examples
 Use the default username, password, server, and execute the "Easy" task, to test connectivity.  This will output all Active Directory user objects from the Neo4J database.
-
-```plaintext
+```shell
 python3 PlumHound.py --easy
 ```
-
-Execute PlumHound with the Default TaskList using Default Credentials and Database.
-```plaintext
+### Default Task List and Default Credentials 
+Execute PlumHound with the Default TaskList using Default Credentials (neo4j:neo4jj) and Database.
+```shell
 python3 PlumHound.py -x tasks/default.tasks
-
 ```
+### Default Task List, Specified Neo4j Server and Quiet Output
 The same, but quiet the output (-v 0), specify the Neo4J server, useranme, and password instead of using defaults.
-```plaintext
+```shell
 python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4jj" -v 0
 ```
 
-Execute the Path Analyzer external function.  
+### Execute the Path Analyzer external function.  
 
-Option #1 using label. The supported labels are `User`, `Group`, `Computer`, `OU` and `GPO`. This function will assume the target group is "DOMAIN ADMINS".
-```plaintest
+#### Option #1
+Using label. The supported labels are `User`, `Group`, `Computer`, `OU` and `GPO`. This function will assume the target group is "DOMAIN ADMINS".
+
+```shell
 python3 PlumHound.py -ap user
 ```
 **NOTE:** The above syntax implies you are using the default values for `sever`, `user` and `password` or that you have hardcoded them in the script.  
 
-Option #2 specify `start node` and `end node` 
-```plaintest
+#### Option #2 
+specify `start node` and `end node` 
+```shell
 python3 PlumHound.py -ap "domain users@example.com" "domain admins@example.com"
 ```
 **NOTE:** To use BlueHound Path Analyzer logic you need to get a copy of the Python script from https://github.com/scoubi/BlueHound  
 
+-----
 
 ## Detailed PlumHound Syntax
 ```plaintext
@@ -306,9 +310,10 @@ By default, PlumHound generates a log in file log\PlumHound.log
 
 
 # Installation Requirements (python 3.7/3.8)
-* apt-get install python3
-* pip3 install -r requirements.txt
-
+```shell
+apt-get install python3
+pip3 install -r requirements.txt
+```
 
 # Environment Setup Instructions
 * Install Neo4JS
@@ -316,6 +321,9 @@ By default, PlumHound generates a log in file log\PlumHound.log
 * Import AD dataset into BloodhoundAD to be parsed
 * Use PlumHound to Report 
 
+# Known Issues
+- Python 3.10 causes some issues - Upated checker to WARN users if 3.10 is detected.
+- Reporting in Window may have some unexpected results. https://github.com/PlumHound/PlumHound/issues/19#issue-750128037
 
 # Collaboration
 Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've created the initial proof of concept and are committed to continuing the maturity of PlumHound to leverage the power of BloodHoundAD into continual security improvement processes.  Community involvement is what makes this industry great!  
@@ -326,5 +334,5 @@ Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've create
 * Mathieu Saulnier | Scoubi
 
 
-## License
+# License
 [GNU GPL3](https://github.com/DefensiveOrigins/PlumHound/blob/master/LICENSE) 
