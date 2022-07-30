@@ -79,9 +79,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
     Loggy(verbose,900, "------EXIT: SENDITOUT-----")
 
 def ReplaceHTMLReportVars(InputStr, Title):
-    Loggy(verbose,999, "------ENTER: ReplaceHTMLReportVars-----")
     now=datetime.now()
     sOutPut = InputStr.replace("--------PH_TITLE-------", str(Title))
     sOutPut = sOutPut.replace("--------PH_DATE-------", str(now.strftime("%Y-%m-%d %H:%M:%S")))
-    Loggy(verbose,999, "------EXIT: ReplaceHTMLReportVars-----")
     return sOutPut
