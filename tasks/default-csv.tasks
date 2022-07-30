@@ -37,3 +37,4 @@
 ["Users Sessions", "CSV", "Users_Sessions.CSV", "MATCH p=(c:Computer)-[r:HasSession]->(n:User) return n.name as User, c.name as Computer, c.operatingsystem as OS ORDER BY n.name"]
 ["Users Sessions Count", "CSV", "Users_Sessions_Count.CSV", "MATCH p=(m:Computer)-[r:HasSession]->(n:User) RETURN n.name as User, count(*) as Computers ORDER BY Computers DESC"]
 ["Computers that have a Session", "CSV", "Computer_Sessions.CSV", "MATCH p=(m:Computer)-[r:HasSession]->(n:User) RETURN m.name as Computer, m.operatingsystem as OS"]
+["Users without Logon in past 6 Months","CSV","UsersNoRecentLogon.csv","WITH timestamp() / 1000 AS date_now MATCH (n:User) WHERE date_now - toInteger(n.lastlogontimestamp) > 15552000 AND n.lastlogontimestamp<>-1.0 RETURN n.name as Username, n.displayname as DisplayName, toInteger(n.lastlogontimestamp) as LastLogonTimeStamp"]
