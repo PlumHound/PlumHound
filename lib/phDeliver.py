@@ -15,7 +15,7 @@ from datetime import date
 from lib.phLoggy import Loggy as Loggy
 
 
-def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS):
+def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery):
     Loggy(verbose,900, "------ENTER: SENDITOUT-----")
     # Quick fix if keys returned no records to properly rebuild the keys list of 0, instead of int(0)
     if isinstance(list_KeysList, int):
@@ -47,6 +47,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         Loggy(verbose,100, "Beginning Output HTML:" + OutFile)
 
         output = tabulate(Processed_Results_List, list_KeysList, tablefmt="html")
+        outputq = "<br><table width=50%><thead><tr><th>Cypher Query</th></tr></thead><tr><td><tt>"+jobQuery+"</tt></td></tr></table>"
         HTMLCSS_str = ""
         HTMLHeader_str = ""
         HTMLFooter_str = ""
@@ -68,7 +69,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
                 HTMLCSS_str = "<style>\n" + css.read() + "\n</style>"
 
         Loggy(verbose,500, "File Writing " + OutPath + OutFile)
-        output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + HTMLFooter_str + HTMLEnd_str
+        output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + outputq + HTMLFooter_str + HTMLEnd_str
         fsys = open(OutPath + OutFile, "w")
         fsys.write(output)
         fsys.close
