@@ -29,6 +29,7 @@
 ["Servers in OUs","HTML","ServersInOUs.html","MATCH (o:OU)-[:Contains]->(c:Computer) WHERE toUpper(c.operatingsystem) STARTS WITH 'WINDOWS SERVER' RETURN o.name as OU,c.name as Computer,c.operatingsystem as OS"]
 ["Operating Systems Count","HTML","OperatingSystemCount.html","MATCH (c:Computer) RETURN c.operatingsystem aS OS, count(*) as Computers ORDER BY Computers DESC"]
 ["LAPS Deployment Count","HTML","LapsDeploymentCount.html","MATCH (c:Computer) RETURN c.haslaps as LAPSEnabled, count(*) as Computers ORDER BY Computers DESC"]
+["LAPS Deployment OS Count","HTML","LapsDeploymentCount-OS.html","MATCH (c:Computer) RETURN c.haslaps as LAPSEnabled, c.operatingsystem as OS, count(*) as Computers ORDER BY LAPSEnabled DESC, Computers DESC"]
 ["LAPS Not Enabled","HTML","LAPSNotEnabled.html","MATCH (c:Computer) WHERE c.haslaps=false RETURN c.name as Computer, c.enabled as Enabled, c.operatingsystem as OS, c.description as Descirption ORDER BY Computer"]
 ["Domain List","HTML","Domains.html","MATCH (n:Domain) return n.name as Domain, n.functionallevel as FunctionalLevel, n.highvalue as HighValue, n.domain as DNS"]
 ["Operating Systems Unsupported","HTML","OperatingSystemUnsupported.html","MATCH (c:Computer) WHERE c.operatingsystem =~ '.*(2000|2003|2008|xp|vista|7|me).*' RETURN c.name as Computer, c.operatingsystem as UnsupportedOS, c.enabled as Enabled"]
