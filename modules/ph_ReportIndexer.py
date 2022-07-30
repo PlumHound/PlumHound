@@ -18,7 +18,7 @@ def ReportIndexer(verbose,Processed_Results_List, OutPathFile, HTMLHeader, HTMLF
     list_KeysList = ["Title", "Count", "Further Details"]
     Title = "Full Report Details"
 
-    Loggy(verbose,100, "Beginning Output HTML:" + OutPathFile)
+    Loggy(verbose,200, "Beginning Output HTML:" + OutPathFile)
 
     for entry in Processed_Results_List:
         filename = entry[2]
