@@ -132,7 +132,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                 task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
 
             Loggy(phArgs.verbose,500, "Exporting Job Resultes")
-            lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+            lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
         except Exception:
             Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
 
