@@ -9,11 +9,10 @@ import sys
 import ast
 import csv
 from tabulate import tabulate
-from datetime import date
+from datetime import datetime
 
 #Plumhound Modules
 from lib.phLoggy import Loggy as Loggy
-
 
 def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery):
     Loggy(verbose,900, "------ENTER: SENDITOUT-----")
@@ -38,9 +37,11 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         return True
 
     if OutFormat == "STDOUT":
+        Loggy(verbose,500, "Beginning Standard Output:")
         print()
         output = tabulate(Processed_Results_List, list_KeysList, tablefmt="simple")
         print(output)
+        print()
         return True
 
     if OutFormat == "HTML":
@@ -72,11 +73,15 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + outputq + HTMLFooter_str + HTMLEnd_str
         fsys = open(OutPath + OutFile, "w")
         fsys.write(output)
+        Loggy(verbose,500, "File Closing " + OutPath + OutFile)
         fsys.close
         return True
     Loggy(verbose,900, "------EXIT: SENDITOUT-----")
 
 def ReplaceHTMLReportVars(InputStr, Title):
+    Loggy(verbose,999, "------ENTER: ReplaceHTMLReportVars-----")
+    now=datetime.now()
     sOutPut = InputStr.replace("--------PH_TITLE-------", str(Title))
-    sOutPut = sOutPut.replace("--------PH_DATE-------", str(date.today()))
+    sOutPut = sOutPut.replace("--------PH_DATE-------", str(now.strftime("%Y-%m-%d %H:%M:%S")))
+    Loggy(verbose,999, "------EXIT: ReplaceHTMLReportVars-----")
     return sOutPut
