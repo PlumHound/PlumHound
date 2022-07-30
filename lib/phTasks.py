@@ -22,7 +22,7 @@ import modules.ph_ReportIndexer
 
 def MakeTaskList(phArgs):
     Loggy(phArgs.verbose,900, "------ENTER: MAKETASKLIST-----")
-    Loggy(phArgs.verbose,100, "Building Task List")
+    Loggy(phArgs.verbose,200, "Building Task List")
 
     tasks = []
 
@@ -31,6 +31,7 @@ def MakeTaskList(phArgs):
         with open(phArgs.TaskFile) as f:
             tasks = f.read().splitlines()
         Loggy(phArgs.verbose,500, "TASKS: " + str(tasks))
+        Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
         return tasks
 
     if phArgs.QuerySingle:
@@ -43,6 +44,7 @@ def MakeTaskList(phArgs):
         task_str = "[\"" + phArgs.title + "\",\"" + phArgs.OutFormat + "\",\"" + phArgs.OutFile + "\",\"" + phArgs.QuerySingle + "\"]"
         Loggy(phArgs.verbose,500, "Task_str:  " + task_str)
         tasks = [task_str]
+        Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
         return tasks
 
     if phArgs.BusiestPath:
@@ -67,6 +69,7 @@ def MakeTaskList(phArgs):
     if phArgs.easy:
         Loggy(phArgs.verbose,500, "Tasks Easy Query Specified.")
         tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
+        Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
         return tasks
 
     Loggy(phArgs.verbose,100, "Tasks Generation Completed\nTasks: " + str(tasks))
