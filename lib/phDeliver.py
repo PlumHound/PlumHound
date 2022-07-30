@@ -45,8 +45,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         return True
 
     if OutFormat == "HTML":
-        Loggy(verbose,100, "Beginning Output HTML:" + OutFile)
-
+        Loggy(verbose,500, "Beginning Output HTML:" + OutFile)
         output = tabulate(Processed_Results_List, list_KeysList, tablefmt="html")
         outputq = "<br><table width=50%><thead><tr><th>Cypher Query</th></tr></thead><tr><td><tt>"+jobQuery+"</tt></td></tr></table>"
         HTMLCSS_str = ""
@@ -73,6 +72,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + outputq + HTMLFooter_str + HTMLEnd_str
         fsys = open(OutPath + OutFile, "w")
         fsys.write(output)
+        Loggy(verbose,100, "Task " + Title + " Complete: " + OutFile)
         Loggy(verbose,500, "File Closing " + OutPath + OutFile)
         fsys.close
         return True
