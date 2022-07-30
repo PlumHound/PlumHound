@@ -14,5 +14,5 @@ def CheckPython():
     if sys.hexversion > 0x3090000:
         print()
         print('WARN: Python hexversion %s is in use.' % hex(sys.hexversion))
-        print('WARN: Plumhound may have unexpected behavior. Use > 0x3000000 < 0x3100000')
+        print('WARN: Plumhound may have unexpected behavior. Use > 0x3000000 < 0x30a0000')
         print()
