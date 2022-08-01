@@ -336,3 +336,6 @@ Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've create
 
 # License
 [GNU GPL3](https://github.com/DefensiveOrigins/PlumHound/blob/master/LICENSE) 
+
+# Additional Inclusions:
+* table-sort-js https://github.com/LeeWannacott/table-sort-js provides sorting for HTML reports (in templates/head.html).
