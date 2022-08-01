@@ -66,9 +66,9 @@ function tableSortJs(testingTableSortJS = false, domDocumentWindow = document) {
     const arrowUp = " ▲";
     const arrowDown = " ▼";
 
-    if (desc && tableArrows) {
+    if (desc) {
       th.insertAdjacentText("beforeend", arrowDown);
-    } else if (tableArrows) {
+    } else {
       th.insertAdjacentText("beforeend", arrowUp);
     }
 
