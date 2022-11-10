@@ -77,6 +77,8 @@ Hence, PlumHound was created out of a need to retrieve consumable data from Bloo
 | ![](docs/images/report4.png) |
 |------------------------------|
 
+| ![](docs/images/report5.png) |
+|------------------------------|
 ------
 
 # PlumHound Examples
