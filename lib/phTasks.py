@@ -49,7 +49,8 @@ def MakeTaskList(phArgs):
         tasks = [task_str]
         Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
         Loggy(phArgs.verbose,100, "--------------------------------------")
-        Loggy(phArgs.verbose,100, "--------------------------------------")
+        Loggy(phArgs.verbose,90, "")
+        Loggy(phArgs.verbose,90, "")
         return tasks
 
     if phArgs.BusiestPath:
