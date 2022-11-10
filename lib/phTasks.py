@@ -13,8 +13,6 @@ from datetime import date
 from neo4j import GraphDatabase
 from neo4j import unit_of_work
 
-
-
 #Plumhound modules
 from lib.phLoggy import Loggy as Loggy
 import lib.phDeliver
@@ -97,9 +95,8 @@ def TaskExecution(tasks, phDriver, phArgs):
     jobHTMLCSS = phArgs.HTMLCSS
 
     task_output_list = []
-
-
-    with alive_bar(len(tasks)) as tpbar:
+         
+    with alive_bar(len(tasks),title='Executing Tasks',length=50,theme='smooth',dual_line=True,monitor="Tasks {count} / {total} ") as tpbar:
         for job in tasks:
             tpbar()
             try:
@@ -110,6 +107,8 @@ def TaskExecution(tasks, phDriver, phArgs):
                 jobOutFormat = job_List[1]
                 jobOutPathFile = Outpath + job_List[2]
                 jobQuery = job_List[3]
+
+                tpbar.text(jobTitle)
 
                 Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
 

@@ -72,7 +72,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         output = HTMLPre_str + HTMLCSS_str + HTMLMId_str + HTMLHeader_str + output + outputq + HTMLFooter_str + HTMLEnd_str
         fsys = open(OutPath + OutFile, "w")
         fsys.write(output)
-        Loggy(verbose,100, "Task " + Title + " Complete: " + OutFile)
+        Loggy(verbose,150, "Task " + Title + " Complete: " + OutFile)
         Loggy(verbose,500, "File Closing " + OutPath + OutFile)
         fsys.close
         return True
