@@ -216,6 +216,29 @@ The TaskList file syntax is as follows. Note that any cypher query containing a 
 ## TaskList Sample: default.tasks
 The default.tasks file includes multiple tasks that instruct PlumHound to create reports using the specified "HTML" output format, output filename, and specific BloodHoundAD Neo4JS cypher Query. 
 
+```
+$  PlumHound.py -x tasks/default.tasks
+
+        PlumHound 1.4
+        For more information: https://github.com/plumhound
+        --------------------------------------
+        Server: bolt://localhost:7687
+        User: neo4j
+        Password: *****
+        Encryption: False
+        Timeout: 300
+        --------------------------------------
+        Tasks: Task File
+        TaskFile: tasks/default.tasks
+        Found 70 task(s)
+        --------------------------------------
+
+         Executing Tasks |██████████████████████████████████████████████████| Tasks 70 / 70  in 2.1s (33.35/s)
+
+        Completed 70 of 70 tasks.
+
+```
+
 
 # Report Indexer Module
 The report indexer builds an HTML report of all the completed jobs.  Add the following job to a task list.
