@@ -65,23 +65,17 @@ Hence, PlumHound was created out of a need to retrieve consumable data from Bloo
 ## Sample Reports
  Sample reports are no longer included within the repository.  However, the default tasks tasklist will produce reports with ease.  Here are a sample of some less-exciting reports generated from a small lab environment.
 
-| ![](docs/images/report1.png) |
-|------------------------------|
+ ![](docs/images/report1.png) 
 
-| ![](docs/images/report2.png) |
-|------------------------------|
+ ![](docs/images/report2.png) 
 
-| ![](docs/images/report3.png) |
-|------------------------------|
+ ![](docs/images/report3.png) 
 
-| ![](docs/images/report4.png) |
-|------------------------------|
+ ![](docs/images/report4.png) 
 
-| ![](docs/images/report5.png) |
-|------------------------------|
-------
+ ![](docs/images/report5.png) 
 
-# PlumHound Examples
+ # PlumHound Examples
 Use the default username, password, server, and execute the "Easy" task, to test connectivity.  This will output all Active Directory user objects from the Neo4J database.
 ```shell
 python3 PlumHound.py --easy
@@ -276,8 +270,7 @@ For more information on the tasks file, see the section above.
 
 
 
-| ![](docs/images/ph14.gif) |
-|------------------------------|
+ ![](docs/images/ph14.gif) 
 
 
 
