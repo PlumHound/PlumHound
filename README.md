@@ -12,29 +12,44 @@ PlumHound operates by wrapping BloodHoundAD's powerhouse graphical Neo4J backend
 * [Background](#background)
 * [Sample Reports](#sample-reports)
 * [PlumHound Examples](#plumhound-examples)
-* [Detailed PlumHound Syntax](#detailed-plumhound-syntax)
+	* [Default Task List and Default Credentials](#default-task-list-and-default-credentials)
+	* [Default Task List, Specified Neo4j Server and Quiet Output](#default-task-list-specified-neo4j-server-and-quiet-output)
+	* [Path Analyzer (BlueHound Module)](#path-analyzer-bluehound-module)
+		* [Option #1](#option-1)
+		* [Option #2](#option-2)
+	* [Busiest Path (BlueHound Module)](#busiest-path-bluehound-module)
+		* [Busiest Shortest Path to DA](#busiest-shortest-path-to-da)
+		* [Busiest All Path to DA](#busiest-all-path-to-da)
+	* [Detailed PlumHound Syntax](#detailed-plumhound-syntax)
 * [Database Connection](#database-connection)
 * [HTML Report Design Output and Variables](#html-report-design-output-and-variables)
 * [TaskList Files](#tasklist-files)
 	* [TaskList File Syntax](#tasklist-file-syntax)
 	* [TaskList Sample: default.tasks](#tasklist-sample-defaulttasks)
-* [Report Indexer Module](#report-indexer-module)
-	* [Report Indexer Task Syntax](#report-indexer-task-syntax)
-* [BlueHound Module](#bluehound-module)
-	* [Busiest Path](#busiest-path)
-	* [Analyze Path](#analyze-path)
+* [Execution Modes](#execution-modes)
+	* [Tasks Mode](#tasks-mode)
+	* [Single Query Mode](#single-query-mode)
+		* [Single Query with Standard Output (Normal Verbosity)](#single-query-with-standard-output-normal-verbosity)
+		* [Single Query with Standard Output (Quiet)](#single-query-with-standard-output-quiet)
+	* [Busiest Path (BlueHound Module)](#busiest-path-bluehound-module-1)
+	* [Analyze Path (BlueHound Module)](#analyze-path-bluehound-module)
+* [Additional Modules](#additional-modules)
+	* [Report Indexer Moodule](#report-indexer-moodule)
+		* [Report Indexer Task Syntax](#report-indexer-task-syntax)
 * [Logging](#logging)
-* [Hat-Tips &amp; Acknowledgements](#hat-tips--acknowledgements)
+* [Hat-Tips &amp; Acknowledgments](#hat-tips--acknowledgments)
 * [Presentations](#presentations)
 * [Installation Requirements (python 3.7/3.8)](#installation-requirements-python-3738)
 * [Environment Setup Instructions](#environment-setup-instructions)
+* [Known Issues](#known-issues)
 * [Collaboration](#collaboration)
-	* [License](#license)
+* [License](#license)
+* [Additional Inclusions:](#additional-inclusions)
 
 <!-- End Document Outline -->
 
 ## Release and call to Action
-The initial PlumHound code was released on May 14th, 2020 during a Black Hills Information Security webcast, A Blue Teams Perspective on Red Team Tools.  The webcast was recorded and is available on YouTube. [A Blue Team's Perspetive on Red Team Tools](https://youtu.be/0mIN2OU5hQEs).
+The initial PlumHound code was released on May 14th, 2020 during a Black Hills Information Security webcast, A Blue Teams Perspective on Red Team Tools.  The webcast was recorded and is available on YouTube. [A Blue Team's Perspective on Red Team Tools](https://youtu.be/0mIN2OU5hQEs).
 
 
 The PlumHound Framework yields itself to community involvement in the creation and proliferation of "TaskLists" (work) that can be shared and used across different organizations.  TaskLists contain jobs for PlumHound to do (queries to run, reports to write).  A second PlumHound community repo has been created to allow for the open sharing of TaskLists (see [Plumhound-Tasks](https://github.com/DefensiveOrigins/PlumHound-Tasks))
@@ -55,38 +70,53 @@ The sample reports are from a BadBlood created AD environment that does not incl
 
 ------
 
-## PlumHound Examples
+# PlumHound Examples
 Use the default username, password, server, and execute the "Easy" task, to test connectivity.  This will output all Active Directory user objects from the Neo4J database.
 ```shell
 python3 PlumHound.py --easy
 ```
-### Default Task List and Default Credentials 
+## Default Task List and Default Credentials 
 Execute PlumHound with the Default TaskList using Default Credentials (neo4j:neo4jj) and Database.
 ```shell
 python3 PlumHound.py -x tasks/default.tasks
 ```
-### Default Task List, Specified Neo4j Server and Quiet Output
-The same, but quiet the output (-v 0), specify the Neo4J server, useranme, and password instead of using defaults.
+## Default Task List, Specified Neo4j Server and Quiet Output
+The same, but quiet the output (-v 0), specify the Neo4J server, username, and password instead of using defaults.
 ```shell
 python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4jj" -v 0
 ```
 
-### Execute the Path Analyzer external function.  
+## Path Analyzer (BlueHound Module) 
 
-#### Option #1
+### Option #1
 Using label. The supported labels are `User`, `Group`, `Computer`, `OU` and `GPO`. This function will assume the target group is "DOMAIN ADMINS".
 
 ```shell
 python3 PlumHound.py -ap user
 ```
-**NOTE:** The above syntax implies you are using the default values for `sever`, `user` and `password` or that you have hardcoded them in the script.  
+**NOTE:** The above syntax implies you are using the default values for `sever`, `user` and `password` or that you have hard-coded them in the script.  
 
-#### Option #2 
+### Option #2 
 specify `start node` and `end node` 
 ```shell
 python3 PlumHound.py -ap "domain users@example.com" "domain admins@example.com"
 ```
 **NOTE:** To use BlueHound Path Analyzer logic you need to get a copy of the Python script from https://github.com/scoubi/BlueHound  
+
+## Busiest Path (BlueHound Module)
+The Busiest Path(s) function takes two parameters 
+
+### Busiest Shortest Path to DA
+Find the shortest path that give users Domain Admin (top 5)
+```
+PlumHound.py -bp short 5
+```
+
+### Busiest All Path to DA
+Find the busiest path irregardless of length (top 5) to give users Domain Admin
+```
+PlumHound.py -bp all 5
+```
 
 -----
 
@@ -215,6 +245,24 @@ The TaskList file syntax is as follows. Note that any cypher query containing a 
 
 ## TaskList Sample: default.tasks
 The default.tasks file includes multiple tasks that instruct PlumHound to create reports using the specified "HTML" output format, output filename, and specific BloodHoundAD Neo4JS cypher Query. 
+See the Tasks mode below in the Execution modes section for additional information. 
+```
+PlumHound.py -x tasks/default.tasks
+```
+
+
+# Execution Modes
+
+There are multiple execution modes to get PlumHound to do work. 
+* Tasks Mode
+* Single Query Mode
+* BusiestPath Mode (BlueHound Module)
+* AnalyzePath Mode (BlueHound Module)
+
+## Tasks Mode
+By specifying a task list, PlumHound can be programmed to run multiple cypher queries and export to multiple formats.
+For more information on the tasks file, see the section above.
+
 
 ```
 $  PlumHound.py -x tasks/default.tasks
@@ -240,27 +288,84 @@ $  PlumHound.py -x tasks/default.tasks
 ```
 
 
-# Report Indexer Module
-The report indexer builds an HTML report of all the completed jobs.  Add the following job to a task list.
-The parameter = "REPORT-INDEX" instructs PlumHound to generate an HTML index of all the successfully exported tasks in that run of tasks. 
 
-## Report Indexer Task Syntax
+## Single Query Mode
+This mode allows you to run a single query and export to standard output, HTML, or CSV.
+
+### Single Query with Standard Output (Normal Verbosity)
 
 ```
-["Report Index","HTML","Reports.html","REPORT-INDEX"]
+PlumHound.py -q "MATCH (n:User) RETURN n.name, n.displayname LIMIT 10"
+
+       PlumHound 1.4
+        For more information: https://github.com/plumhound
+        --------------------------------------
+        Server: bolt://localhost:7687
+        User: neo4j
+        Password: *****
+        Encryption: False
+        Timeout: 300
+        --------------------------------------
+        Task: Single Query
+        Query Title: Adhoc Query
+        Query Format: STDOUT
+        Query Path: reports//
+on 1:
+on 1: n.name                    n.displayname
+      ------------------------  ----------------
+      ASADMIN@ASAZLAB.COM
+      KRBTGT@ASAZLAB.COM
+      GUEST@ASAZLAB.COM
+      DATAANALYST@ASAZLAB.COM   HelpdeskUser
+      HELPDESKUSER@ASAZLAB.COM  HelpdeskUser
+      FILEADMIN@ASAZLAB.COM     FileServiceAdmin
+      CHARLIEADMIN@ASAZLAB.COM  ITAdmin
+      ITADMIN@ASAZLAB.COM       ITAdmin
+      SSILVER@ASAZLAB.COM       Silver Sandy
+on 1:
+         Executing Tasks |██████████████████████████████████████████████████| Tasks 1 / 1  in 0.2s (4.40/s)
+
+        Completed 1 of 1 tasks.
+
+
 ```
 
+### Single Query with Standard Output (Quiet)
 
+By turning the verbosity to zero, this can act as a direct Neo4J handler for queries.
 
-# BlueHound Module
+```
+PlumHound.py -q "MATCH (n:User) RETURN n.name, n.displayname LIMIT 10" -v 0
+on 1:
+on 1: n.name                    n.displayname
+      ------------------------  ----------------
+      ASADMIN@ASAZLAB.COM
+      KRBTGT@ASAZLAB.COM
+      GUEST@ASAZLAB.COM
+      DATAANALYST@ASAZLAB.COM   HelpdeskUser
+      HELPDESKUSER@ASAZLAB.COM  HelpdeskUser
+      FILEADMIN@ASAZLAB.COM     FileServiceAdmin
+      CHARLIEADMIN@ASAZLAB.COM  ITAdmin
+      ITADMIN@ASAZLAB.COM       ITAdmin
+      SSILVER@ASAZLAB.COM       Silver Sandy
+on 1:
+         Executing Tasks |██████████████████████████████████████████████████| Tasks 1 / 1  in 0.2s (4.33/s)
 
-## Busiest Path
+```
+
+The single query can also be used to generate HTML reports instead of outputting to STDOUT.
+
+```
+PlumHound.py -q "MATCH (n:User) RETURN n.name, n.displayname LIMIT 10" --title "Domain Users (Limit 10)" --of "DomainUserstest.html" --op "reports//" --ox HTML
+```
+
+## Busiest Path (BlueHound Module)
 The Busiest Path(s) function takes two parameters 
 1- `all` or `short` either you want to use `shortestpath` or `allshorteshpaths` algorithym. 
 2- The number of results you want to return. ex: Top 5
 
 ```plaintext
-python3 PlumHound.py -bp short 5
+PlumHound.py -bp short 5
 [*]Building Task List
 [51, 'IT00385@BTV.ORG']
 [51, 'IT00346@BTV.ORG']
@@ -271,11 +376,12 @@ python3 PlumHound.py -bp short 5
 Tasks: []
 ```
 
-## Analyze Path
+
+## Analyze Path (BlueHound Module)
 The Analyze Path takes either a `label` or a `start node` and `end node` and loop through all the paths finding which relationship(s) need to be broken in order to break the whole path. This is useful when you want to provide your AD Admins with concrete actions they can take in order to improuve your overall AD Security Posture. 
 
 ```plaintext
-python3 PlumHound.py -ap group
+PlumHound.py -ap group
 [...]
 ---------------------------------------------------------------------
 Analyzing paths between IT00738@BTV.ORG and DOMAIN ADMINS@BTV.ORG
@@ -316,16 +422,31 @@ Analyzing paths between IT00547@BTV.ORG and DOMAIN ADMINS@BTV.ORG
 [...]
 ```
 
+----
+
+# Additional Modules
+Additional modules will be documented here. 
+
+## Report Indexer Moodule
+The report indexer builds an HTML report of all the completed jobs.  Add the following job to a task list.
+The parameter = "REPORT-INDEX" instructs PlumHound to generate an HTML index of all the successfully exported tasks in that run of tasks. 
+
+### Report Indexer Task Syntax
+
+```
+["Report Index","HTML","Reports.html","REPORT-INDEX"]
+```
+
 # Logging
 By default, PlumHound generates a log in file log\PlumHound.log  
 
-# Hat-Tips & Acknowledgements
+# Hat-Tips & Acknowledgments
 * [Hausec's Cypher Query CheatSheet](https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/)  gave us a headstart on some decent pathfinding cypher queries.  | [Git](https://github.com/hausec)
 * [SadProcessor's Blue Hands on BloodHound](https://github.com/SadProcessor/WatchDog) gave us a detailed primer on BloodHoundAD's ability to lead a BlueTeam to water. | [Git](https://github.com/SadProcessor).
 * Additional work by SadProcessor with [Cypher Dog 3.0](https://github.com/SadProcessor/CypherDog) shows similar POC via utilizing BloodHoundAD's Cypher Queries with a RestAPI endpoint via PowerShell.  PlumHound operates similarly however written in python and designed for stringing multiple queries into consumable reports designed to infer actionable items. 
 * [BloodHoundAD](https://github.com/BloodHoundAD/BloodHound): We wouldn't be talking about this at all if it weren't for the original BloodHoundAD work.  BloodHound is developed by @_wald0, @CptJesus, and @harmj0y.
 * "Band-aids don't fix dank domains."  [BadBlood](https://github.com/davidprowe/BadBlood) saved us a ton of time building realistic-enough AD domains for testing. @davidprowe  
-* [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier Mathieu merged his BlueHound project with PlumHound in 2020 as a extension of features.  Mathieu is an active collaborator of Plumhound and the BlueHound path-finding extension.
+* [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier Mathieu merged his BlueHound project with PlumHound in 2020 as a extension of features.  Mathieu is an active collaborator of PlumHound and the BlueHound path-finding extension.
 
 # Presentations 
 * BHIS: A Blue Team's Perspective on Red Team Hack Tools: https://www.youtube.com/watch?v=0mIN2OU5hQE
@@ -345,7 +466,7 @@ pip3 install -r requirements.txt
 * Use PlumHound to Report 
 
 # Known Issues
-- Python 3.10 causes some issues - Upated checker to WARN users if 3.10 is detected.
+- Python 3.10 causes some issues - Updated checker to WARN users if 3.10 is detected.
 - Reporting in Window may have some unexpected results. https://github.com/PlumHound/PlumHound/issues/19#issue-750128037
 
 # Collaboration
