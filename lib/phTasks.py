@@ -99,7 +99,7 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     tasksuccess=0
          
-    with alive_bar(len(tasks),title='Executing Tasks',length=50,theme='smooth',dual_line=True,monitor="Tasks {count} / {total} ") as tpbar:
+    with alive_bar(len(tasks),title='\t Executing Tasks',length=50,theme='smooth',dual_line=True,monitor="Tasks {count} / {total} ") as tpbar:
         for job in tasks:
             tpbar()
             try:
@@ -111,7 +111,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                 jobOutPathFile = Outpath + job_List[2]
                 jobQuery = job_List[3]
 
-                tpbar.text("-> Task: " + jobTitle)
+                tpbar.text("\t -> Task: " + jobTitle)
 
                 Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
 
@@ -151,7 +151,7 @@ def TaskExecution(tasks, phDriver, phArgs):
             except Exception:
                 Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
             
-    Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")        
+    Loggy(phArgs.verbose,90, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")        
 
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
