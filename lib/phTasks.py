@@ -150,7 +150,7 @@ def TaskExecution(tasks, phDriver, phArgs):
         Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
 
 # Setup Query
-@unit_of_work(timeout=phArgs.timeout)
+@unit_of_work(timeout = phArgs.timeout)
 def execute_query(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: EXECUTE_QUERY-----")
     Loggy(verbose,500, "Executing things")
