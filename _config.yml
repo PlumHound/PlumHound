@@ -1,1 +1,12 @@
-theme: jekyll-theme-hacker
+theme: minima
+url: "https://www.plumhound.com"
+plugins:
+  - jekyll-titles-from-headings
+  - jekyll-sitemap
+titles_from_headings:
+  enabled:     true
+  strip_title: true
+  collections: false
+twitter_username: BHInfoSecurity
+github_username:  PlumHound
+youtube_username: BlackHillsInformationSecurity
