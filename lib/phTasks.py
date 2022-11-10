@@ -99,7 +99,7 @@ def TaskExecution(tasks, phDriver, phArgs):
     task_output_list = []
 
 
-    with alive_bar(len(taks)) as tpbar:
+    with alive_bar(len(tasks)) as tpbar:
         for job in tasks:
             try:
                 Loggy(phArgs.verbose,500, "Job: " + str(job))
