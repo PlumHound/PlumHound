@@ -161,16 +161,7 @@ def TaskExecution(tasks, phDriver, phArgs):
     if tasksuccess != (len(tasks)):
         Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
 
-    if len(task_output_list) != 0:
-        Loggy(phArgs.verbose,200, "Jobs:" + str(tasksuccess) +" jobs completed")
-    else:
-        Loggy(phArgs.verbose,150, "ERROR - No reports found to export.")
-        Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
-
     Loggy(phArgs.verbose,90, "")   
-
-
-
 
 # Setup Query
 
