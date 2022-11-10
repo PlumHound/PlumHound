@@ -23,7 +23,7 @@ phArgs = lib.phCLImanagement.SetupArguments()
 lib.phCheckPython.CheckPython3(phArgs)
 
 # Report execution parameters
-Lib.NotifyArgs.NotifyArgs(phArgs)
+lib.NotifyArgs.NotifyArgs(phArgs)
 
 # Generate TaskList (jobs)
 phTaskList = lib.phTasks.MakeTaskList(phArgs)
