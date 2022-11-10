@@ -101,6 +101,7 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     with alive_bar(len(tasks)) as tpbar:
         for job in tasks:
+            tpbar()
             try:
                 Loggy(phArgs.verbose,500, "Job: " + str(job))
 
@@ -146,7 +147,7 @@ def TaskExecution(tasks, phDriver, phArgs):
             except Exception:
                 Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
             
-            tpbar()
+            
 
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
