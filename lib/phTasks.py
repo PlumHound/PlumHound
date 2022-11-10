@@ -7,9 +7,11 @@
 #Python Libraries
 import sys
 import ast
+from alive_progress import alive_bar
 from tabulate import tabulate
 from datetime import date
 from neo4j import GraphDatabase
+from neo4j import unit_of_work
 
 #Plumhound modules
 from lib.phLoggy import Loggy as Loggy
@@ -31,7 +33,10 @@ def MakeTaskList(phArgs):
         with open(phArgs.TaskFile) as f:
             tasks = f.read().splitlines()
         Loggy(phArgs.verbose,500, "TASKS: " + str(tasks))
-        Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
+        Loggy(phArgs.verbose,90, "Found " +str(len(tasks))+" task(s)")
+        Loggy(phArgs.verbose,90, "--------------------------------------")
+        Loggy(phArgs.verbose,90, "")
+        Loggy(phArgs.verbose,90, "")
         return tasks
 
     if phArgs.QuerySingle:
@@ -44,7 +49,7 @@ def MakeTaskList(phArgs):
         task_str = "[\"" + phArgs.title + "\",\"" + phArgs.OutFormat + "\",\"" + phArgs.OutFile + "\",\"" + phArgs.QuerySingle + "\"]"
         Loggy(phArgs.verbose,500, "Task_str:  " + task_str)
         tasks = [task_str]
-        Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
+
         return tasks
 
     if phArgs.BusiestPath:
@@ -70,6 +75,7 @@ def MakeTaskList(phArgs):
         Loggy(phArgs.verbose,500, "Tasks Easy Query Specified.")
         tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
         Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
+        Loggy(phArgs.verbose,100, "--------------------------------------")
         return tasks
 
     Loggy(phArgs.verbose,100, "Tasks Generation Completed\nTasks: " + str(tasks))
@@ -91,62 +97,84 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     task_output_list = []
 
-    for job in tasks:
-        try:
-
-            Loggy(phArgs.verbose,500, "Job: " + str(job))
-
-            job_List = ast.literal_eval(job)
-            jobTitle = job_List[0]
-            jobOutFormat = job_List[1]
-            jobOutPathFile = Outpath + job_List[2]
-            jobQuery = job_List[3]
-
-            Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
-
-            Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
-            Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)
-            Loggy(phArgs.verbose,500, "Job File: " + jobOutPathFile)
-            Loggy(phArgs.verbose,500, "Job Query: " + jobQuery)
-
-            if jobQuery == "REPORT-INDEX":
-                modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
-                continue
-
-            jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
-            jobkeys_List = ast.literal_eval(str(jobkeys))
-
-
-
-            # If keys returned 0, make an empty list
-            if isinstance(jobkeys_List, int):
-                jobkeys_List = []
-            
-            jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
-            jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
+    tasksuccess=0
+         
+    with alive_bar(len(tasks),title='\t Executing Tasks',length=50,theme='smooth',dual_line=True,monitor="Tasks {count} / {total} ") as tpbar:
+        for job in tasks:
+            tpbar()
             try:
-                jobresults_processed_list = ast.literal_eval(jobresults_processed)
+                Loggy(phArgs.verbose,500, "Job: " + str(job))
+
+                job_List = ast.literal_eval(job)
+                jobTitle = job_List[0]
+                jobOutFormat = job_List[1]
+                jobOutPathFile = Outpath + job_List[2]
+                jobQuery = job_List[3]
+
+                tpbar.text("\t -> Task: " + jobTitle)
+
+                Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
+
+                Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
+                Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)
+                Loggy(phArgs.verbose,500, "Job File: " + jobOutPathFile)
+                Loggy(phArgs.verbose,500, "Job Query: " + jobQuery)
+
+                if jobQuery == "REPORT-INDEX":
+                    modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+                    tasksuccess += 1
+                    continue
+
+                jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
+                jobkeys_List = ast.literal_eval(str(jobkeys))
+
+                # If keys returned 0, make an empty list
+                if isinstance(jobkeys_List, int):
+                    jobkeys_List = []
+            
+                jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
+                jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
+                try:
+                    jobresults_processed_list = ast.literal_eval(jobresults_processed)
+                except Exception:
+                    Loggy(phArgs.verbose,100, "ERROR While parsing results (non-fatal but errors may exist in output.")
+                    Loggy(phArgs.verbose,500, jobresults_processed)
+                    jobresults_processed_list = jobresults_processed
+
+                if jobOutFormat == "HTML":
+                    task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
+
+                Loggy(phArgs.verbose,500, "Exporting Job Results")
+                lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
+                tasksuccess += 1
+
             except Exception:
-                Loggy(phArgs.verbose,200, "ERROR While parsing results (non-fatal but errors may exist in output.")
-                Loggy(phArgs.verbose,500, jobresults_processed)
-                jobresults_processed_list = jobresults_processed
+                Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
+            
+    Loggy(phArgs.verbose,90, "")
+    Loggy(phArgs.verbose,90, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")        
+    Loggy(phArgs.verbose,90, "")   
 
-            if jobOutFormat == "HTML":
-                task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
-
-            Loggy(phArgs.verbose,500, "Exporting Job Resultes")
-            lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
-        except Exception:
-            Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
+
+    if tasksuccess != (len(tasks)):
+        Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
 
     if len(task_output_list) != 0:
         Loggy(phArgs.verbose,200, "Jobs:" + str(len(task_output_list)) +" jobs completed")
     else:
-        Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
+        Loggy(phArgs.verbose,150, "ERROR - No reports found to export.")
+        Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
+
+    Loggy(phArgs.verbose,90, "")   
+
+
+
 
 # Setup Query
+
+@unit_of_work(timeout=300)
 def execute_query(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: EXECUTE_QUERY-----")
     Loggy(verbose,500, "Executing things")
@@ -164,6 +192,7 @@ def execute_query(verbose,phDriver, query, enabled=True):
 
 
 # Grab Keys for Cypher Query
+@unit_of_work(timeout=300)
 def GetKeys(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: GETKEYS-----")
     Loggy(verbose,500, "Locating Keys")

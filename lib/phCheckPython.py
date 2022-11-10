@@ -5,15 +5,14 @@
 # License GNU GPL3
 
 import sys
+from lib.phLoggy import Loggy as Loggy
 
-def CheckPython():
+def CheckPython2():
     if sys.version_info < (3, 0, 0):
         print(__file__ + ' requires Python 3, while Python ' + str(sys.version[0] + ' was detected. Terminating. '))
         sys.exit(1)
-        
+
+def CheckPython3(phArgs):
     if sys.hexversion > 0x3090000:
-        print()
-        print('WARN: Python hexversion %s is in use.' % hex(sys.hexversion))
-        # print('WARN: Plumhound may have unexpected behavior. Use > 0x3000000 < 0x30a0000')
-        # commented while I figure a better way to confirm python version
-        print()
+        Loggy(phArgs.verbose,200, "Python Hex Version Identified:"+str(sys.hexversion))
+
