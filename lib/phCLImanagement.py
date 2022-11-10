@@ -38,7 +38,7 @@ def SetupArguments(ph_version):
     pgrouph.add_argument("--HTMLCSS", dest="HTMLCSS", type=str, default="template//html.css", help="Specify a CSS template for HTML Output")
 
     pgroupv = parser.add_argument_group('VERBOSE' "Set verbosity")
-    pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet")
+    pgroupv.add_argument("-v", "--verbose", type=int, default="100", help="Verbosity 0-1000, 0 = quiet, default=100, info=150, verbose=1000")
 
     args = parser.parse_args()
 
