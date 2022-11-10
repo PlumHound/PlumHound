@@ -133,7 +133,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                 try:
                     jobresults_processed_list = ast.literal_eval(jobresults_processed)
                 except Exception:
-                    Loggy(phArgs.verbose,200, "ERROR While parsing results (non-fatal but errors may exist in output.")
+                    Loggy(phArgs.verbose,100, "ERROR While parsing results (non-fatal but errors may exist in output.")
                     Loggy(phArgs.verbose,500, jobresults_processed)
                     jobresults_processed_list = jobresults_processed
 
@@ -144,7 +144,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                 lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
             
             except Exception:
-                Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
+                Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
             
             
 
@@ -154,7 +154,7 @@ def TaskExecution(tasks, phDriver, phArgs):
     if len(task_output_list) != 0:
         Loggy(phArgs.verbose,200, "Jobs:" + str(len(task_output_list)) +" jobs completed")
     else:
-        Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
+        Loggy(phArgs.verbose,100, "ERROR - No reports found to export.")
 
 # Setup Query
 
