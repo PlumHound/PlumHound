@@ -39,7 +39,7 @@ PlumHound operates by wrapping BloodHoundAD's powerhouse graphical Neo4J backend
 * [Logging](#logging)
 * [Hat-Tips &amp; Acknowledgments](#hat-tips--acknowledgments)
 * [Presentations](#presentations)
-* [Installation Requirements (python 3.7/3.8)](#installation-requirements-python-3738)
+* [Installation Requirements](#installation-requirements)
 * [Environment Setup Instructions](#environment-setup-instructions)
 * [Known Issues](#known-issues)
 * [Collaboration](#collaboration)
@@ -453,7 +453,7 @@ By default, PlumHound generates a log in file log\PlumHound.log
 * BlueHound Module (Sector): https://sector.ca/sessions/bhpd-bluehound-path-destroyer/
 
 
-# Installation Requirements (python 3.7/3.8)
+# Installation Requirements
 ```shell
 apt-get install python3
 pip3 install -r requirements.txt
