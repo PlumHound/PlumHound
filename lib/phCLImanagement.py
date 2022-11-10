@@ -17,7 +17,7 @@ def SetupArguments(ph_version):
     pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
     pgroupc.add_argument("-p", "--password", default="neo4jj", type=str, help="Neo4J Database Password")
     pgroupc.add_argument("--UseEnc", default=False, dest="UseEnc", help="Use encryption when connecting.", action='store_true')
-    pgroupc.add_argument("--timeout", type=int, default="300", dest="timeout", help="Cypher Query Timeout")
+    pgroupc.add_argument("--timeout", type=int, default="300", dest="timeout", help="Cypher Query Timeout **NOT FULLY IMPLEMENTED**")
 
     pgroupx = parser.add_mutually_exclusive_group(required="True")
     pgroupx.add_argument("--easy", help="Test Database Connection, Returns Domain Users to stdout", action='store_true')
