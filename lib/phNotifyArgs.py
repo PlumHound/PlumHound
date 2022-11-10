@@ -12,7 +12,7 @@ def NotifyArgs(phArgs):
 	    Loggy(phArgs.verbose,100, "Server:" + str(phArgs.server))
 	    Loggy(phArgs.verbose,100, "User:" + str(phArgs.username))
 	    Loggy(phArgs.verbose,100, "Password: *****")
-	    if phArgs.UseEnc
+	    if phArgs.UseEnc:
 	        Loggy(phArgs.verbose,100, "Encryption: True")
 	    else:
 		    Loggy(phArgs.verbose,100, "Encryption: False")
