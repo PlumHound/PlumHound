@@ -73,7 +73,7 @@ def MakeTaskList(phArgs):
 
     if phArgs.easy:
         Loggy(phArgs.verbose,500, "Tasks Easy Query Specified.")
-        tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
+        tasks = ['["Domain Users (Limit 10)","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname LIMIT 10"]']
         Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
         Loggy(phArgs.verbose,100, "--------------------------------------")
         return tasks
