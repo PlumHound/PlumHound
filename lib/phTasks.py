@@ -151,7 +151,9 @@ def TaskExecution(tasks, phDriver, phArgs):
             except Exception:
                 Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
             
+    Loggy(phArgs.verbose,90, "")
     Loggy(phArgs.verbose,90, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")        
+    Loggy(phArgs.verbose,90, "")   
 
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
@@ -164,6 +166,8 @@ def TaskExecution(tasks, phDriver, phArgs):
     else:
         Loggy(phArgs.verbose,150, "ERROR - No reports found to export.")
         Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
+
+    Loggy(phArgs.verbose,90, "")   
 
 
 
