@@ -54,7 +54,7 @@ def ReportIndexer(verbose,Processed_Results_List, OutPathFile, HTMLHeader, HTMLF
     fsys = open(OutPathFile, "w")
     fsys.write(output)
     fsys.close
-    Loggy(verbose,100, "Full index report written to " + OutPathFile)
+    Loggy(verbose,110, "Full index report written to " + OutPathFile)
     return True
     Loggy(verbose,900, "------EXIT: REPORT INDEXER-----")
 
