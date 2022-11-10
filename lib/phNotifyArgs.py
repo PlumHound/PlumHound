@@ -6,8 +6,9 @@
 
 from lib.phLoggy import Loggy as Loggy
 
-def NotifyArgs(phArgs):
-	Loggy(phArgs.verbose,100, "PlumHound")
+def NotifyArgs(phArgs, ph_version):
+	Loggy(phArgs.verbose,100, "PlumHound " +str(ph_version))
+	Loggy(phArgs.verbose,100, "For more information: https://github.com/plumhound")
 	Loggy(phArgs.verbose,100, "--------------------------------------")
 	Loggy(phArgs.verbose,100, "Server: " + str(phArgs.server))
 	Loggy(phArgs.verbose,100, "User: " + str(phArgs.username))

@@ -49,6 +49,7 @@ def MakeTaskList(phArgs):
         tasks = [task_str]
         Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
         Loggy(phArgs.verbose,100, "--------------------------------------")
+        Loggy(phArgs.verbose,100, "--------------------------------------")
         return tasks
 
     if phArgs.BusiestPath:
@@ -95,6 +96,8 @@ def TaskExecution(tasks, phDriver, phArgs):
     jobHTMLCSS = phArgs.HTMLCSS
 
     task_output_list = []
+
+    tasksuccess=0
          
     with alive_bar(len(tasks),title='Executing Tasks',length=50,theme='smooth',dual_line=True,monitor="Tasks {count} / {total} ") as tpbar:
         for job in tasks:
@@ -142,19 +145,28 @@ def TaskExecution(tasks, phDriver, phArgs):
 
                 Loggy(phArgs.verbose,500, "Exporting Job Results")
                 lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
-            
+                tasksuccess += 1
+
             except Exception:
                 Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
             
-            
+    Loggy(phArgs.verbose,100, "Completed " + tasksuccess + " of + " str(len(tasks)) + " tasks.")        
 
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
 
+    if tasksuccess != (len(tasks)
+        Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
+
     if len(task_output_list) != 0:
         Loggy(phArgs.verbose,200, "Jobs:" + str(len(task_output_list)) +" jobs completed")
+        Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")
     else:
         Loggy(phArgs.verbose,100, "ERROR - No reports found to export.")
+        Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
+
+
+
 
 # Setup Query
 

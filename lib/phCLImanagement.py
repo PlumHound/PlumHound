@@ -8,8 +8,8 @@
 import argcomplete
 import argparse
 
-def SetupArguments():
-    parser = argparse.ArgumentParser(description="BloodHound Wrapper for Blue/Purple Teams; v01.070a", add_help=True, epilog="For more information see https://plumhound.DefensiveOrigins.com")
+def SetupArguments(ph_version):
+    parser = argparse.ArgumentParser(description="BloodHound Wrapper for Blue/Purple Teams "+str(ph_version)", add_help=True, epilog="For more information see https://github.com/plumhound")
     argcomplete.autocomplete(parser)
     
     pgroupc = parser.add_argument_group('DATABASE')

@@ -12,7 +12,7 @@ import datetime
 def Loggy(hurdle, level, notice):
     logfile="log/PlumHound.log"
     if level <= hurdle:
-        if level <= 100:
+        if level == 100:
             print("INFO" + "\t" + notice)
         else:
             print(str(level) + "\t" + notice)

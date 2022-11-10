@@ -14,5 +14,5 @@ def CheckPython2():
 
 def CheckPython3(phArgs):
     if sys.hexversion > 0x3090000:
-        Loggy(phArgs.verbose,100, "Python Hex Version Identified:"+str(sys.hexversion))
+        Loggy(phArgs.verbose,200, "Python Hex Version Identified:"+str(sys.hexversion))
 
