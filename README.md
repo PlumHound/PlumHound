@@ -63,10 +63,19 @@ In fact, one of our cypher queries determined that 96% of their 3000 users had a
 Hence, PlumHound was created out of a need to retrieve consumable data from BloodHoundAD's pathfinding engine.  Data that could yield itself to inferring actionable work for security teams to harden their environments.
 
 ## Sample Reports
-The sample reports are from a BadBlood created AD environment that does not include user sessions and massive ACLs that would be typical of a larger environment.  That is, the reports a bit bare, but you get the idea.  Sample reports are found in the /reports folder.  Note that by default, this is the output location for PlumHound and will over-write reports in this location if specified by the tasklist file.
+ Sample reports are no longer included within the repository.  However, the default tasks tasklist will produce reports with ease.  Here are a sample of some less-exciting reports generated from a small lab environment.
 
-![PlumHound](https://raw.githubusercontent.com/DefensiveOrigins/PlumHound/master/docs/images/Workstations_UnrestrainedDelegation.png)
-* This is a screenshot of an earlier report version.  New versions include Title, Header etc.
+| ![](docs/images/report1.png) |
+|------------------------------|
+
+| ![](docs/images/report2.png) |
+|------------------------------|
+
+| ![](docs/images/report3.png) |
+|------------------------------|
+
+| ![](docs/images/report4.png) |
+|------------------------------|
 
 ------
 
