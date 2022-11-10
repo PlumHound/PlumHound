@@ -111,7 +111,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                 jobOutPathFile = Outpath + job_List[2]
                 jobQuery = job_List[3]
 
-                tpbar.text(jobTitle)
+                tpbar.text("-> Task: " + jobTitle)
 
                 Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
 
