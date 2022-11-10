@@ -150,7 +150,7 @@ def TaskExecution(tasks, phDriver, phArgs):
             except Exception:
                 Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
             
-    Loggy(phArgs.verbose,100, "Completed " + tasksuccess + " of " + str(len(tasks)) + " tasks.")        
+    Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")        
 
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
