@@ -45,7 +45,7 @@ def NotifyArgs(phArgs):
 		Loggy(phArgs.verbose,100, "Query Title: Domain Users")
 		Loggy(phArgs.verbose,100, "Query Format: STDOUT")
 		Loggy(phArgs.verbose,100, "Query Cypher: MATCH (n:User) RETURN n.name, n.displayname")
-	
-	      Loggy(phArgs.verbose,100, "--------------------------------------")
+		
+		Loggy(phArgs.verbose,100, "--------------------------------------")
 
 	return True
