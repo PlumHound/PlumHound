@@ -30,7 +30,7 @@ def SetupArguments(ph_version):
     pgroupo.add_argument("-t", "--title", dest="title", default="Adhoc Query", type=str, help="Report Title for Single Query [HTML,CSV,Latex]")
     pgroupo.add_argument("--of", "--OutFile", dest="OutFile", default="PlumHoundReport", type=str, help="Specify a Single Cypher Query")
     pgroupo.add_argument("--op", "--OutPath", dest="path", default="reports//", type=str, help="Specify an Output Path for Reports")
-    pgroupo.add_argument("--ox", "--OutFormat", dest="OutFormat", default="stdout", type=str, help="Specify the type of output", choices=['stdout', 'HTML', 'CSV'])
+    pgroupo.add_argument("--ox", "--OutFormat", dest="OutFormat", default="STDOUT", type=str, help="Specify the type of output", choices=['stdout', 'HTML', 'CSV'])
 
     pgrouph = parser.add_argument_group('HTML', "Options for HTML Output (For single queries or TaskLists")
     pgrouph.add_argument("--HTMLHeader", dest="HTMLHeader", type=str, default="template//head.html", help="HTML Header (file) of Report")
