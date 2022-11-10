@@ -13,11 +13,16 @@ import lib.phNotifyArgs
 import lib.phTasks
 import lib.phDatabase
 
-# Check for Python3 environment.  If not executing in Python3, exit nicely.
-lib.phCheckPython.CheckPython()
+# Check if Py2 environment.  If not executing in Python3, exit nicely.
+lib.phCheckPython.CheckPython2()
 
 # Commandline Arguments (ArgParse) configuration
 phArgs = lib.phCLImanagement.SetupArguments()
+
+# Check if Py3 environment.  If not expected version of 3, notify nicely
+lib.phCheckPython.CheckPython3(phArs)
+
+# Report execution parameters
 Lib.NotifyArgs.NotifyArgs(phArgs)
 
 # Generate TaskList (jobs)

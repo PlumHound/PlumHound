@@ -119,8 +119,6 @@ def TaskExecution(tasks, phDriver, phArgs):
             jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
             jobkeys_List = ast.literal_eval(str(jobkeys))
 
-
-
             # If keys returned 0, make an empty list
             if isinstance(jobkeys_List, int):
                 jobkeys_List = []
@@ -150,7 +148,8 @@ def TaskExecution(tasks, phDriver, phArgs):
         Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
 
 # Setup Query
-@unit_of_work(timeout = phArgs.timeout)
+
+@unit_of_work(timeout=300)
 def execute_query(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: EXECUTE_QUERY-----")
     Loggy(verbose,500, "Executing things")
@@ -168,7 +167,7 @@ def execute_query(verbose,phDriver, query, enabled=True):
 
 
 # Grab Keys for Cypher Query
-@unit_of_work(timeout=phArgs.timeout)
+@unit_of_work(timeout=300)
 def GetKeys(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: GETKEYS-----")
     Loggy(verbose,500, "Locating Keys")
