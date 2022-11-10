@@ -9,8 +9,8 @@ from lib.phLoggy import Loggy as Loggy
 def NotifyArgs(phArgs):
 	Loggy(phArgs.verbose,100, "PlumHound")
 	Loggy(phArgs.verbose,100, "--------------------------------------")
-	Loggy(phArgs.verbose,100, "Server:" + str(phArgs.server))
-	Loggy(phArgs.verbose,100, "User:" + str(phArgs.username))
+	Loggy(phArgs.verbose,100, "Server: " + str(phArgs.server))
+	Loggy(phArgs.verbose,100, "User: " + str(phArgs.username))
 	Loggy(phArgs.verbose,100, "Password: *****")
 	if phArgs.UseEnc:
 		Loggy(phArgs.verbose,100, "Encryption: True")

@@ -7,6 +7,7 @@
 #Python Libraries
 import sys
 import ast
+from alive_progress import alive_bar
 from tabulate import tabulate
 from datetime import date
 from neo4j import GraphDatabase
@@ -35,6 +36,7 @@ def MakeTaskList(phArgs):
             tasks = f.read().splitlines()
         Loggy(phArgs.verbose,500, "TASKS: " + str(tasks))
         Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
+        Loggy(phArgs.verbose,100, "--------------------------------------")
         return tasks
 
     if phArgs.QuerySingle:
@@ -48,6 +50,7 @@ def MakeTaskList(phArgs):
         Loggy(phArgs.verbose,500, "Task_str:  " + task_str)
         tasks = [task_str]
         Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
+        Loggy(phArgs.verbose,100, "--------------------------------------")
         return tasks
 
     if phArgs.BusiestPath:
@@ -73,6 +76,7 @@ def MakeTaskList(phArgs):
         Loggy(phArgs.verbose,500, "Tasks Easy Query Specified.")
         tasks = ['["Domain Users","STDOUT","","MATCH (n:User) RETURN n.name, n.displayname"]']
         Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
+        Loggy(phArgs.verbose,100, "--------------------------------------")
         return tasks
 
     Loggy(phArgs.verbose,100, "Tasks Generation Completed\nTasks: " + str(tasks))
@@ -94,51 +98,56 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     task_output_list = []
 
-    for job in tasks:
-        try:
 
-            Loggy(phArgs.verbose,500, "Job: " + str(job))
-
-            job_List = ast.literal_eval(job)
-            jobTitle = job_List[0]
-            jobOutFormat = job_List[1]
-            jobOutPathFile = Outpath + job_List[2]
-            jobQuery = job_List[3]
-
-            Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
-
-            Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
-            Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)
-            Loggy(phArgs.verbose,500, "Job File: " + jobOutPathFile)
-            Loggy(phArgs.verbose,500, "Job Query: " + jobQuery)
-
-            if jobQuery == "REPORT-INDEX":
-                modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
-                continue
-
-            jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
-            jobkeys_List = ast.literal_eval(str(jobkeys))
-
-            # If keys returned 0, make an empty list
-            if isinstance(jobkeys_List, int):
-                jobkeys_List = []
-            
-            jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
-            jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
+    with alive_bar(len(taks)) as tpbar:
+        for job in tasks:
             try:
-                jobresults_processed_list = ast.literal_eval(jobresults_processed)
+                Loggy(phArgs.verbose,500, "Job: " + str(job))
+
+                job_List = ast.literal_eval(job)
+                jobTitle = job_List[0]
+                jobOutFormat = job_List[1]
+                jobOutPathFile = Outpath + job_List[2]
+                jobQuery = job_List[3]
+
+                Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
+
+                Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
+                Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)
+                Loggy(phArgs.verbose,500, "Job File: " + jobOutPathFile)
+                Loggy(phArgs.verbose,500, "Job Query: " + jobQuery)
+
+                if jobQuery == "REPORT-INDEX":
+                    modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+                    continue
+
+                jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
+                jobkeys_List = ast.literal_eval(str(jobkeys))
+
+                # If keys returned 0, make an empty list
+                if isinstance(jobkeys_List, int):
+                    jobkeys_List = []
+            
+                jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
+                jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
+                try:
+                    jobresults_processed_list = ast.literal_eval(jobresults_processed)
+                except Exception:
+                    Loggy(phArgs.verbose,200, "ERROR While parsing results (non-fatal but errors may exist in output.")
+                    Loggy(phArgs.verbose,500, jobresults_processed)
+                    jobresults_processed_list = jobresults_processed
+
+                if jobOutFormat == "HTML":
+                    task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
+
+                Loggy(phArgs.verbose,500, "Exporting Job Results")
+                lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
+            
             except Exception:
-                Loggy(phArgs.verbose,200, "ERROR While parsing results (non-fatal but errors may exist in output.")
-                Loggy(phArgs.verbose,500, jobresults_processed)
-                jobresults_processed_list = jobresults_processed
+                Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
+            
+            tpbar()
 
-            if jobOutFormat == "HTML":
-                task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
-
-            Loggy(phArgs.verbose,500, "Exporting Job Resultes")
-            lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
-        except Exception:
-            Loggy(phArgs.verbose,200, "ERROR While running job (trying next job in list).")
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
 
