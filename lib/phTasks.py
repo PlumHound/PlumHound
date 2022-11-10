@@ -155,7 +155,7 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     Loggy(phArgs.verbose,900, "------EXIT: TASKEXECUTION-----")
 
-    if tasksuccess != (len(tasks):
+    if tasksuccess != (len(tasks)):
         Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
 
     if len(task_output_list) != 0:
