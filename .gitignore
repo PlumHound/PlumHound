@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
+/.vs/PlumHound/v17/.suo
+/.vs/PlumHound/FileContentIndex/read.lock
+/.vs/PlumHound/FileContentIndex/ff0fc5a3-ed8d-4020-ade5-54816222b8d7.vsidx
+/.vs/PlumHound/FileContentIndex/fe48f2a0-a28f-4ebb-8c0f-ebeed1cdd4af.vsidx
+/.vs/PlumHound/FileContentIndex/58df25af-c6f1-475a-8586-239f113af82d.vsidx
+/.vs/PlumHound/FileContentIndex/4cd2c89a-583b-4581-80a7-df16b837e354.vsidx

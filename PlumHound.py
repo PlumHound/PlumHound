@@ -9,6 +9,7 @@
 #Import PlumHound libraries
 import lib.phCheckPython 
 import lib.phCLImanagement
+import lib.NotifyArgs
 import lib.phTasks
 import lib.phDatabase
 
@@ -17,6 +18,7 @@ lib.phCheckPython.CheckPython()
 
 # Commandline Arguments (ArgParse) configuration
 phArgs = lib.phCLImanagement.SetupArguments()
+Lib.NotifyArgs.NotifyArgs(phArgs)
 
 # Generate TaskList (jobs)
 phTaskList = lib.phTasks.MakeTaskList(phArgs)

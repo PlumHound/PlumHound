@@ -5,15 +5,19 @@
 # License GNU GPL3
 
 # Import Python Modules
+import argcomplete
 import argparse
 
 def SetupArguments():
     parser = argparse.ArgumentParser(description="BloodHound Wrapper for Blue/Purple Teams; v01.070a", add_help=True, epilog="For more information see https://plumhound.DefensiveOrigins.com")
+    argcomplete.autocomplete(parser)
+    
     pgroupc = parser.add_argument_group('DATABASE')
     pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
     pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
     pgroupc.add_argument("-p", "--password", default="neo4jj", type=str, help="Neo4J Database Password")
     pgroupc.add_argument("--UseEnc", default=False, dest="UseEnc", help="Use encryption when connecting.", action='store_true')
+    pgroupc.add_argument("--timeout", type=int, default="300", dest="timeout", help="Cypher Query Timeout")
 
     pgroupx = parser.add_mutually_exclusive_group(required="True")
     pgroupx.add_argument("--easy", help="Test Database Connection, Returns Domain Users to stdout", action='store_true')

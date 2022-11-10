@@ -147,6 +147,7 @@ def TaskExecution(tasks, phDriver, phArgs):
         Loggy(phArgs.verbose,200, "ERROR - No reports found to export.")
 
 # Setup Query
+@neo4j.unit_of_work(timeout=phArgs.timeout)
 def execute_query(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: EXECUTE_QUERY-----")
     Loggy(verbose,500, "Executing things")
@@ -164,6 +165,7 @@ def execute_query(verbose,phDriver, query, enabled=True):
 
 
 # Grab Keys for Cypher Query
+@neo4j.unit_of_work(timeout=phArgs.timeout)
 def GetKeys(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: GETKEYS-----")
     Loggy(verbose,500, "Locating Keys")
