@@ -18,6 +18,7 @@ def NotifyArgs(phArgs):
 		    Loggy(phArgs.verbose,100, "Encryption: False")
 		Loggy(phArgs.verbose,100, "Timeout: " + str(phArgs.timeout))
 
+
 	    Loggy(phArgs.verbose,100, "--------------------------------------")
 
 		if phArgs.TaskFile:
