@@ -122,6 +122,7 @@ def TaskExecution(tasks, phDriver, phArgs):
 
                 if jobQuery == "REPORT-INDEX":
                     modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+                    tasksuccess += 1
                     continue
 
                 jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
@@ -162,7 +163,7 @@ def TaskExecution(tasks, phDriver, phArgs):
         Loggy(phArgs.verbose,200, "Jobs:" + str(len(task_output_list)) +" jobs completed")
         Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")
     else:
-        Loggy(phArgs.verbose,100, "ERROR - No reports found to export.")
+        Loggy(phArgs.verbose,150, "ERROR - No reports found to export.")
         Loggy(phArgs.verbose,100, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks (Non-Lethal errors occurred).")
 
 
