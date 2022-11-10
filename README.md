@@ -273,28 +273,9 @@ By specifying a task list, PlumHound can be programmed to run multiple cypher qu
 For more information on the tasks file, see the section above.
 
 
-```
-$  PlumHound.py -x tasks/default.tasks
 
-        PlumHound 1.4
-        For more information: https://github.com/plumhound
-        --------------------------------------
-        Server: bolt://localhost:7687
-        User: neo4j
-        Password: *****
-        Encryption: False
-        Timeout: 300
-        --------------------------------------
-        Tasks: Task File
-        TaskFile: tasks/default.tasks
-        Found 70 task(s)
-        --------------------------------------
-
-         Executing Tasks |██████████████████████████████████████████████████| Tasks 70 / 70  in 2.1s (33.35/s)
-
-        Completed 70 of 70 tasks.
-
-```
+| ![](docs/images/ph14.gif) |
+|------------------------------|
 
 
 
