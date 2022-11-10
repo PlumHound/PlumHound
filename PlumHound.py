@@ -9,7 +9,7 @@
 #Import PlumHound libraries
 import lib.phCheckPython 
 import lib.phCLImanagement
-import lib.NotifyArgs
+import lib.phNotifyArgs
 import lib.phTasks
 import lib.phDatabase
 
