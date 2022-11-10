@@ -33,8 +33,10 @@ def MakeTaskList(phArgs):
         with open(phArgs.TaskFile) as f:
             tasks = f.read().splitlines()
         Loggy(phArgs.verbose,500, "TASKS: " + str(tasks))
-        Loggy(phArgs.verbose,100, "Found " +str(len(tasks))+" task(s)")
-        Loggy(phArgs.verbose,100, "--------------------------------------")
+        Loggy(phArgs.verbose,90, "Found " +str(len(tasks))+" task(s)")
+        Loggy(phArgs.verbose,90, "--------------------------------------")
+        Loggy(phArgs.verbose,90, "")
+        Loggy(phArgs.verbose,90, "")
         return tasks
 
     if phArgs.QuerySingle:
@@ -47,10 +49,7 @@ def MakeTaskList(phArgs):
         task_str = "[\"" + phArgs.title + "\",\"" + phArgs.OutFormat + "\",\"" + phArgs.OutFile + "\",\"" + phArgs.QuerySingle + "\"]"
         Loggy(phArgs.verbose,500, "Task_str:  " + task_str)
         tasks = [task_str]
-        Loggy(phArgs.verbose,90, "Found " +str(len(tasks))+" task(s)")
-        Loggy(phArgs.verbose,90, "--------------------------------------")
-        Loggy(phArgs.verbose,90, "")
-        Loggy(phArgs.verbose,90, "")
+
         return tasks
 
     if phArgs.BusiestPath:
