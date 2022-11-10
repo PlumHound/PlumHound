@@ -20,7 +20,7 @@ lib.phCheckPython.CheckPython2()
 phArgs = lib.phCLImanagement.SetupArguments()
 
 # Check if Py3 environment.  If not expected version of 3, notify nicely
-lib.phCheckPython.CheckPython3(phArs)
+lib.phCheckPython.CheckPython3(phArgs)
 
 # Report execution parameters
 Lib.NotifyArgs.NotifyArgs(phArgs)
