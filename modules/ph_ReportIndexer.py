@@ -5,7 +5,6 @@
 # License GNU GPL3
 
 #Python Libraries
-import sys
 from tabulate import tabulate
 from datetime import date
 

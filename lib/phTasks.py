@@ -7,8 +7,6 @@
 #Python Libraries
 import ast
 from alive_progress import alive_bar
-from tabulate import tabulate
-from datetime import date
 from neo4j import GraphDatabase
 from neo4j import unit_of_work
 
