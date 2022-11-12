@@ -7,3 +7,9 @@
 /.vs/VSWorkspaceState.json
 /.vs/PlumHound/v17/.suo
 /.vs/PlumHound/FileContentIndex/*
+/.vs
+/env
+/env1
+/lib/__pycache__
+/modules/__pycache__
+/reports
