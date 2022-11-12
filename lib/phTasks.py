@@ -5,7 +5,6 @@
 # License GNU GPL3
 
 #Python Libraries
-import sys
 import ast
 from alive_progress import alive_bar
 from tabulate import tabulate

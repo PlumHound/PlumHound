@@ -6,7 +6,6 @@
 
 # Loggy Function for lazy debugging
 
-import sys
 import datetime
 
 def Loggy(hurdle, level, notice):

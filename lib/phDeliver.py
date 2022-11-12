@@ -5,7 +5,6 @@
 # License GNU GPL3
 
 #Python Libraries
-import sys
 import ast
 import csv
 from tabulate import tabulate
