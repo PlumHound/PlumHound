@@ -12,5 +12,5 @@
 /env1
 /lib/__pycache__
 /modules/__pycache__
-/reports
-/log
+/reports/*.html
+/log/PlumHound.log
