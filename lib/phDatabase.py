@@ -27,8 +27,8 @@ def setup_database_conn(phArgs):
     Loggy(phArgs.verbose,900, "------EXIT: SETUP_DATABASE_CONN-----")
 
 def close_database_con(phArgs,connectiondriver):
-        Loggy(phArgs.verbose,900, "------ENTER: CLOSE_DATABASE_CONN-----")
-        connectiondriver.close
-        Loggy(phArgs.verbose,200, "[+] Closed Database Connection!")
-        Loggy(phArgs.verbose,900, "------EXIT: CLOSE_DATABASE_CONN-----")
-        exit()
+    Loggy(phArgs.verbose,900, "------ENTER: CLOSE_DATABASE_CONN-----")
+    connectiondriver.close
+    Loggy(phArgs.verbose,200, "[+] Closed Database Connection!")
+    Loggy(phArgs.verbose,900, "------EXIT: CLOSE_DATABASE_CONN-----")
+    exit()
