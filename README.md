@@ -444,8 +444,9 @@ By default, PlumHound generates a log in file log\PlumHound.log
 * [BloodHound from Red to Blue](https://www.youtube.com/watch?v=-HPhJw9K6_Y) - Scoubi- Mathieu Saulnier Mathieu merged his BlueHound project with PlumHound in 2020 as a extension of features.  Mathieu is an active collaborator of PlumHound and the BlueHound path-finding extension.
 
 # Presentations 
-* BHIS: A Blue Team's Perspective on Red Team Hack Tools: https://www.youtube.com/watch?v=0mIN2OU5hQE
-* BlueHound Module (Sector): https://sector.ca/sessions/bhpd-bluehound-path-destroyer/
+* BHIS Webcast: [A Blue Team's Perspective on Red Team Hack Tools](https://www.youtube.com/watch?v=0mIN2OU5hQE)
+* Sector Session: [BlueHound Path Destroyer](https://sector.ca/sessions/bhpd-bluehound-path-destroyer/)
+* BHIS Blog: [PlumHound Reporting Engine for BloodHoundAD](https://www.blackhillsinfosec.com/plumhound-reporting-engine-for-bloodhoundad/)
 
 
 # Installation Requirements
