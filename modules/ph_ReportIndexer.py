@@ -29,6 +29,8 @@ def ReportIndexer(verbose,Processed_Results_List, OutPathFile, HTMLHeader, HTMLF
         elif entry[3] == "HTMLCSV":
             filename = entry[2]
             entry[2] = "<a href=\"" + filename + ".html\">Details</a> - <a href=\"" + filename + ".csv\">CSV</a> "
+        #Remove the unnecessary 4th item to correct the keys 
+        del entry[3]
 
     output = str(tabulate(Processed_Results_List, list_KeysList, tablefmt="html"))
     output = output.replace("&lt;","<")
