@@ -96,7 +96,7 @@ def TaskExecution(tasks, phDriver, phArgs):
 
     tasksuccess=0
          
-    with alive_bar(len(tasks),title='\t Executing Tasks',length=50,theme='smooth',dual_line=True,monitor="Tasks {count} / {total} ") as tpbar:
+    with alive_bar(len(tasks),title='\t Executing Tasks',length=50,theme='smooth',spinner=None,dual_line=True,monitor="Tasks {count} / {total} ") as tpbar:
         for job in tasks:
             tpbar()
             try:

@@ -33,6 +33,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
             Loggy(verbose,500, "ResultsType: " + str(type(Processed_Results_List)))
             Loggy(verbose,999, "ResultsList: " + str(Processed_Results_List))
             writer.writerows(Processed_Results_List)
+        Loggy(verbose,150, "Task " + Title + " Complete: " + OutFile)
         return True
 
     if OutFormat == "HTMLCSV":
