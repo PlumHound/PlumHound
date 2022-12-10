@@ -244,9 +244,19 @@ Looking for more tasks and templates? Checkout [PlumHound-Tasks ](https://github
 
 ## TaskList File Syntax
 The TaskList file syntax is as follows. Note that any cypher query containing a double quote must be modified to use a single quote instead of double.
+
 ```plaintext
 ["Report Title","[Output-Format]","[Output-File]","[CypherQuery]"]
 ```
+
+Output-Format options for TaskLists:
+* **HTML**: Generates a HTML Report
+* **CSV**: Generates a CSV of data
+* **HTMLCSV**: Generates both an HTML report and CSV data.  
+  * NOTE: DO not include a file-extension in the Output-File paramter.
+
+Additional Modules in TaskLists:
+* Report Index: to use the Report-Index module in a TaskList, use CypherQuery "REPORT-INDEX"
 
 ## TaskList Sample: default.tasks
 The default.tasks file includes multiple tasks that instruct PlumHound to create reports using the specified "HTML" output format, output filename, and specific BloodHoundAD Neo4JS cypher Query. 
