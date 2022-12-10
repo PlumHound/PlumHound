@@ -21,7 +21,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
     output = ""
 
     if OutFormat == "CSV":
-        Loggy(verbose,100, "Beginning Output CSV:" + OutPath + OutFile)
+        Loggy(verbose,500, "Beginning Output CSV:" + OutPath + OutFile)
         with open(OutPath + OutFile, "w", newline="") as f:
             Loggy(verbose,500, "KeyType: " + str(type(list_KeysList)))
             Loggy(verbose,500, "KeyList: " + str((list_KeysList)))
@@ -36,10 +36,10 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
         return True
 
     if OutFormat == "HTMLCSV":
-        Loggy(verbose,100, "Beginning Output HTMLCSV:" + OutPath + OutFile)
+        Loggy(verbose,500, "Beginning Output HTMLCSV:" + OutPath + OutFile)
         SenditOut(verbose,list_KeysList, Processed_Results_List, "HTML", OutFile + ".html", OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery)
         SenditOut(verbose,list_KeysList, Processed_Results_List, "CSV", OutFile + ".csv", OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery)
-        Loggy(verbose,200, "Completed Output HTMLCSV:" + OutPath + OutFile)
+        Loggy(verbose,500, "Completed Output HTMLCSV:" + OutPath + OutFile)
         return True
 
     if OutFormat == "STDOUT":
