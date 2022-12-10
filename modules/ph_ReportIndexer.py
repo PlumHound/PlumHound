@@ -20,8 +20,17 @@ def ReportIndexer(verbose,Processed_Results_List, OutPathFile, HTMLHeader, HTMLF
     Loggy(verbose,200, "Beginning Output HTML:" + OutPathFile)
 
     for entry in Processed_Results_List:
-        filename = entry[2]
-        entry[2] = "<a href=\"" + filename + "\">Details</a>"
+        if entry[3] == "HTML":
+            filename = entry[2]
+            entry[2] = "<a href=\"" + filename + "\">Details</a>"
+        elif entry[3] == "CSV":
+            filename = entry[2]
+            entry[2] = "<a href=\"" + filename + "\">CSV</a>"
+        elif entry[3] == "HTMLCSV":
+            filename = entry[2]
+            entry[2] = "<a href=\"" + filename + ".html\">Details</a> - <a href=\"" + filename + ".csv\">CSV</a> "
+        #Remove the unnecessary 4th item to correct the keys 
+        del entry[3]
 
     output = str(tabulate(Processed_Results_List, list_KeysList, tablefmt="html"))
     output = output.replace("&lt;","<")
