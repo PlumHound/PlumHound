@@ -37,8 +37,8 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
 
     if OutFormat == "HTMLCSV":
         Loggy(verbose,100, "Beginning Output HTMLCSV:" + OutPath + OutFile)
-        SenditOut(verbose,list_KeysList, Processed_Results_List, "HTML", OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery)
-        SenditOut(verbose,list_KeysList, Processed_Results_List, "CSV", OutFile, OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery)
+        SenditOut(verbose,list_KeysList, Processed_Results_List, "HTML", OutFile + ".html", OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery)
+        SenditOut(verbose,list_KeysList, Processed_Results_List, "CSV", OutFile + ".csv", OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery)
         Loggy(verbose,200, "Completed Output HTMLCSV:" + OutPath + OutFile)
         return True
 
