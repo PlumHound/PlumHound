@@ -138,8 +138,8 @@ def TaskExecution(tasks, phDriver, phArgs):
                     Loggy(phArgs.verbose,500, jobresults_processed)
                     jobresults_processed_list = jobresults_processed
 
-                if jobOutFormat == "HTML":
-                    task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2]])
+                if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV":
+                    task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
 
                 Loggy(phArgs.verbose,500, "Exporting Job Results")
                 lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
