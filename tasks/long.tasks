@@ -1,1 +1,6 @@
-["Users GPOs Access Weirdness","HTML","Users_GPO_CheckACL.html","MATCH p=(u:User)-[r:AllExtendedRights|GenericAll|GenericWrite|Owns|WriteDacl|WriteOwner|GpLink*1..]->(g:GPO) RETURN p LIMIT 25"]
+[ "Users GPOs Access Weirdness", "HTML", "Users_GPO_CheckACL.html", "MATCH p=(u:User)-[r:AllExtendedRights|GenericAll|GenericWrite|Owns|WriteDacl|WriteOwner|GpLink*1..]->(g:GPO) RETURN p LIMIT 25" ]
+[ "Non-Admins with Add To Group Delegation (Limited to 10000)", "HTML", "User-AddToGroupDelegation.html", "MATCH (n:User {admincount:False}) MATCH p=allShortestPaths((n)-[r:AddMember*1..]->(m:Group)) RETURN n.name as User, m.name as Group Limit 10000" ]
+[ "Non-Admins with Add To Group Delegation Count (Limited to 1000)", "HTML", "User-AddToGroupDelegation.html", "MATCH (n:User {admincount:False}) MATCH p=allShortestPaths((n)-[r:AddMember*1..]->(m:Group)) RETURN n.name as User, count(m.name) as Groups Limit 1000" ]
+[ "Report Index", "HTML", "index.html", "REPORT-INDEX" ]
+
+
