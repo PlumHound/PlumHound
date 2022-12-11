@@ -86,8 +86,13 @@ def TaskExecution(tasks, phDriver, phArgs):
     Loggy(phArgs.verbose,900, "------ENTER: TASKEXECUTION-----")
     Loggy(phArgs.verbose,500, "Begin Task Executions")
     Loggy(phArgs.verbose,500, "TASKS:" + str(tasks))
-
+    
     Outpath=phArgs.path
+
+    # Correct Path if sent as command line/not default. 
+    if "//" not in Outpath:
+        Outpath=phArgs.path + "//"
+
     jobHTMLHeader = phArgs.HTMLHeader
     jobHTMLFooter = phArgs.HTMLFooter
     jobHTMLCSS = phArgs.HTMLCSS
