@@ -127,7 +127,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                     tasksuccess += 1
                     continue
 
-                jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
+                jobkeys = get_keys(phArgs.verbose,phDriver, jobQuery)
                 jobkeys_List = ast.literal_eval(str(jobkeys))
 
                 # If keys returned 0, make an empty list
@@ -135,7 +135,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                     jobkeys_List = []
             
                 jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
-                jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
+                jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
                 try:
                     jobresults_processed_list = ast.literal_eval(jobresults_processed)
                 except Exception:
@@ -171,56 +171,66 @@ def TaskExecution(tasks, phDriver, phArgs):
 def execute_query(verbose,phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: EXECUTE_QUERY-----")
     Loggy(verbose,500, "Executing things")
-
-    with phDriver.session() as session:
-        Loggy(verbose,500, "Running Query")
-        results = session.run(query)
-        if check_records(verbose,results):
-            count = results.detach()
-            Loggy(verbose,500, "Identified " + str(count) + " Results")
-        else:
-            Loggy(verbose,200, "Job result: No records found")
+    try:
+        with phDriver.session() as session:
+            Loggy(verbose,500, "Running Query")
+            result = session.read_transaction(lambda tx: tx.run(query))
+            if check_records(verbose,result):
+                Loggy(verbose,500, "Identified " + str(len(list(result))) + " Results")
+                print("executequerydone")
+            else:
+                Loggy(verbose,200, "Job result: No records found")
+    except Exception as e:
+        print("Error occured in execute_query: ", e)
     Loggy(verbose,900, "------EXIT: EXECUTE_QUERY-----")
-    return results
+    return result
 
 
 # Grab Keys for Cypher Query
 @unit_of_work(timeout=300)
-def GetKeys(verbose,phDriver, query, enabled=True):
-    Loggy(verbose,900, "------ENTER: GETKEYS-----")
+def get_keys(verbose,phDriver, query, enabled=True):
+    Loggy(verbose,900, "------ENTER: get_keys-----")
     Loggy(verbose,500, "Locating Keys")
-    Loggy(verbose,500, "GetKeys Query:" + str(query))
-    with phDriver.session() as session:
-        results = session.run(query)
-        if check_records(verbose,results):
-            keys = results.keys()
-            Loggy(verbose,500, "Keys Found")
-        else:
-            Loggy(verbose,200, "No Keys found")
-            keys = 0
+    Loggy(verbose,500, "get_keys Query:" + str(query))
+    try:
+        with phDriver.session() as session:
+            results = session.run(query)
+            if check_records(verbose,results):
+                keys = results.keys()
+                Loggy(verbose,500, "Keys Found")
+            else:
+                Loggy(verbose,200, "No Keys found")
+                keys = 0
+    except Exception as e:
+        print("Error occured in get_keys: ", e)
     Loggy(verbose,500, "Key enumeration complete")
-    Loggy(verbose,900, "------EXIT: GETKEYS-----")
+    Loggy(verbose,900, "------EXIT: get_keys-----")
     return keys
 
 
 def check_records(verbose,results):
     Loggy(verbose,900, "------ENTER: CHECK_RECORDS-----")
-    if results.peek():
-        Loggy(verbose,500, "Found Records")
-    else:
-        Loggy(verbose,200, "No Records Found")
+    try:
+        if results.peek():
+            Loggy(verbose,500, "Found Records")
+        else:
+            Loggy(verbose,200, "No Records Found")
+    except Exception as e:
+        print("Error occured in check_records: ", e)
     Loggy(verbose,900, "------EXIT: CHECK_RECORDS-----")
     return results.peek()
 
 
-def processresults(verbose,results):
-    Loggy(verbose,900, "------ENTER: PROCESSRESULTS-----")
+def process_results(verbose,results):
+    Loggy(verbose,900, "------ENTER: process_results-----")
     Loggy(verbose,500, "Results need washed")
     BigTable = ""
-    for record in results:
-        try:
-            BigTable = BigTable + str(record.values()) + ","
-        except Exception:
-            Loggy(verbose,200, "Washing records failed. Error on record")
-    Loggy(verbose,900, "------EXIT: PROCESSRESULTS-----")
+    try:
+        for record in results.records():
+            try:
+                BigTable = BigTable + str(record.items()) + ","
+            except Exception as e:
+                print("Error occured in process_results: ", e)
+    except Exception as e:
+        print("Error occured in process_results: ", e)
     return BigTable
