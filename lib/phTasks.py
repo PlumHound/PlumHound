@@ -17,7 +17,7 @@ import lib.phDeliver
 #Plumhound Extensions
 import modules.BlueHound
 import modules.ph_ReportIndexer
-
+import modules.ph.TaskZipper
 
 def MakeTaskList(phArgs):
     Loggy(phArgs.verbose,900, "------ENTER: MAKETASKLIST-----")
@@ -124,6 +124,11 @@ def TaskExecution(tasks, phDriver, phArgs):
 
                 if jobQuery == "REPORT-INDEX":
                     modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+                    tasksuccess += 1
+                    continue
+
+                if jobQuery == "ZIP-TASKS":
+                    modules.phTaskZipper.ZipTasks(phArgs.verbose,task_output_list, jobOutPathFile)
                     tasksuccess += 1
                     continue
                 
