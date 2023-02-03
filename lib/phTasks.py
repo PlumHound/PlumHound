@@ -126,16 +126,18 @@ def TaskExecution(tasks, phDriver, phArgs):
                     modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
                     tasksuccess += 1
                     continue
-
-                jobkeys = GetKeys(phArgs.verbose,phDriver, jobQuery)
+                
+                #now returns native dict containing keys
+                jobkeys = get_keys(phArgs.verbose,phDriver, jobQuery)
                 jobkeys_List = ast.literal_eval(str(jobkeys))
 
                 # If keys returned 0, make an empty list
                 if isinstance(jobkeys_List, int):
                     jobkeys_List = []
-            
+
+                #
                 jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
-                jobresults_processed = "[" + processresults(phArgs.verbose,jobresults) + "]"
+                jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
                 try:
                     jobresults_processed_list = ast.literal_eval(jobresults_processed)
                 except Exception:
@@ -166,61 +168,81 @@ def TaskExecution(tasks, phDriver, phArgs):
     Loggy(phArgs.verbose,90, "")   
 
 # Setup Query
-
 @unit_of_work(timeout=300)
-def execute_query(verbose,phDriver, query, enabled=True):
+def execute_query(verbose, phDriver, query, enabled=True):
     Loggy(verbose,900, "------ENTER: EXECUTE_QUERY-----")
-    Loggy(verbose,500, "Executing things")
-
-    with phDriver.session() as session:
-        Loggy(verbose,500, "Running Query")
-        results = session.run(query)
-        if check_records(verbose,results):
-            count = results.detach()
-            Loggy(verbose,500, "Identified " + str(count) + " Results")
-        else:
-            Loggy(verbose,200, "Job result: No records found")
-    Loggy(verbose,900, "------EXIT: EXECUTE_QUERY-----")
-    return results
+    try:
+        with phDriver.session() as session:
+            Loggy(verbose,500, "Running Query")
+            results = session.run(query)
+            #results return a <class 'neo4j._sync.work.result.Result'>
+            #https://neo4j.com/docs/api/python-driver/current/api.html#result
+            #I have tried getting the number of records in the object, but its a bit tricky, all functions doing it in one step ive tired have been deprecated and removed in the new driver
+            #even tried making a summary object before getting the real data:
+            #https://neo4j.com/docs/api/python-driver/current/api.html#neo4j.ResultSummary
+            #results = session.run(query)
+            #summary = results.consume()
+            #results = session.run(query)
+            #count = summary.counters.nodes_created()
+            #data = results.fetch(count)
+            #Bloodhounds javascript is using recursion, id say its the way to go
+            data = results.fetch(999999999999)
+            if check_records(verbose, phDriver, query):
+                Loggy(verbose,500, "Identified " + str(len(data)) + " Results")
+            else:
+                Loggy(verbose,200, "Job result: No records found")
+        Loggy(verbose,900, "------EXIT: EXECUTE_QUERY-----")
+    except Exception as e:
+        Loggy(verbose,200,"Error occured in execute_query: ", e)
+    return data
 
 
 # Grab Keys for Cypher Query
 @unit_of_work(timeout=300)
-def GetKeys(verbose,phDriver, query, enabled=True):
-    Loggy(verbose,900, "------ENTER: GETKEYS-----")
-    Loggy(verbose,500, "Locating Keys")
-    Loggy(verbose,500, "GetKeys Query:" + str(query))
-    with phDriver.session() as session:
-        results = session.run(query)
-        if check_records(verbose,results):
+def get_keys(verbose,phDriver, query, enabled=True):
+    Loggy(verbose,900, "------ENTER: get_keys-----")
+    try:
+        Loggy(verbose,500, "get_keys Query: " + str(query))
+        with phDriver.session() as session:
+            results = session.run(query)
             keys = results.keys()
-            Loggy(verbose,500, "Keys Found")
-        else:
-            Loggy(verbose,200, "No Keys found")
-            keys = 0
-    Loggy(verbose,500, "Key enumeration complete")
-    Loggy(verbose,900, "------EXIT: GETKEYS-----")
+            if check_records(verbose, phDriver, query):
+                keys = results.keys()
+                Loggy(verbose,500, "Identified " + str(len(keys)) + " Results")
+                Loggy(verbose,500, "Keys Found")
+            else:
+                Loggy(verbose,200, "No Keys found")
+                keys = 0
+        Loggy(verbose,500, "Key enumeration complete")
+        Loggy(verbose,900, "------EXIT: get_keys-----")
+    except Exception as e:
+        Loggy(verbose,200,"Error occured in get_keys: ", e)
     return keys
 
 
-def check_records(verbose,results):
-    Loggy(verbose,900, "------ENTER: CHECK_RECORDS-----")
-    if results.peek():
-        Loggy(verbose,500, "Found Records")
-    else:
-        Loggy(verbose,200, "No Records Found")
-    Loggy(verbose,900, "------EXIT: CHECK_RECORDS-----")
-    return results.peek()
+def check_records(verbose, phDriver, query):
+    Loggy(verbose,900, "------ENTER: check_records-----")
+    try:
+        with phDriver.session() as session:
+            results = session.run(query)
+            first = results.peek()
+            if first:
+                Loggy(verbose,500, "Found Records")
+            else:
+                Loggy(verbose,200, "No Records Found")
+            Loggy(verbose,900, "------EXIT: check_records-----")
+    except Exception as e:
+        Loggy(verbose,200,"Error occured in check_records: ", e)
+    return first
 
 
-def processresults(verbose,results):
-    Loggy(verbose,900, "------ENTER: PROCESSRESULTS-----")
-    Loggy(verbose,500, "Results need washed")
+def process_results(verbose,results):
+    Loggy(verbose,900, "------ENTER: process_results-----")
     BigTable = ""
     for record in results:
         try:
             BigTable = BigTable + str(record.values()) + ","
         except Exception:
             Loggy(verbose,200, "Washing records failed. Error on record")
-    Loggy(verbose,900, "------EXIT: PROCESSRESULTS-----")
+    Loggy(verbose,900, "------EXIT: process_results-----")
     return BigTable

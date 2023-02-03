@@ -1,7 +1,5 @@
-neo4j==1.7
+neo4j
 py2neo
-neobolt
-neotime==1.7.4
 pytz==2019.3
 tabulate
 argcomplete
