@@ -1,6 +1,5 @@
 neo4j
 py2neo
-pytz==2019.3
 tabulate
 argcomplete
 alive-progress
