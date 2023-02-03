@@ -69,3 +69,4 @@
 ["Owned Objects Admin To", "HTML", "Owned-Objects-AdminTo-Direct.html", "MATCH (n {owned:true})-[r:AdminTo]->(c:computer) return n.name as Name, n.highvalue as HighValue, n.enabled as Enabled, c.name as Computer, c.highvalue as ComputerHighValue, c.enabled as ComputerEnabled, c.serviceprincipalname as ComputerSPN"]
 ["Owned Objects Member Of", "HTML", "Owned-Objects-MemberOf-Direct.html", "MATCH (n {owned:true})-[r:MemberOf]->(g:Group) return n.name as Name, n.highvalue as HighValue, n.enabled as Enabled, g.name as GroupName, g.description as GroupDescription"]
 ["Report Index","HTML","index.html","REPORT-INDEX"]
+[ "Zip Tasks", "ZIP", "Reports.zip", "ZIP-TASKS" ]
