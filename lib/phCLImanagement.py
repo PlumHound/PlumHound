@@ -15,7 +15,7 @@ def SetupArguments(ph_version):
     pgroupc = parser.add_argument_group('DATABASE')
     pgroupc.add_argument("-s", "--server", type=str, help="Neo4J Server", default="bolt://localhost:7687")
     pgroupc.add_argument("-u", "--username", default="neo4j", type=str, help="Neo4J Database Useranme")
-    pgroupc.add_argument("-p", "--password", default="neo4jj", type=str, help="Neo4J Database Password")
+    pgroupc.add_argument("-p", "--password", default="neo4jneo4j", type=str, help="Neo4J Database Password")
     pgroupc.add_argument("--UseEnc", default=False, dest="UseEnc", help="Use encryption when connecting.", action='store_true')
     pgroupc.add_argument("--timeout", type=int, default="300", dest="timeout", help="Cypher Query Timeout **NOT FULLY IMPLEMENTED**")
 
