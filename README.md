@@ -36,6 +36,8 @@ PlumHound operates by wrapping BloodHoundAD's powerhouse graphical Neo4J backend
 * [Additional Modules](#additional-modules)
 	* [Report Indexer Moodule](#report-indexer-moodule)
 		* [Report Indexer Task Syntax](#report-indexer-task-syntax)
+	* [TaskZipper Module](#taskzipper-module)
+		* [TaskZipper Task Syntax](#taskzipper-task-syntax)
 * [Logging](#logging)
 * [Hat-Tips &amp; Acknowledgments](#hat-tips--acknowledgments)
 * [Presentations](#presentations)
@@ -430,6 +432,15 @@ The parameter = "REPORT-INDEX" instructs PlumHound to generate an HTML index of 
 
 ```
 ["Report Index","HTML","Reports.html","REPORT-INDEX"]
+```
+
+## TaskZipper Module
+The Taskzipper module will create a zipfile of all of the reports generated from a tasklist.  Be sure that the Zip Module is included as the last task in a last list.
+The paramter = "ZIP-TASKS" instructs PlumHound to generate a ZIP file of all the sucessfuly exported tatsks in that run of tasks.
+
+### TaskZipper Task Syntax
+```
+["Zip Tasks","ZIP","Reports.zip","ZIP-TASKS"]
 ```
 
 # Logging
