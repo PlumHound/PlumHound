@@ -150,8 +150,9 @@ def TaskExecution(tasks, phDriver, phArgs):
                 jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
                 try:
                     jobresults_processed_list = ast.literal_eval(jobresults_processed)
-                except Exception:
+                except Exception as er1:
                     Loggy(phArgs.verbose,100, "ERROR While parsing results (non-fatal but errors may exist in output.")
+                    print(er1)
                     Loggy(phArgs.verbose,500, jobresults_processed)
                     jobresults_processed_list = jobresults_processed
 
@@ -162,9 +163,9 @@ def TaskExecution(tasks, phDriver, phArgs):
                 lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
                 tasksuccess += 1
 
-            except Exception as e:
+            except Exception as er2:
                 Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
-                Loggy(phArgs.verbose,100, "ERROR: "+ e)
+                print(er2)
 
     Loggy(phArgs.verbose,90, "")
     Loggy(phArgs.verbose,90, "Completed " + str(tasksuccess) + " of " + str(len(tasks)) + " tasks.")        
@@ -203,8 +204,9 @@ def execute_query(verbose, phDriver, query, enabled=True):
             else:
                 Loggy(verbose,200, "Job result: No records found")
         Loggy(verbose,900, "------EXIT: EXECUTE_QUERY-----")
-    except Exception as e:
-        Loggy(verbose,200,"Error occured in execute_query: " + e)
+    except Exception as er3:
+        Loggy(verbose,200,"Error occured in execute_query: ")
+        print(er3)
     return data
 
 
@@ -226,8 +228,9 @@ def get_keys(verbose,phDriver, query, enabled=True):
                 keys = 0
         Loggy(verbose,500, "Key enumeration complete")
         Loggy(verbose,900, "------EXIT: get_keys-----")
-    except Exception as e:
-        Loggy(verbose,200,"Error occured in get_keys: ", e)
+    except Exception as er4:
+        Loggy(verbose,200,"Error occured in get_keys: ")
+        print(er4)
     return keys
 
 
@@ -242,8 +245,9 @@ def check_records(verbose, phDriver, query):
             else:
                 Loggy(verbose,200, "No Records Found")
             Loggy(verbose,900, "------EXIT: check_records-----")
-    except Exception as e:
-        Loggy(verbose,200,"Error occured in check_records: ", e)
+    except Exception as er5:
+        Loggy(verbose,200,"Error occured in check_records: ")
+        print(er5)
     return first
 
 
@@ -253,7 +257,8 @@ def process_results(verbose,results):
     for record in results:
         try:
             BigTable = BigTable + str(record.values()) + ","
-        except Exception:
+        except Exception as er6:
             Loggy(verbose,200, "Washing records failed. Error on record")
+            print(er6)
     Loggy(verbose,900, "------EXIT: process_results-----")
     return BigTable
