@@ -42,6 +42,7 @@
 ["Computers Admin of Computers","HTMLCSV","Computers_admin_computers","MATCH p=(m:Computer {enabled: True})-[r1:MemberOf*0..]->(g)-[r2:AdminTo*1..]->(n:Computer) WHERE n <> m RETURN m.name as Computer, n.name as TargetComputer"]
 ["Computers Admin of Computers Count","HTML","Computers_admin_computers_count.html","MATCH p=(m:Computer {enabled: True})-[r1:MemberOf*0..]->(g)-[r2:AdminTo*1..]->(n:Computer) WHERE n <> m RETURN m.name as Computer, COUNT(n) as TargetComputerCount"]
 ["Computers with Descriptions","HTMLCSV","Computers_WithDescriptions","MATCH (c:Computer) WHERE c.description IS NOT NULL RETURN c.name as Computer,c.description as Description"]
+["Computers Vulnerable to Local Admin Enumeration","HTMLCSV","Computers_With_More_Than1_Local_Admin","MATCH p=()-[:AdminTo]->(n:Computer) RETURN n.name as Host, n.operatingsystem as OS"]
 ["Operating Systems Unsupported","HTMLCSV","OperatingSystemUnsupported","MATCH (c:Computer) WHERE c.operatingsystem =~ '.*(2000|2003|2008|xp|vista|7|me).*' RETURN c.name as Computer, c.operatingsystem as UnsupportedOS, c.enabled as Enabled"]
 ["Operating Systems Count","HTML","OperatingSystemCount.html","MATCH (c:Computer) RETURN c.operatingsystem aS OS, count(*) as Computers ORDER BY Computers DESC"]
 ["LAPS Deployment Count","HTMLCSV","LapsDeploymentCount","MATCH (c:Computer) RETURN c.haslaps as LAPSEnabled, count(*) as Computers ORDER BY Computers DESC"]
