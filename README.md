@@ -81,14 +81,14 @@ Use the default username, password, server, and execute the "Easy" task, to test
 python3 PlumHound.py --easy
 ```
 ## Default Task List and Default Credentials 
-Execute PlumHound with the Default TaskList using Default Credentials (neo4j:neo4jj) and Database.
+Execute PlumHound with the Default TaskList using Default Credentials (neo4j:neo4jneo4j) and Database.
 ```shell
 python3 PlumHound.py -x tasks/default.tasks
 ```
 ## Default Task List, Specified Neo4j Server and Quiet Output
 The same, but quiet the output (-v 0), specify the Neo4J server, username, and password instead of using defaults.
 ```shell
-python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4jj" -v 0
+python3 PlumHound.py -x tasks/default.tasks -s "bolt://127.0.0.1:7687" -u "neo4j" -p "neo4jneo4j" -v 0
 ```
 
 ## Path Analyzer (BlueHound Module) 
@@ -204,7 +204,7 @@ PlumHound paramters are set by default.  You can override the default by includi
 |----------|----------|
 | SERVER | bolt://localhost:7687 |
 | USERNAME | neo4j |
-| PASSWORD | neo4jj |
+| PASSWORD | neo4jneo4j |
 
 
 
@@ -456,15 +456,14 @@ pip3 install -r requirements.txt
 ```
 
 # Environment Setup Instructions
-* Install Neo4JS
+* Install Neo4J
 * Install BloodhoundAD
 * Import AD dataset into BloodhoundAD to be parsed
 * Use PlumHound to Report 
 
 # Known Issues
-- Python 3.10 causes some issues - Updated checker to WARN users if 3.10 is detected.
-- Reporting in Window may have some unexpected results. https://github.com/PlumHound/PlumHound/issues/19#issue-750128037
-
+- Please report as issue on GitHub
+- 
 # Collaboration
 Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've created the initial proof of concept and are committed to continuing the maturity of PlumHound to leverage the power of BloodHoundAD into continual security improvement processes.  Community involvement is what makes this industry great!  
 * [Black Hills Information Security](https://www.blackhillsinfosec.com) - @[BHInfoSecurity](https://twitter.com/BHinfoSecurity) - [Discord](https://discord.gg/J4UJPgG)
