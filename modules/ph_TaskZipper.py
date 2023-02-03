@@ -26,7 +26,7 @@ def ZipTasks(verbose,Processed_Results_List, OutPathFile, Outpath):
                 Loggy(verbose,200, "Zip-ADD: " + filename + " Into " + OutPathFile)
                 NewZipFile.write(filename)
 
-    Loggy(verbose,110, "ZipTasks Complete: " + OutPathFile)
+    Loggy(verbose,99, "Completed Reports Archive: " + OutPathFile)
     Loggy(verbose,900, "------EXIT: Task Zipper-----")
     return True
 
