@@ -15,4 +15,5 @@
 /reports/*.html
 /reports/*.csv
 /log/*
-PlumHound.pyproj
+/PlumHound.pyproj
+/PlumHound.sln
