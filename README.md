@@ -454,6 +454,7 @@ By default, PlumHound generates a log in file log\PlumHound.log
 apt-get install python3
 pip3 install -r requirements.txt
 ```
+* Tested with Python 3.10.6 and 3.11.0rc1*
 
 # Environment Setup Instructions
 * Install Neo4J
@@ -463,7 +464,8 @@ pip3 install -r requirements.txt
 
 # Known Issues
 - Please report as issue on GitHub
-- 
+
+
 # Collaboration
 Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've created the initial proof of concept and are committed to continuing the maturity of PlumHound to leverage the power of BloodHoundAD into continual security improvement processes.  Community involvement is what makes this industry great!  
 * [Black Hills Information Security](https://www.blackhillsinfosec.com) - @[BHInfoSecurity](https://twitter.com/BHinfoSecurity) - [Discord](https://discord.gg/J4UJPgG)
