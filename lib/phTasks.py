@@ -7,6 +7,7 @@
 #Python Libraries
 import ast
 import copy
+import time
 from alive_progress import alive_bar
 from neo4j import GraphDatabase
 from neo4j import unit_of_work
@@ -19,6 +20,23 @@ import lib.phDeliver
 import modules.BlueHound
 import modules.ph_ReportIndexer
 import modules.ph_TaskZipper
+
+# Custom timeout exception
+class TimeoutException(Exception):
+    pass
+
+# Context manager to handle timeouts
+class Timeout:
+    def __init__(self, seconds):
+        self.seconds = seconds
+
+    def __enter__(self):
+        self.start_time = time.time()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        elapsed_time = time.time() - self.start_time
+        if elapsed_time > self.seconds:
+            raise TimeoutException(f"Timeout: Job took longer than {self.seconds} seconds to complete.")
 
 def MakeTaskList(phArgs):
     Loggy(phArgs.verbose,900, "------ENTER: MAKETASKLIST-----")
@@ -106,62 +124,67 @@ def TaskExecution(tasks, phDriver, phArgs):
         for job in tasks:
             tpbar()
             try:
-                Loggy(phArgs.verbose,500, "Job: " + str(job))
+                with Timeout(4 * 60 * 60):  # 4 hours in seconds
+                    Loggy(phArgs.verbose,500, "Job: " + str(job))
 
-                job_List = ast.literal_eval(job)
-                jobTitle = job_List[0]
-                jobOutFormat = job_List[1]
-                jobOutPathFile = Outpath + job_List[2]
-                jobQuery = job_List[3]
+                    job_List = ast.literal_eval(job)
+                    jobTitle = job_List[0]
+                    jobOutFormat = job_List[1]
+                    jobOutPathFile = Outpath + job_List[2]
+                    jobQuery = job_List[3]
 
-                tpbar.text("\t -> Task: " + jobTitle)
+                    tpbar.text("\t -> Task: " + jobTitle)
 
-                Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
+                    Loggy(phArgs.verbose,200, "Starting job: " + jobTitle)
 
-                Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
-                Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)
-                Loggy(phArgs.verbose,500, "Job File: " + jobOutPathFile)
-                Loggy(phArgs.verbose,500, "Job Query: " + jobQuery)
+                    Loggy(phArgs.verbose,500, "Job Title: " + jobTitle)
+                    Loggy(phArgs.verbose,500, "Job Format: " + jobOutFormat)
+                    Loggy(phArgs.verbose,500, "Job File: " + jobOutPathFile)
+                    Loggy(phArgs.verbose,500, "Job Query: " + jobQuery)
 
-                if jobQuery == "REPORT-INDEX":
-                    task_output_list_clean = copy.deepcopy(task_output_list) #copy the list and revert it after ReportIndexer
-                    modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
-                    task_output_list = task_output_list_clean 
-                    task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
+                    if jobQuery == "REPORT-INDEX":
+                        task_output_list_clean = copy.deepcopy(task_output_list) #copy the list and revert it after ReportIndexer
+                        modules.ph_ReportIndexer.ReportIndexer(phArgs.verbose,task_output_list, jobOutPathFile, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS)
+                        task_output_list = task_output_list_clean 
+                        task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
+                        tasksuccess += 1
+                        continue
+
+                    if jobQuery == "ZIP-TASKS":
+                        Loggy(phArgs.verbose,200, "task_output_list: " + str(task_output_list))
+                        modules.ph_TaskZipper.ZipTasks(phArgs.verbose,task_output_list, jobOutPathFile, Outpath)
+                        tasksuccess += 1
+                        continue
+                    
+                    #now returns native dict containing keys
+                    jobkeys = get_keys(phArgs.verbose,phDriver, jobQuery)
+                    jobkeys_List = ast.literal_eval(str(jobkeys))
+
+                    # If keys returned 0, make an empty list
+                    if isinstance(jobkeys_List, int):
+                        jobkeys_List = []
+
+                    #
+                    jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
+                    jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
+                    try:
+                        jobresults_processed_list = ast.literal_eval(jobresults_processed)
+                    except Exception as er1:
+                        Loggy(phArgs.verbose,100, "ERROR While parsing results (non-fatal but errors may exist in output.")
+                        print(er1)
+                        Loggy(phArgs.verbose,500, jobresults_processed)
+                        jobresults_processed_list = jobresults_processed
+
+                    if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV":
+                        task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
+
+                    Loggy(phArgs.verbose,500, "Exporting Job Results")
+                    lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
                     tasksuccess += 1
-                    continue
 
-                if jobQuery == "ZIP-TASKS":
-                    Loggy(phArgs.verbose,200, "task_output_list: " + str(task_output_list))
-                    modules.ph_TaskZipper.ZipTasks(phArgs.verbose,task_output_list, jobOutPathFile, Outpath)
-                    tasksuccess += 1
-                    continue
-                
-                #now returns native dict containing keys
-                jobkeys = get_keys(phArgs.verbose,phDriver, jobQuery)
-                jobkeys_List = ast.literal_eval(str(jobkeys))
-
-                # If keys returned 0, make an empty list
-                if isinstance(jobkeys_List, int):
-                    jobkeys_List = []
-
-                #
-                jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
-                jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
-                try:
-                    jobresults_processed_list = ast.literal_eval(jobresults_processed)
-                except Exception as er1:
-                    Loggy(phArgs.verbose,100, "ERROR While parsing results (non-fatal but errors may exist in output.")
-                    print(er1)
-                    Loggy(phArgs.verbose,500, jobresults_processed)
-                    jobresults_processed_list = jobresults_processed
-
-                if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV":
-                    task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
-
-                Loggy(phArgs.verbose,500, "Exporting Job Results")
-                lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
-                tasksuccess += 1
+            except TimeoutException as te:
+                Loggy(phArgs.verbose, 100, "ERROR: Timeout occurred while running job (trying next job in list).")
+                print(te)
 
             except Exception as er2:
                 Loggy(phArgs.verbose,100, "ERROR While running job (trying next job in list).")
