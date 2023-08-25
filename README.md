@@ -483,7 +483,7 @@ Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've create
 * [Defensive Origins](https://www.defensiveorigins.com)   -  [@DefensiveOGs](https://twitter.com/DefensiveOGs) - [Git](https://github.com/DefensiveOrigins) 
 * Kent Ickler  -  [@Krelkci](https://twitter.com/Krelkci) - [Git](https://github.com/Relkci)
 * Jordan Drysdale -  [@Rev10D](https://twitter.com/Rev10D) - [Git](https://github.com/rev10d)
-* Mathieu Saulnier - [@Scoubi](https://twitter.com/ScoubiMtl) - [Git](https://github.com/Scoubi)
+* Mathieu Saulnier - [@Scoubi](https://twitter.com/ScoubiMtl) - [Git](https://github.com/Scoubi) 
 
 
 # License
