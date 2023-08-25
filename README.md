@@ -479,11 +479,11 @@ pip3 install -r requirements.txt
 
 # Collaboration
 Help PlumHound grow and be a great tool for Blue and Purple Teams.  We've created the initial proof of concept and are committed to continuing the maturity of PlumHound to leverage the power of BloodHoundAD into continual security improvement processes.  Community involvement is what makes this industry great!  
-* [Black Hills Information Security](https://www.blackhillsinfosec.com) - @[BHInfoSecurity](https://twitter.com/BHinfoSecurity) - [Discord](https://discord.gg/J4UJPgG)
+* [Black Hills Information Security](https://www.blackhillsinfosec.com) - [@BHInfoSecurity](https://twitter.com/BHinfoSecurity) - [Discord](https://discord.gg/J4UJPgG)
 * [Defensive Origins](https://www.defensiveorigins.com)   -  [@DefensiveOGs](https://twitter.com/DefensiveOGs) - [Git](https://github.com/DefensiveOrigins) 
-* Kent Ickler  -  @[Krelkci](https://twitter.com/Krelkci) - [Git](https://github.com/Relkci)
+* Kent Ickler  -  [@Krelkci](https://twitter.com/Krelkci) - [Git](https://github.com/Relkci)
 * Jordan Drysdale -  [@Rev10D](https://twitter.com/Rev10D) - [Git](https://github.com/rev10d)
-* Mathieu Saulnier - Scoubi
+* Mathieu Saulnier - [@Scoubi](https://twitter.com/ScoubiMtl) - [Git](https://github.com/Scoubi) 
 
 
 # License
