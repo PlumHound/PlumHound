@@ -3,6 +3,7 @@
 
 # PlumHound https://github.com/PlumHound/PlumHound | https://plumhound.defensiveorigins.com/
 # BloodHoundAD Wrapper for Purple Teams | https://github.com/BloodHoundAD/BloodHound
+# BloodHound CE (Newest version) can also be used | https://github.com/SpecterOps/BloodHound
 
 # GNU GPL 3.0
 
