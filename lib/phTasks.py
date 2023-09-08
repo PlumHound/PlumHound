@@ -28,7 +28,7 @@ def MakeTaskList(phArgs):
 
     if phArgs.TaskFile:
         Loggy(phArgs.verbose,500, "Tasks file specified.  Reading")
-        with open(phArgs.TaskFile) as f:
+        with open(phArgs.TaskFile, encoding="utf-8") as f:
             tasks = f.read().splitlines()
         Loggy(phArgs.verbose,500, "TASKS: " + str(tasks))
         Loggy(phArgs.verbose,90, "Found " +str(len(tasks))+" task(s)")
