@@ -14,7 +14,7 @@ import lib.phNotifyArgs
 import lib.phTasks
 import lib.phDatabase
 
-ph_version = "1.5.2"
+ph_version = "1.6"
 
 # Check if Py2 environment.  If not executing in Python3, exit nicely.
 lib.phCheckPython.CheckPython2()
