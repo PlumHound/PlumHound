@@ -54,7 +54,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
     if OutFormat == "HTML":
         Loggy(verbose,500, "Beginning Output HTML:" + OutFile)
         output = tabulate(Processed_Results_List, list_KeysList, tablefmt="html")
-        outputq = "<br><div style="width:50%; display:inline-block;"><tt><u>Cypher Query</u>:<br>"+jobQuery+"</tt></div>"
+        outputq = "<br><div style='width:50%; display:inline-block;'><tt><u>Cypher Query</u>:<br>"+jobQuery+"</tt></div>"
         HTMLCSS_str = ""
         HTMLHeader_str = ""
         HTMLFooter_str = ""
