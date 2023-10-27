@@ -18,6 +18,6 @@ def Loggy(hurdle, level, notice):
         else:
             print(str(level) + "\t" + notice)
 
-    fsys = open(logfile, "a")
+    fsys = open(logfile, "a", encoding="utf-8")
     fsys.writelines(str(level) + "\t" + datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S") +"\t" + notice +"\n")
     fsys.close

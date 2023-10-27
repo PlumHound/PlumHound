@@ -22,7 +22,7 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
 
     if OutFormat == "CSV":
         Loggy(verbose,500, "Beginning Output CSV:" + OutPath + OutFile)
-        with open(OutPath + OutFile, "w", newline="") as f:
+        with open(OutPath + OutFile, "w", newline="", encoding="utf-8") as f:
             Loggy(verbose,500, "KeyType: " + str(type(list_KeysList)))
             Loggy(verbose,500, "KeyList: " + str((list_KeysList)))
             writer = csv.writer(f)
