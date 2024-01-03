@@ -137,16 +137,12 @@ def TaskExecution(tasks, phDriver, phArgs):
                     tasksuccess += 1
                     continue
                 
-                #now returns native dict containing keys
-                jobkeys = get_keys(phArgs.verbose,phDriver, jobQuery)
-                jobkeys_List = ast.literal_eval(str(jobkeys))
-
-                # If keys returned 0, make an empty list
-                if isinstance(jobkeys_List, int):
-                    jobkeys_List = []
 
                 # Special handling for jobs when PNG is (not) used
                 if not jobOutFormat== "PNG":
+                    #now returns native dict containing keys
+                    jobkeys = get_keys(phArgs.verbose,phDriver, jobQuery)
+                    jobkeys_List = ast.literal_eval(str(jobkeys))
                     jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
                     jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
                     try:
@@ -161,9 +157,13 @@ def TaskExecution(tasks, phDriver, phArgs):
                 if jobOutFormat == "PNG":
                     Loggy(phArgs.verbose,500, "Set jobresults_processed_list to be the cypher query path")
                     jobresults_processed_list = get_path(phArgs.verbose,phDriver, jobQuery)
+                    
+                # If keys returned 0, make an empty list
+                if isinstance(jobkeys_List, int):
+                    jobkeys_List = []
 
                 # Append the list of jobs to be included for the index module, if any.
-                if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV" OR jobOutFormat == "PNG":
+                if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV" or jobOutFormat == "PNG":
                     task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
                 
 
@@ -249,7 +249,7 @@ def get_path(verbose,phDriver, query, enabled=True):
         Loggy(verbose,500, "get_path Query: " + str(query))
         with phDriver.session() as session:
             results = session.run(query)
-            
+            record = results.single()
         if record:
             path = record['path']
             
