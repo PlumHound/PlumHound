@@ -145,24 +145,27 @@ def TaskExecution(tasks, phDriver, phArgs):
                 if isinstance(jobkeys_List, int):
                     jobkeys_List = []
 
-                #
-                jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
-                jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
-                
-                try:
-                    jobresults_processed_list = ast.literal_eval(jobresults_processed)
-                except Exception as er1:
-                    Loggy(phArgs.verbose,100, "ERROR While parsing results (non-fatal but errors may exist in output.")
-                    print(er1)
-                    Loggy(phArgs.verbose,500, jobresults_processed)
-                    jobresults_processed_list = jobresults_processed
+                # Special handling for jobs when PNG is (not) used
+                if not jobOutFormat== "PNG":
+                    jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
+                    jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
+                    try:
+                        jobresults_processed_list = ast.literal_eval(jobresults_processed)
+                    except Exception as er1:
+                        Loggy(phArgs.verbose,100, "ERROR While parsing results (non-fatal but errors may exist in output.")
+                        print(er1)
+                        Loggy(phArgs.verbose,500, jobresults_processed)
+                        jobresults_processed_list = jobresults_processed
 
-                if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV":
+                # Special handling for jobs when PNG is used
+                if jobOutFormat == "PNG":
+                    Loggy(phArgs.verbose,500, "Set jobresults_processed_list to be the cypher query path")
+                    jobresults_processed_list = get_path(phArgs.verbose,phDriver, jobQuery)
+
+                # Append the list of jobs to be included for the index module, if any.
+                if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV" OR jobOutFormat == "PNG":
                     task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
                 
-                if jobOutFormat == "PNG":
-                    Loggy(phArgs.verbose,500, "Set jobresults_processed_list to be jobresults when visualizing path")
-                    jobresults_processed_list = jobresults
 
                 Loggy(phArgs.verbose,500, "Exporting Job Results")
                 lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)
@@ -237,6 +240,24 @@ def get_keys(verbose,phDriver, query, enabled=True):
         Loggy(verbose,200,"Error occured in get_keys: ")
         print(er4)
     return keys
+
+# Grab Path for Cypher query
+@unit_of_work(timeout=300)
+def get_path(verbose,phDriver, query, enabled=True):
+    Loggy(verbose,900, "------ENTER: get_path-----")
+    try:
+        Loggy(verbose,500, "get_path Query: " + str(query))
+        with phDriver.session() as session:
+            results = session.run(query)
+            
+        if record:
+            path = record['path']
+            
+        Loggy(verbose,900, "------EXIT: get_path-----")
+    except Exception as er4:
+        Loggy(verbose,200,"Error occured in get_path: ")
+        print(er4)
+    return path
 
 
 def check_records(verbose, phDriver, query):

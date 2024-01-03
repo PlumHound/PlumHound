@@ -39,7 +39,10 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
     
     if OutFormat == "PNG":
         Loggy(verbose,500, "Beginning Output PNG:" + OutPath + OutFile)
-        graph = Source('digraph G {\n' + Processed_Results_List + '\n}')
+        path = Processed_Results_List
+        # Create a graph from the path using graphviz
+        graph = Source('digraph G {\n' + ' -> '.join(
+            f'"{node["name"]}"' for node in path.nodes) + '\n}')
         graph.format = 'png'
         graph.render(OutPath + OutFile)
         
