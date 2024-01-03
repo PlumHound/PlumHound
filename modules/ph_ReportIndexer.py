@@ -29,6 +29,9 @@ def ReportIndexer(verbose,Processed_Results_List, OutPathFile, HTMLHeader, HTMLF
         elif entry[3] == "HTMLCSV":
             filename = entry[2]
             entry[2] = "<a href=\"" + filename + ".html\">Details</a> - <a href=\"" + filename + ".csv\">CSV</a> "
+        elif entry[3] == "PNG":
+            entry[2] = "<a href=\"" + filename + "\">PNG</a>"
+
         #Remove the unnecessary 4th item to correct the keys 
         del entry[3]
 

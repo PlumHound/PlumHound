@@ -148,6 +148,7 @@ def TaskExecution(tasks, phDriver, phArgs):
                 #
                 jobresults = execute_query(phArgs.verbose,phDriver, jobQuery)
                 jobresults_processed = "[" + process_results(phArgs.verbose,jobresults) + "]"
+                
                 try:
                     jobresults_processed_list = ast.literal_eval(jobresults_processed)
                 except Exception as er1:
@@ -158,6 +159,14 @@ def TaskExecution(tasks, phDriver, phArgs):
 
                 if jobOutFormat == "HTML" or jobOutFormat == "HTMLCSV" or jobOutFormat == "CSV":
                     task_output_list.append([jobTitle, len(jobresults_processed_list), job_List[2],jobOutFormat])
+                
+                if jobOutFormat == "PNG":
+                    Loggy(phArgs.verbose,500, "converting jobresults into DOT languae for visualization")
+                    #Set the jobresult_processed to be a DOT languge representation of the cypher result. Worth noting that this isn't technically a list when passed to SendItOut
+                    dot = ""
+                    for record in jobresults:
+                        dot += f'"{record["n"]["name"]}" -> "{record["m"]["name"]}"\n'
+                    jobresults_processed_list = dot
 
                 Loggy(phArgs.verbose,500, "Exporting Job Results")
                 lib.phDeliver.SenditOut(phArgs.verbose,jobkeys_List, jobresults_processed_list, jobOutFormat, jobOutPathFile, "", jobTitle, jobHTMLHeader, jobHTMLFooter, jobHTMLCSS, jobQuery)

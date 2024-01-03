@@ -9,6 +9,7 @@ import ast
 import csv
 from tabulate import tabulate
 from datetime import datetime
+from graphviz import Source
 
 #Plumhound Modules
 from lib.phLoggy import Loggy as Loggy
@@ -35,7 +36,13 @@ def SenditOut(verbose,list_KeysList, Processed_Results_List, OutFormat, OutFile,
             writer.writerows(Processed_Results_List)
         Loggy(verbose,150, "Task " + Title + " Complete: " + OutFile)
         return True
-
+    
+    if OutFormat == "PNG":
+        Loggy(verbose,500, "Beginning Output PNG:" + OutPath + OutFile)
+        graph = Source('digraph G {\n' + Processed_Results_List + '\n}')
+        graph.format = 'png'
+        graph.render(OutPath + OutFile)
+        
     if OutFormat == "HTMLCSV":
         Loggy(verbose,500, "Beginning Output HTMLCSV:" + OutPath + OutFile)
         SenditOut(verbose,list_KeysList, Processed_Results_List, "HTML", OutFile + ".html", OutPath, Title, HTMLHeader, HTMLFooter, HTMLCSS, jobQuery)
