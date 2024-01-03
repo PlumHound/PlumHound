@@ -155,7 +155,7 @@ def TaskExecution(tasks, phDriver, phArgs):
 
                 # Special handling for jobs when PNG is used
                 if jobOutFormat == "PNG":
-                    Loggy(phArgs.verbose,500, "Set jobresults_processed_list to be the cypher query path")
+                    Loggy(phArgs.verbose,500, "Set jobresults_processed_list to be the raw cypher result")
                     jobresults_processed_list = get_path(phArgs.verbose,phDriver, jobQuery)
                     
                 # If keys returned 0, make an empty list
@@ -248,16 +248,12 @@ def get_path(verbose,phDriver, query, enabled=True):
     try:
         Loggy(verbose,500, "get_path Query: " + str(query))
         with phDriver.session() as session:
-            results = session.run(query)
-            record = results.single()
-        if record:
-            path = record['path']
-            
+            result = session.run(cypher)
         Loggy(verbose,900, "------EXIT: get_path-----")
     except Exception as er4:
         Loggy(verbose,200,"Error occured in get_path: ")
         print(er4)
-    return path
+    return result
 
 
 def check_records(verbose, phDriver, query):

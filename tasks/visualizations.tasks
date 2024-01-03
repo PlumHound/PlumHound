@@ -1,2 +1,2 @@
-["Domain Trusts", "PNG", "CrossDomainRelationships.png", "MATCH (n:Domain) RETURN n LIMIT 25"]
+["Domain Trusts", "PNG", "CrossDomainRelationships.png", "MATCH (d1:Domain)-[:TrustedBy]->(d2:Domain) RETURN d1, d2"]
 [ "Report Index", "HTML", "index.html", "REPORT-INDEX" ]

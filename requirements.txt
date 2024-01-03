@@ -4,3 +4,4 @@ tabulate
 argcomplete
 alive-progress
 graphviz
+pydot
