@@ -17,6 +17,7 @@ import lib.phDeliver
 
 #Plumhound Extensions
 import modules.BlueHound
+import modules.AzHound
 import modules.ph_ReportIndexer
 import modules.ph_TaskZipper
 
@@ -68,6 +69,40 @@ def MakeTaskList(phArgs):
             snode=(phArgs.AnalyzePath[0]).upper()
             enode=(phArgs.AnalyzePath[1]).upper()
         modules.BlueHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+
+    if phArgs.AzPath:
+        if phArgs.AzPath[0].upper() == "ALL":
+            snode="AZUser"
+            enode="GLOBAL ADMINISTRATOR"
+            modules.AzHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+            snode="AZGroup"
+            modules.AzHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+            snode="AZApp"
+            modules.AzHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+            snode="AZServicePrincipal"
+            modules.AzHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+            snode="AZDevice"
+            modules.AzHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
+        elif phArgs.AzPath[0].upper() == "AZUSER":
+            snode="AZUser"
+            enode="GLOBAL ADMINISTRATOR"
+        elif phArgs.AzPath[0].upper() == "AZGROUP":
+            snode="AZGroup"
+            enode="GLOBAL ADMINISTRATOR"
+        elif phArgs.AzPath[0].upper() == "AZAPP":
+            snode="AZApp"
+            enode="GLOBAL ADMINISTRATOR"
+        elif phArgs.AzPath[0].upper() == "AZSERVICEPRINCIPAL":
+            snode="AZServicePrincipal"
+            enode="GLOBAL ADMINISTRATOR"
+        elif phArgs.AzPath[0].upper() == "AZDEVICE":
+            snode="AZDevice"
+            enode="GLOBAL ADMINISTRATOR"           
+        else:
+            snode=(phArgs.AzPath[0]).upper()
+            enode=(phArgs.AzPath[1]).upper()
+        if phArgs.AzPath[0].upper() != "ALL":
+            modules.AzHound.getpaths(phArgs.server, phArgs.username, phArgs.password,snode,enode)
 
     if phArgs.easy:
         Loggy(phArgs.verbose,500, "Tasks Easy Query Specified.")

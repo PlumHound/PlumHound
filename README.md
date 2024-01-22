@@ -421,6 +421,15 @@ Analyzing paths between IT00547@BTV.ORG and DOMAIN ADMINS@BTV.ORG
 
 ----
 
+## AzHound (Basic Path Analysis of AzureHound Data)
+Valid pre-sets are `ALL`, `AZUser`, `AZGroup`, `AZApp`, `AZServicePrincipal`, `AZDevice`.
+All presets search for relationships with `Global Administrator`.
+
+```plaintext
+Plumhound.py -az ALL
+[...]
+```
+
 # Additional Modules
 Additional modules will be documented here. 
 
