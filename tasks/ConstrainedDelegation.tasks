@@ -1,0 +1,4 @@
+[ "Constrained Delegation - Users", "HTMLCSV", "ConstrainedDelegation-Users", "MATCH (a:User)-[:AllowedToDelegate]->(c:Computer) RETURN a.name as User, a.enabled as Enabled, c.name as TargetComputer" ]
+["Constrained Delegation - Users NonDA","HTMLCSV","ConstrainedDelegation-UsersNonDA","MATCH (u1:User)-[:MemberOf*1..]->(g:Group) WHERE g.objectid ENDS WITH '-512' WITH COLLECT(u1.name) AS DAs MATCH (a:User)-[:AllowedToDelegate]->(c:Computer) WHERE NOT a.name IN DAs RETURN a.name as User, a.enabled as Enabled, c.name as TargetComputer"]
+["Report Index","HTML","index.html","REPORT-INDEX"]
+["Zip Tasks", "ZIP", "Reports.zip", "ZIP-TASKS" ]
