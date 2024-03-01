@@ -38,7 +38,6 @@
 ["GPO Creator Owners", "HTML", "GPOCreatorOwners.html", "MATCH p=(n:Group)<-[:MemberOf*1..]-(m) WHERE n.objectid =~ '(?i)S-1-5-.*-520' RETURN m.name as Name, m.displayname as DisplayName,m.description as Description, m.enabled as Enabled, m.pwdneverexpires as PWDNeverExpire, m.trustedtoauth as TrustedToAuth, m.unconstraineddelegation as UncDelegation "]
 ["RDPable Groups", "HTML", "RDPableGroups.html", "MATCH p=(m:Group)-[r:CanRDP]->(n:Computer) RETURN m.name as Group, n.name as Computer ORDER BY m.name" ]
 ["RDPable Groups Count", "HTML", "RDPableGroupsCount.html", "MATCH p=(m:Group)-[r:CanRDP]->(n:Computer) RETURN m.name as Group, count(*) as Computer ORDER BY Computer DESC" ]
-["Most Admin Privileged Groups","HTML","Groups_MostAdminPrivileged.html","MATCH (g:Group) OPTIONAL MATCH (g)-[:AdminTo]->(c1:Computer) OPTIONAL MATCH (g)-[:MemberOf*1..]->(:Group)-[:AdminTo]->(c2:Computer) WITH g, COLLECT(c1) + COLLECT(c2) AS tempVar UNWIND tempVar AS computers RETURN g.name AS GroupName,COUNT(DISTINCT(computers)) AS AdminRightCount ORDER BY AdminRightCount DESC"]
 ["Local AdminGroups", "HTML", "LocalAdmin_Groups.html", "MATCH p=(m:Group)-[r:AdminTo]->(n:Computer) RETURN m.name as Group, n.name as Computer ORDER BY m.name" ]
 ["Local AdminGroups Count", "HTML", "LocalAdmin_Groups_Count.html", "MATCH p=(m:Group)-[r:AdminTo]->(n:Computer) RETURN m.name as Group, count(*) as Computer ORDER BY Computer DESC"]
 ["Local AdminUsers","HTML","LocalAdmin_Users.html","MATCH p=(m:User)-[r:AdminTo]->(n:Computer) RETURN m.name as User, n.name as Computer ORDER BY m.name"]
