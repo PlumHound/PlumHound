@@ -1,0 +1,5 @@
+[ "GPOs", "HTMLCSV", "GPOs", "Match (n:GPO) return n.name as GPO, n.highvalue as HighValue, n.gpcpath as Path" ]
+[ "GPO Owners","HTMLCSV","GPOOwners","MATCH (u)-[:Owns]->(g:GPO) RETURN g.name AS GPO, u.name as Object, u.enabled as Enabled, head(labels(u)) as Type ORDER BY GPO, Object"]
+[ "GPO Creator Owners", "HTML", "GPOCreatorOwners.html", "MATCH p=(n:Group)<-[:MemberOf*1..]-(m) WHERE n.objectid =~ '(?i)S-1-5-.*-520' RETURN m.name as Name, m.displayname as DisplayName,m.description as Description, m.enabled as Enabled, m.pwdneverexpires as PWDNeverExpire, m.trustedtoauth as TrustedToAuth, m.unconstraineddelegation as UncDelegation " ]
+[ "GPO Owners", "HTMLCSV", "GPOOwners", "MATCH (u)-[:Owns]->(g:GPO) RETURN g.name AS GPO, u.name as Object, u.enabled as Enabled, head(labels(u)) as Type ORDER BY GPO, Object" ]
+[ "Report Index", "HTML", "index.html", "REPORT-INDEX" ]
