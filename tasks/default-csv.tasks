@@ -30,7 +30,7 @@
 ["LAPS Deployment Count","CSV","LapsDeploymentCount.CSV","MATCH (c:Computer) RETURN c.haslaps as LAPSEnabled, count(*) as Computers ORDER BY Computers DESC"]
 ["LAPS Not Enabled","CSV","LapsNotEnabled.CSV","MATCH (c:Computer) WHERE c.haslaps=false RETURN c.haslaps as LAPSEnabled, c.name as Computer ORDER BY Computer"]
 ["Domain List","CSV","Domains.CSV","MATCH (n:Domain) return n.name as Domain, n.functionallevel as FunctionalLevel, n.highvalue as HighValue, n.domain as DNS"]
-["Operating Systems Unsupported","CSV","OperatingSystemUnsupported.CSV","MATCH (c:Computer) WHERE c.operatingsystem =~ '.*(2000|2003|2008|xp|vista|7|me).*' RETURN c.name as Computer, c.operatingsystem as UnsupportedOS, c.enabled as Enabled"]
+["Operating Systems Unsupported","CSV","OperatingSystemUnsupported.CSV","MATCH (c:Computer) WHERE c.operatingsystem =~ '.*(2000|2003|2008|2012|xp|vista|7|me).*' RETURN c.name as Computer, c.operatingsystem as UnsupportedOS, c.enabled as Enabled"]
 ["GPOs","CSV","GPOs.CSV","Match (n:GPO) return n.name as GPO, n.highvalue as HighValue, n.gpcpath as Path"]
 ["HighValue Group Members","CSV","Groups-HighValue-members.CSV","MATCH p=(n:User)-[r:MemberOf*1..]->(m:Group {highvalue:true}) RETURN n.name as User, m.name as Group"]
 ["Add Use Delegation","CSV","User-AddToGroupDelegation.CSV","MATCH (n:User {admincount:False}) MATCH p=allShortestPaths((n)-[r:AddMember*1..]->(m:Group)) RETURN n.name as User, m.name as Group"]
