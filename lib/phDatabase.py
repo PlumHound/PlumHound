@@ -10,7 +10,7 @@ from lib.phLoggy import Loggy as Loggy
 # Setup Database Connection
 def setup_database_conn(phArgs):
     Loggy(phArgs.verbose,900, "------ENTER: SETUP_DATABASE_CONN-----")
-    Loggy(phArgs.verbose,200, "[!] Attempting to connect to your Neo4j project using {}:{} @ {} {}.".format(phArgs.username, phArgs.password, phArgs.server, "[ENCRYPTED]" if phArgs.UseEnc else "[UNECNCRYPTED]"))
+    Loggy(phArgs.verbose,200, "[!] Attempting to connect to your Neo4j project using {}:{} @ {} {}.".format(phArgs.username, "****", phArgs.server, "[ENCRYPTED]" if phArgs.UseEnc else "[UNECNCRYPTED]"))
     try:
         if phArgs.UseEnc:
             Loggy(phArgs.verbose,200, " Using Neo4j encryption")
