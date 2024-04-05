@@ -57,7 +57,7 @@
 ["Local Admins - Groups", "HTML", "LocalAdmin_Groups.html", "MATCH p=(m:Group)-[r:AdminTo]->(n:Computer) RETURN m.name as Group, n.name as Computer ORDER BY m.name" ]
 ["Local Admins - Groups Count", "HTML", "LocalAdmin_Groups_Count.html", "MATCH p=(m:Group)-[r:AdminTo]->(n:Computer) RETURN m.name as Group, count(*) as Computer ORDER BY Computer DESC"]
 ["Local Admins - Users","HTML","LocalAdmin_Users.html","MATCH p=(m:User)-[r:AdminTo]->(n:Computer) RETURN m.name as User, n.name as Computer ORDER BY m.name"]
-["Local Admins - Users Count","HTML","LocalAdmin_UsersCount.html","MATCH p=(m:User)-[r:AdminTo]->(n:Computer) RETURN m.name as User, count(*) as ComputerCount ORDER BY Computer DESC" ]
+["Local Admins - Users Count","HTML","LocalAdmin_UsersCount.html","MATCH p=(m:User)-[r:AdminTo]->(n:Computer) RETURN m.name as User, count(*) as ComputerCount ORDER BY ComputerCount DESC" ]
 ["Local Admins - Computers","HTMLCSV","LocalAdmin_Computers_","MATCH p=(m:Computer {enabled: True})-[r1:MemberOf*0..]->(g)-[r2:AdminTo*1..]->(n:Computer) WHERE n <> m RETURN m.name as Computer, n.name as TargetComputer"]
 ["Local Admins - Computers Count","HTML","LocalAdmins_Computers_count.html","MATCH p=(m:Computer {enabled: True})-[r1:MemberOf*0..]->(g)-[r2:AdminTo*1..]->(n:Computer) WHERE n <> m RETURN m.name as Computer, COUNT(n) as TargetComputerCount"]
 ["Computers with MSSQL SPN","HTMLCSV","Computers_MSSQL","MATCH (c:Computer) WHERE ANY (x IN c.serviceprincipalnames WHERE toUpper(x) CONTAINS 'MSSQL') RETURN c.name as Computer, c.enabled as Enabled, c.serviceprincipalnames as SPN ORDER BY c.name ASC"]
