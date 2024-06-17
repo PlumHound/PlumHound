@@ -72,10 +72,10 @@ Hence, PlumHound was created out of a need to retrieve consumable data from Bloo
 | ![Report Index](docs/images/report_index.png) |
 |-----------------------------------------------|
 
-| ![Report1](docs/images/report1.png) ![](docs/images/report1.png)  |
+| ![Report1](docs/images/report1.png) |
 |---------------|
 
-| ![Report2](docs/images/report2.png) ![](docs/images/report2.png)  |
+| ![Report2](docs/images/report2.png) |
 |---------------|
 
 | ![Report3](docs/images/report3.png) |
