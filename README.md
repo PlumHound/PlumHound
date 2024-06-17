@@ -67,7 +67,7 @@ Hence, PlumHound was created out of a need to retrieve consumable data from Bloo
 ## Sample Reports
  We include some sample reports in this respository, however the data represents a fictious small Active Directory deployment atypical of a production environment.  The default tasks tasklist will produce reports with ease.  Here are a sample of some less-exciting reports generated from a small lab environment.  A few samples of produced reports are shown below.  
  
- The archive of sample reports is found here: [SampleReports](docs/SampleReports.zip)
+ The archive of sample reports is found here: [SampleReports](https://github.com/PlumHound/PlumHound/raw/master/docs/SampleReports.zip)
 
 | ![Report Index](docs/images/report_index.png) |
 |-----------------------------------------------|
