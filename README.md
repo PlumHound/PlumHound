@@ -87,6 +87,122 @@ Hence, PlumHound was created out of a need to retrieve consumable data from Bloo
 | ![Report5](docs/images/report5.png) |
 |---------------|
 
+The default tasklist generates the following reports: 
+
+* Domains
+* Domain Trusts
+* Domain Controllers
+* Domain Controllers - Read Only
+* Enterprise Admins
+* Schema Admins
+* Domain Admins
+* Admin Groups
+* Admin Groups Direct Population
+* Domain Users
+* Domain Computers
+* Domain Groups
+* OUs By Computer Member Count
+* OUs By User Member Count
+* OUs By Group Member Count
+* Cert Publishers
+* DA Sessions
+* EA Sessions
+* User Sessions Count
+* HighValue Group Members (Limited to 1000)
+* Protected Users Group
+* Admins Without Sensitive Protection Flag
+* Kerberoastable Users
+* Pre-Windows 2000 Compatibility Access Direct Members
+* RDPable Servers
+* Domain Controller Owners
+* Domain Controller Owned by Users
+* Unconstrained Delegation Users with SPN
+* Unconstrained Delegation Computers with SPN
+* Unconstrained Delegation Computers with SPN Non-DC
+* Constrained Delegation - All
+* Constrained Delegation - Users
+* Constrained Delegation - Users NonDA
+* Constrained Delegation - Computers NonDC
+* DCSync Direct Relationships
+* DCSync Privileged Non-DCs
+* DCSync Privileged Non-DAs
+* Permissions for Everyone and Authenticated Users
+* Users (Non-Admin) With AddMember Group Permissions
+* Direct Relationships - Everyone
+* Direct Relationships - Authenticated Users
+* Direct Relationships - Pre-Windows 2000 Compatibility Access
+* Direct Relationships - Domain Users
+* Direct Relationships - Domain Computers
+* Direct Relationships - Users
+* Direct Relationships - Guests
+* PasswordResetter Groups Count
+* GPOs
+* GPO OU Links
+* GPO Owners Summary Count
+* GPO Owners Detail
+* GPO Owners - Non-DAs
+* GPOS - Non-DA Users With Interesting GPO Permissions
+* GPO Creator Owners
+* RDPable Groups
+* RDPable Groups Count
+* Computers Vulnerable to Local Admin Enumeration
+* Local Admins - Groups
+* Local Admins - Groups Count
+* Local Admins - Users
+* Local Admins - Users Count
+* Local Admins - Computers
+* Local Admins - Computers Count
+* Computers with MSSQL SPN
+* Computers with Descriptions
+* Operating Systems Unsupported
+* Operating Systems Unsupported Count
+* Operating Systems Count
+* LAPS Deployment Count
+* LAPS Deployment OS Count
+* LAPS Not Enabled
+* Users Sessions
+* Users Sessions Count
+* Users With < 1 Day Old Passwords
+* Users With < 7 Day Old Passwords
+* Users With < 30 Day Old Passwords
+* Users With > 6 Month Old Passwords
+* Users With > 1 Year Old Passwords
+* Users With > 5 Year Old Passwords
+* Users With > 10 Year Old Passwords
+* Users With > 15 Year Old Passwords
+* Users With > 20 Year Old Passwords
+* Users Password Never Expires Exception
+* Users Password Not Required
+* Users Password Not Required and Never Set
+* Users With Userpassword Attribute
+* User No Kerb Needed (AS-REP Roastable Users)
+* Users Not Active 6 Months
+* Users Not Active 12 Months
+* Users Not Active 60 Months
+* Users Not Active 120 Months
+* Users Never Active
+* Hunt - Users with Pass or PW in Description
+* Hunt - Users with Change in Description
+* Hunt - Users with VPN Group
+* Hunt - Computers with Pass or PW in Description
+* Owned Groups
+* Owned Users
+* Owned Computers
+* Owned Users Groups
+* Owned Computers Groups
+* Owned Objects
+* Owned Objects Admin To
+* Owned Objects Member Of
+* Certificate Templates
+* Certificate Authorities
+* Certificate Enrollment Rights
+* Certificate Template ESC1 Vuln
+* Certificate Template ESC2 Vuln
+* Certificate Template ESC3 Vuln
+* Certificate Template ESC6 Vuln
+* Certificate Template ESC8 Vuln
+* Report Index
+
  # PlumHound Examples
 Use the default username, password, server, and execute the "Easy" task, to test connectivity.  This will output all Active Directory user objects from the Neo4J database.
 ```shell
