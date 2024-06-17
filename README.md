@@ -65,17 +65,27 @@ In fact, one of our cypher queries determined that 96% of their 3000 users had a
 Hence, PlumHound was created out of a need to retrieve consumable data from BloodHoundAD's pathfinding engine.  Data that could yield itself to inferring actionable work for security teams to harden their environments.
 
 ## Sample Reports
- Sample reports are no longer included within the repository.  However, the default tasks tasklist will produce reports with ease.  Here are a sample of some less-exciting reports generated from a small lab environment.
+ We include some sample reports in this respository, however the data represents a fictious small Active Directory deployment atypical of a production environment.  The default tasks tasklist will produce reports with ease.  Here are a sample of some less-exciting reports generated from a small lab environment.  A few samples of produced reports are shown below.  
+ 
+ The archive of sample reports is found here: [SampleReports](docs/SampleReports.zip)
 
- ![](docs/images/report1.png) 
+| ![Report Index](docs/images/report_index.png) |
+|-----------------------------------------------|
 
- ![](docs/images/report2.png) 
+| ![Report1](docs/images/report1.png) ![](docs/images/report1.png)  |
+|---------------|
 
- ![](docs/images/report3.png) 
+| ![Report2](docs/images/report2.png) ![](docs/images/report2.png)  |
+|---------------|
 
- ![](docs/images/report4.png) 
+| ![Report3](docs/images/report3.png) |
+|---------------|
 
- ![](docs/images/report5.png) 
+| ![Report4](docs/images/report4.png) |
+|---------------|
+
+| ![Report5](docs/images/report5.png) |
+|---------------|
 
  # PlumHound Examples
 Use the default username, password, server, and execute the "Easy" task, to test connectivity.  This will output all Active Directory user objects from the Neo4J database.
