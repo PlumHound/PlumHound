@@ -46,7 +46,6 @@
 ["PasswordResetter Groups Count", "HTML", "Groups_CanResetPasswordsCount.html", "MATCH p=(m:Group)-[r:ForceChangePassword]->(n:User) RETURN m.name as Group, m.distinguishedname as DN, count(*) as Users ORDER BY Users DESC"]
 ["GPOs", "HTMLCSV", "GPOs", "Match (n:GPO) return n.name as GPO, n.highvalue as HighValue, n.gpcpath as Path" ]
 ["GPO OU Links", "HTMLCSV", "GPO_OU_Links", "MATCH (u:GPO)-[:GPLink]->(g) RETURN g.distinguishedname AS OU, u.name as GPO ORDER BY OU, GPO" ]
-["GPO OU Root Links", "HTMLCSV", "GPO_OU_Links", "MATCH (u:GPO)-[:GPLink]->(g:OU) RETURN g.distinguishedname AS OU, u.name as GPO ORDER BY OU, GPO" ]
 ["GPO Owners Summary Count","HTMLCSV","GPOOwners-Summary","MATCH (u)-[:Owns]->(g:GPO) RETURN u.name as Owner, u.enabled as Enabled, head(labels(u)) as Type,  count(g.name) AS GPOs ORDER BY GPOs DESC, Owner"]
 ["GPO Owners Detail","HTMLCSV","GPOOwners-Detail","MATCH (u)-[:Owns]->(g:GPO) RETURN u.name as Owner, u.enabled as Enabled, head(labels(u)) as Type, g.name AS GPO ORDER BY GPO, Owner"]
 ["GPO Owners - Non-(Direct)DAs", "HTMLCSV", "GPOOwners-NonDA", "MATCH (u1:User)-[:MemberOf]->(g:Group) WHERE g.objectid ENDS WITH '-512' WITH COLLECT(u1.name) AS DAs MATCH (u2:User)-[:Owns]->(gp:GPO) WHERE NOT u2.name IN DAs  RETURN gp.name AS GPO, u2.name as Owner, u2.enabled as Enabled ORDER BY GPO, Owner" ]
