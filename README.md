@@ -595,6 +595,10 @@ By default, PlumHound generates a log in file log\PlumHound.log
 * Sector Session: [BlueHound Path Destroyer](https://sector.ca/sessions/bhpd-bluehound-path-destroyer/)
 * BHIS Blog: [PlumHound Reporting Engine for BloodHoundAD](https://www.blackhillsinfosec.com/plumhound-reporting-engine-for-bloodhoundad/)
 
+# Pip Install
+```bash
+pip install plumhound
+```
 
 # Installation Requirements
 ```shell
