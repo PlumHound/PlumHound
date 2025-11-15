@@ -84,14 +84,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sync bumped version back to master
+      - name: Sync bumped version back to main
         run: |
           # Make sure we have the latest branches
           git fetch origin
 
-          # Switch to master branch (change to 'main' if your default branch is main)
-          git switch master || git switch main
-          git pull origin master || git pull origin main
+          # Switch to main branch (change to 'main' if your default branch is main)
+          git switch main | git switch main
+          git pull origin main | git pull origin main
 
           # Bring pyproject.toml from Publish into the default branch
           git checkout origin/Publish -- pyproject.toml
