@@ -40,5 +40,10 @@ py-modules = [ "PlumHound",]
 where = [ ".",]
 include = [ "lib*", "modules*",]
 
+[tool.setuptools.data-files]
+"share/plumhound/tasks" = [ "tasks/*",]
+"share/plumhound/template" = [ "template/*",]
+"share/plumhound/reports" = [ "reports/*",]
+
 [tool.setuptools.dynamic.dependencies]
 file = [ "requirements.txt",]
