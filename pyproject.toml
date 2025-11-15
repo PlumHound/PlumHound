@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = [ "setuptools>=69", "wheel",]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,47 +8,20 @@ version = "1.7.0"  # keep in sync with your git tags, e.g. v1.0.0
 description = "BloodHoundAD reporting engine for Blue and Purple Teams"
 readme = "README.md"
 requires-python = ">=3.8"
-license = { file = "LICENSE" }
+keywords = [ "bloodhound", "bloodhoundad", "plumhound", "active-directory", "activedirectory", "neo4j", "blue-team", "purple-team", "reporting", "security",]
+classifiers = [ "Development Status :: 5 - Production/Stable", "Environment :: Console", "Intended Audience :: Information Technology", "Intended Audience :: System Administrators", "License :: OSI Approved :: GNU General Public License v3 (GPLv3)", "Programming Language :: Python", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only", "Programming Language :: Python :: 3.8", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Topic :: Security", "Topic :: System :: Systems Administration", "Topic :: Utilities",]
+dynamic = [ "dependencies",]
+[[project.authors]]
+name = "PlumHound Team"
 
-authors = [
-  { name = "PlumHound Team" },
-  { name = "Kent Ickler" },
-  { name = "Jordan Drysdale" }
-]
+[[project.authors]]
+name = "Kent Ickler"
 
-keywords = [
-  "bloodhound",
-  "bloodhoundad",
-  "plumhound",
-  "active-directory",
-  "activedirectory",
-  "neo4j",
-  "blue-team",
-  "purple-team",
-  "reporting",
-  "security"
-]
+[[project.authors]]
+name = "Jordan Drysdale"
 
-classifiers = [
-  "Development Status :: 5 - Production/Stable",
-  "Environment :: Console",
-  "Intended Audience :: Information Technology",
-  "Intended Audience :: System Administrators",
-  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Topic :: Security",
-  "Topic :: System :: Systems Administration",
-  "Topic :: Utilities",
-]
-
-# We'll pull dependencies directly from requirements.txt
-dynamic = ["dependencies"]
+[project.license]
+file = "LICENSE"
 
 [project.urls]
 Homepage = "https://github.com/PlumHound/PlumHound"
@@ -57,20 +30,15 @@ Issues = "https://github.com/PlumHound/PlumHound/issues"
 Documentation = "https://www.blackhillsinfosec.com/plumhound-reporting-engine-for-bloodhoundad/"
 
 [project.scripts]
-# Console command: `plumhound`
 plumhound = "PlumHound:main"
 
 [tool.setuptools]
-# auto-discover any real Python packages (if lib/ and modules/ have __init__.py)
-packages = { find = { where = ["."], include = ["lib*", "modules*"] } }
-
-# include the task files, templates, etc. as package data if you later
-# move them under a package. For now, leave this as a reminder.
 include-package-data = true
+py-modules = [ "PlumHound",]
 
-# Treat the top-level PlumHound.py as a single-module "distribution unit"
-py-modules = ["PlumHound"]
+[tool.setuptools.packages.find]
+where = [ ".",]
+include = [ "lib*", "modules*",]
 
-[tool.setuptools.dynamic]
-# Keep using requirements.txt as the single source of truth
-dependencies = { file = ["requirements.txt"] }
+[tool.setuptools.dynamic.dependencies]
+file = [ "requirements.txt",]
