@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "plumhound"
-version = "1.0.0"  # keep in sync with your git tags, e.g. v1.0.0
+version = "1.7.0"  # keep in sync with your git tags, e.g. v1.0.0
 description = "BloodHoundAD reporting engine for Blue and Purple Teams"
 readme = "README.md"
 requires-python = ">=3.8"
