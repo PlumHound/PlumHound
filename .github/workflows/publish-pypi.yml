@@ -1,0 +1,100 @@
+name: Auto-bump version, release, and publish
+
+on:
+  push:
+    branches:
+      - Publish
+
+permissions:
+  contents: write
+
+jobs:
+  bump-release-publish:
+    name: Auto-bump version and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Publish branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build twine toml
+
+      - name: Auto-increment version in pyproject.toml
+        id: bump
+        run: |
+          python - << 'PY'
+          import toml
+          from pathlib import Path
+
+          path = Path("pyproject.toml")
+          data = toml.loads(path.read_text(encoding="utf-8"))
+
+          version = data["project"]["version"]
+          major, minor, patch = version.split(".")
+          patch = str(int(patch) + 1)
+          new_version = ".".join([major, minor, patch])
+
+          data["project"]["version"] = new_version
+          path.write_text(toml.dumps(data), encoding="utf-8")
+
+          print(f"Bumped version: {version} -> {new_version}")
+
+          # Expose for later steps
+          with open(Path("$GITHUB_OUTPUT"), "a", encoding="utf-8") as f:
+              f.write(f"new_version={new_version}\n")
+          PY
+
+      - name: Commit bumped version on Publish
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add pyproject.toml
+          git commit -m "Auto-bump version to ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
+          git push origin Publish || echo "No changes pushed"
+
+      - name: Build distributions from Publish
+        run: |
+          python -m build
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: "__token__"
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          twine upload dist/*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.bump.outputs.new_version }}
+          name: nessus-plugin-hosts v${{ steps.bump.outputs.new_version }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync bumped version back to main
+        run: |
+          # Make sure we have the latest branches
+          git fetch origin
+
+          # Switch to main branch
+          git switch main
+          git pull origin main
+
+          # Bring pyproject.toml from Publish into main
+          git checkout origin/Publish -- pyproject.toml
+
+          # Commit only if there are changes
+          git add pyproject.toml
+          git commit -m "Sync version from Publish: ${{ steps.bump.outputs.new_version }}" || echo "No version changes to sync"
+          git push origin main || echo "No changes pushed to main"
