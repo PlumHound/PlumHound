@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Publish branch
+      - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -24,12 +24,12 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install tools
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install build twine toml
 
-      - name: Auto-increment version in pyproject.toml
+      - name: Auto-increment version
         id: bump
         run: |
           python - << 'PY'
@@ -41,6 +41,7 @@ jobs:
           data = toml.loads(path.read_text(encoding="utf-8"))
 
           version = data["project"]["version"]
+
           major, minor, patch = version.split(".")
           patch = str(int(patch) + 1)
           new_version = ".".join([major, minor, patch])
@@ -50,21 +51,51 @@ jobs:
 
           print(f"Bumped version: {version} -> {new_version}")
 
-          # Write step output correctly using the GitHub-provided file path
-          output_path = os.environ["GITHUB_OUTPUT"]
-          with open(output_path, "a", encoding="utf-8") as f:
+          # Export for later steps
+          github_output = os.environ["GITHUB_OUTPUT"]
+          with open(github_output, "a", encoding="utf-8") as f:
               f.write(f"new_version={new_version}\n")
           PY
 
-      - name: Commit bumped version on Publish
+      - name: Commit updated version on Publish
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add pyproject.toml
-          git commit -m "Auto-bump version to ${{ steps.bump.outputs.new_version }}" || echo "No changes to commit"
-          git push origin Publish || echo "No changes pushed"
 
-      - name: Build distributions from Publish
+          if git diff --cached --quiet; then
+            echo "No version change to commit on Publish."
+          else
+            git commit -m "Auto-bump version to ${{ steps.bump.outputs.new_version }}"
+            git push origin HEAD:Publish
+          fi
+
+      - name: Sync pyproject.toml to main
+        # Only run if we actually bumped/committed something
+        run: |
+          VERSION="${{ steps.bump.outputs.new_version }}"
+          echo "Syncing version $VERSION to main branch"
+
+          # Make sure we have the latest branches
+          git fetch origin
+
+          # Switch to main and pull latest
+          git checkout main
+          git pull origin main
+
+          # Bring over the bumped pyproject.toml from Publish
+          git checkout Publish -- pyproject.toml
+
+          # Stage and commit if there is a change
+          if git diff --cached --quiet; then
+            echo "No changes to commit on main."
+          else
+            git add pyproject.toml
+            git commit -m "Sync version to ${VERSION} from Publish"
+            git push origin main
+          fi
+
+      - name: Build distributions
         run: |
           python -m build
 
@@ -75,7 +106,7 @@ jobs:
         run: |
           twine upload dist/*
 
-      - name: Create GitHub Release
+      - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.bump.outputs.new_version }}
@@ -83,20 +114,3 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Sync bumped version back to main
-        run: |
-          # Make sure we have the latest branches
-          git fetch origin
-
-          # Switch to main branch (change to 'main' if your default branch is main)
-          git switch main | git switch main
-          git pull origin main | git pull origin main
-
-          # Bring pyproject.toml from Publish into the default branch
-          git checkout origin/Publish -- pyproject.toml
-
-          # Commit only if there are changes
-          git add pyproject.toml
-          git commit -m "Sync version from Publish: ${{ steps.bump.outputs.new_version }}" || echo "No version changes to sync"
-          git push origin HEAD || echo "No changes pushed to default branch"
