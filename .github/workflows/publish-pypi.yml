@@ -82,19 +82,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sync bumped version back to main
+      - name: Sync bumped version back to master
         run: |
           # Make sure we have the latest branches
           git fetch origin
 
-          # Switch to main branch
-          git switch main
-          git pull origin main
+          # Switch to master branch
+          git switch master
+          git pull origin master
 
-          # Bring pyproject.toml from Publish into main
+          # Bring pyproject.toml from Publish into master
           git checkout origin/Publish -- pyproject.toml
 
           # Commit only if there are changes
           git add pyproject.toml
           git commit -m "Sync version from Publish: ${{ steps.bump.outputs.new_version }}" || echo "No version changes to sync"
-          git push origin main || echo "No changes pushed to main"
+          git push origin master || echo "No changes pushed to master"
