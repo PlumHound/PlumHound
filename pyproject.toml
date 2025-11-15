@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "plumhound"
-version = "1.7.7"
+version = "1.7.8"
 description = "BloodHoundAD reporting engine for Blue and Purple Teams"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -36,14 +36,14 @@ plumhound = "PlumHound:main"
 include-package-data = true
 py-modules = [ "PlumHound",]
 
-[tool.setuptools.packages.find]
-where = [ ".",]
-include = [ "lib*", "modules*",]
-
 [tool.setuptools.data-files]
 "share/plumhound/tasks" = [ "tasks/*",]
 "share/plumhound/template" = [ "template/*",]
 "share/plumhound/reports" = [ "reports/*",]
+
+[tool.setuptools.packages.find]
+where = [ ".",]
+include = [ "lib*", "modules*",]
 
 [tool.setuptools.dynamic.dependencies]
 file = [ "requirements.txt",]
